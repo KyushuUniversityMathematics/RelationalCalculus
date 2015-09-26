@@ -1,6 +1,6 @@
 # RelationalCalculus
 It seems that we cannot use Japanese language in README(!),
-so we will use English.
+so let's will use English.
 
 Prof. Mizoguchi  
 To install Github was more difficult than I expected...  
