@@ -81,10 +81,10 @@ endif
 ######################
 
 VFILES:=Sum_Product.v\
+  Residual.v\
   Domain.v\
   Conjugate.v\
   Rationality.v\
-  Residual.v\
   Dedekind.v\
   Functions_Mappings.v\
   Relation_Properties.v\

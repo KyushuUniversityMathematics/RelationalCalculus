@@ -3,6 +3,7 @@ Require Import Basic_Lemmas.
 Require Import Relation_Properties.
 Require Import Functions_Mappings.
 Require Import Dedekind.
+Require Import Domain.
 Require Import Logic.FunctionalExtensionality.
 
 (** %
@@ -805,6 +806,35 @@ Lemma residual_property9
 Proof.
 move => H.
 by [rewrite -(residual_property8 H) rpc_universal_alpha].
+Qed.
+
+(** %
+\begin{screen}
+\begin{lemma}[residual\_property10]
+Let $\alpha$ be a univalent relation. Then,
+$$
+\alpha \cdot \beta = \domain{\alpha} \cdot (\alpha \rhd \beta).
+$$
+\end{lemma}
+\end{screen}
+% **)
+Lemma residual_property10
+ {X Y Z : eqType} {alpha : Rel X Y} {beta : Rel Y Z}:
+ univalent_r alpha -> alpha ・ beta = domain alpha ・ (alpha △ beta).
+Proof.
+move => H.
+apply inc_antisym.
+replace (alpha ・ beta) with (domain alpha ・ (alpha ・ beta)).
+apply comp_inc_compat_ab_ab'.
+rewrite inc_residual -comp_assoc.
+apply (comp_inc_compat_ab_b H).
+by [rewrite -comp_assoc domain_comp_alpha1].
+apply (@inc_trans _ _ _ ((alpha ・ alpha #) ・ (alpha △ beta))).
+apply comp_inc_compat_ab_a'b.
+apply cap_l.
+rewrite comp_assoc.
+apply comp_inc_compat_ab_ab'.
+apply inv_residual_inc.
 Qed.
 
 (* *)
