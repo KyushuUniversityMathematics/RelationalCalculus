@@ -837,4 +837,75 @@ apply comp_inc_compat_ab_ab'.
 apply inv_residual_inc.
 Qed.
 
+(** %
+\begin{screen}
+\begin{lemma}[residual\_property11]
+$$
+(\alpha \cdot \beta \Rightarrow \delta) \sqsubseteq \alpha \rhd (\beta \Rightarrow \alpha^\sharp \cdot \delta).
+$$
+\end{lemma}
+\end{screen}
+% **)
+Lemma residual_property11
+ {X Y Z : eqType} {alpha : Rel X Y} {beta : Rel Y Z} {delta : Rel X Z}:
+ ((alpha ・ beta) >> delta) ⊆ (alpha △ (beta >> (alpha # ・ delta))).
+Proof.
+apply inc_residual.
+apply inc_rpc.
+apply (@inc_trans _ _ _ _ _ (@dedekind1 _ _ _ _ _ _)).
+rewrite inv_invol.
+apply comp_inc_compat_ab_ab'.
+apply inc_rpc.
+apply inc_refl.
+Qed.
+
+(** %
+\begin{screen}
+\begin{lemma}[residual\_property12a, residual\_property12b]
+Let $u \sqsubseteq id_X$. Then,
+$$
+u \rhd \alpha = u \cdot \nabla_{XY} \Rightarrow \alpha = u \rhd u \cdot \alpha.
+$$
+\end{lemma}
+\end{screen}
+% **)
+Lemma residual_property12a
+ {X Y : eqType} {u : Rel X X} {alpha : Rel X Y}:
+ u ⊆ Id X -> u △ alpha = (u ・ ∇ X Y) >> alpha.
+Proof.
+move => H.
+apply inc_antisym.
+assert (univalent_r u).
+apply (fun H' => @inc_trans _ _ _ _ _ H' H).
+apply comp_inc_compat_ab_b.
+rewrite -inv_id.
+apply (@inc_inv _ _ _ _ H).
+rewrite (residual_property9 H0).
+apply rpc_inc_compat_l.
+apply (comp_inc_compat_ab_b H).
+apply (@inc_trans _ _ _ _ _ residual_property11).
+apply residual_inc_compat_l.
+rewrite rpc_universal_alpha.
+apply comp_inc_compat_ab_b.
+rewrite -inv_id.
+apply (@inc_inv _ _ _ _ H).
+Qed.
+
+Lemma residual_property12b
+ {X Y : eqType} {u : Rel X X} {alpha : Rel X Y}:
+ u ⊆ Id X -> u △ alpha = u △ (u ・ alpha).
+Proof.
+move => H.
+apply inc_antisym.
+rewrite (residual_property12a H).
+apply (@inc_trans _ _ _ _ _ residual_property11).
+apply residual_inc_compat_l.
+rewrite rpc_universal_alpha.
+apply comp_inc_compat_ab_a'b.
+rewrite (dedekind_id1 H).
+apply inc_refl.
+apply residual_inc_compat_l.
+apply (comp_inc_compat_ab_b H).
+Qed.
+
 (* *)
