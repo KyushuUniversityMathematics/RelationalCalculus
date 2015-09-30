@@ -514,7 +514,7 @@ Lemma function_dedekind1
 Proof.
 move => H.
 apply inc_antisym.
-apply (@inc_trans _ _ _ _ _ (@comp_cap_distr_r _ _ _ _ _ _)).
+apply (@inc_trans _ _ _ _ _ (comp_cap_distr_r)).
 apply cap_inc_compat_l.
 rewrite comp_assoc.
 apply comp_inc_compat_ab_a.

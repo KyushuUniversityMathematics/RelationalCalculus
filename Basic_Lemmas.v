@@ -706,13 +706,13 @@ apply H2.
 apply inc_antisym.
 apply inc_def1.
 elim H => H3 H4.
-case (H4 (alpha ∩ beta) (@cap_l _ _ _ _)); move => H5.
+case (H4 (alpha ∩ beta) (cap_l)); move => H5.
 apply False_ind.
 apply (H1 H5).
 by [rewrite H5].
 apply inc_def1.
 elim H0 => H3 H4.
-case (H4 (alpha ∩ beta) (@cap_r _ _ _ _)); move => H5.
+case (H4 (alpha ∩ beta) (cap_r)); move => H5.
 apply False_ind.
 apply (H1 H5).
 by [rewrite cap_comm H5].
@@ -745,13 +745,13 @@ by [rewrite cup_empty].
 case H3; move => H4.
 left.
 apply inc_def1.
-case (H2 (alpha ∩ beta) (@cap_l _ _ _ _)); move => H5.
+case (H2 (alpha ∩ beta) (cap_l)); move => H5.
 apply False_ind.
 apply (H4 H5).
 by [rewrite H5].
 right.
 apply inc_def1.
-case (H2 (alpha ∩ gamma) (@cap_l _ _ _ _)); move => H5.
+case (H2 (alpha ∩ gamma) (cap_l)); move => H5.
 apply False_ind.
 apply (H4 H5).
 by [rewrite H5].

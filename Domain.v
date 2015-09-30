@@ -38,7 +38,7 @@ apply comp_inc_compat_ab_ab'.
 apply inc_alpha_universal.
 apply inc_cap.
 split.
-apply (@inc_trans _ _ _ _ _ (@dedekind1 _ _ _ _ _ _)).
+apply (@inc_trans _ _ _ _ _ (dedekind1)).
 apply comp_inc_compat_ab_ab'.
 rewrite cap_comm comp_id_r cap_universal.
 apply inc_refl.
@@ -80,7 +80,7 @@ apply comp_inc_compat_ab_b.
 apply cap_r.
 rewrite /domain.
 rewrite cap_comm.
-apply (fun H' => @inc_trans _ _ _ _ _ H' (@dedekind2 _ _ _ _ _ _)).
+apply (fun H' => @inc_trans _ _ _ _ _ H' (dedekind2)).
 rewrite comp_id_l cap_idem.
 apply inc_refl.
 Qed.
@@ -178,7 +178,7 @@ apply (@inc_trans _ _ _ ((alpha ・ ((beta ・ (beta # ・ alpha #)) ∩ alpha #
 replace (((alpha ・ beta) ・ (beta # ・ alpha #)) ∩ Id A) with ((((alpha ・ beta) ・ (beta # ・ alpha #)) ∩ Id A) ∩ Id A).
 apply cap_inc_compat_r.
 rewrite comp_assoc.
-apply (@inc_trans _ _ _ _ _ (@dedekind1 _ _ _ _ _ _)).
+apply (@inc_trans _ _ _ _ _ (dedekind1)).
 rewrite comp_id_r.
 apply inc_refl.
 by [rewrite cap_assoc cap_idem].
@@ -299,7 +299,7 @@ Proof.
 apply (@inc_trans _ _ _ _ _ (@comp_cap_distr_l _ _ _ _ _ _ )).
 rewrite cap_comm.
 replace (alpha ・ Id B) with (Id A ・ alpha).
-apply (@inc_trans _ _ _ _ _ (@dedekind2 _ _ _ _ _ _)).
+apply (@inc_trans _ _ _ _ _ (dedekind2)).
 rewrite cap_comm -comp_assoc comp_assoc -comp_inv.
 apply inc_refl.
 by [rewrite comp_id_l comp_id_r].
@@ -323,7 +323,7 @@ apply inc_antisym.
 apply comp_domain6.
 apply (@inc_trans _ _ _ _ _ (@comp_cap_distr_r _ _ _ _ _ _ )).
 rewrite comp_id_l comp_inv comp_assoc comp_assoc.
-apply (@inc_trans _ _ _ _ _ (@dedekind1 _ _ _ _ _ _)).
+apply (@inc_trans _ _ _ _ _ (dedekind1)).
 apply comp_inc_compat_ab_ab'.
 apply (fun H' => cap_inc_compat H' H).
 rewrite comp_assoc -comp_assoc.
@@ -348,14 +348,14 @@ apply inc_antisym.
 rewrite -(@cap_idem _ _ (domain (u ・ alpha))).
 rewrite (dedekind_id3 H).
 apply cap_inc_compat.
-apply (@inc_trans _ _ _ _ _ (@comp_domain1 _ _ _ _ _)).
+apply (@inc_trans _ _ _ _ _ (comp_domain1)).
 apply domain_inc_id in H.
 rewrite H.
 apply inc_refl.
 apply domain_inc_compat.
 apply (comp_inc_compat_ab_b H).
 apply cap_r.
-apply (@inc_trans _ _ _ _ _ (@comp_domain6 _ _ _ _ _)).
+apply (@inc_trans _ _ _ _ _ (comp_domain6)).
 apply (comp_inc_compat_ab_a H).
 Qed.
 
@@ -474,14 +474,14 @@ apply inc_cap.
 split.
 apply comp_inc_compat_ab_a.
 apply cap_r.
-apply (@inc_trans _ _ _ _ _ (@comp_cap_distr_l _ _ _ _ _ _)).
-apply (@inc_trans _ _ _ _ _ (@cap_l _ _ _ _)).
+apply (@inc_trans _ _ _ _ _ (comp_cap_distr_l)).
+apply (@inc_trans _ _ _ _ _ (cap_l)).
 rewrite -comp_assoc.
 apply comp_inc_compat_ab_a'b.
 apply inc_alpha_universal.
 rewrite -inv_universal -comp_inv -domain_universal1.
 rewrite comp_inv inv_universal domain_inv cap_comm.
-apply (@inc_trans _ _ _ _ _ (@dedekind2 _ _ _ _ _ _)).
+apply (@inc_trans _ _ _ _ _ (dedekind2)).
 apply comp_inc_compat_ab_a'b.
 rewrite cap_comm cap_universal domain_inv.
 apply comp_inc_compat_ab_a.
@@ -505,8 +505,8 @@ move => H H0 H1.
 apply inc_antisym.
 apply H0.
 rewrite -(@domain_comp_alpha1 _ _ beta) -H1.
-apply (@inc_trans _ _ _ _ _ (@comp_cap_distr_r _ _ _ _ _ _)).
-apply (@inc_trans _ _ _ _ _ (@cap_l _ _ _ _)).
+apply (@inc_trans _ _ _ _ _ (comp_cap_distr_r)).
+apply (@inc_trans _ _ _ _ _ (cap_l)).
 rewrite comp_assoc.
 apply comp_inc_compat_ab_a.
 apply (fun H' => @inc_trans _ _ _ _ _ H' H).
@@ -530,7 +530,7 @@ Proof.
 split; move => H.
 rewrite -(@domain_comp_alpha1 _ _ alpha) comp_assoc.
 apply (@inc_trans _ _ _ _ _ (comp_inc_compat_ab_a'b H)).
-apply (@inc_trans _ _ _ _ _ (comp_inc_compat_ab_a'b (@cap_l _ _ _ _))).
+apply (@inc_trans _ _ _ _ _ (comp_inc_compat_ab_a'b (cap_l))).
 rewrite comp_assoc.
 apply comp_inc_compat_ab_ab'.
 apply inc_alpha_universal.
@@ -539,12 +539,12 @@ apply domain_inc_compat.
 apply (@inc_trans _ _ _ (alpha ∩ (beta ・ ∇ C B))).
 apply (fun H' => @inc_trans _ _ _ _ _ H' (cap_inc_compat_l H)).
 replace (alpha ∩ (alpha ・ ∇ B B)) with ((alpha ・ Id B) ∩ (alpha ・ ∇ B B)).
-apply (fun H' => @inc_trans _ _ _ _ _ H' (@comp_cap_distr_l _ _ _ _ _ _)).
+apply (fun H' => @inc_trans _ _ _ _ _ H' (comp_cap_distr_l)).
 rewrite cap_universal comp_id_r.
 apply inc_refl.
 by [rewrite comp_id_r].
 rewrite cap_comm comp_assoc.
-apply (@inc_trans _ _ _ _ _ (@dedekind1 _ _ _ _ _ _)).
+apply (@inc_trans _ _ _ _ _ (dedekind1)).
 rewrite cap_comm cap_universal.
 apply inc_refl.
 rewrite comp_assoc.
@@ -558,12 +558,12 @@ apply domain_lemma2a in H.
 apply (@inc_trans _ _ _ (alpha ∩ (beta ・ ∇ C B))).
 apply (fun H' => @inc_trans _ _ _ _ _ H' (cap_inc_compat_l H)).
 replace (alpha ∩ (alpha ・ ∇ B B)) with ((alpha ・ Id B) ∩ (alpha ・ ∇ B B)).
-apply (fun H' => @inc_trans _ _ _ _ _ H' (@comp_cap_distr_l _ _ _ _ _ _)).
+apply (fun H' => @inc_trans _ _ _ _ _ H' (comp_cap_distr_l)).
 rewrite cap_universal comp_id_r.
 apply inc_refl.
 by [rewrite comp_id_r].
 rewrite cap_comm comp_assoc.
-apply (@inc_trans _ _ _ _ _ (@dedekind1 _ _ _ _ _ _)).
+apply (@inc_trans _ _ _ _ _ (dedekind1)).
 rewrite cap_comm cap_universal.
 apply inc_refl.
 apply domain_inc_compat in H.
@@ -637,15 +637,15 @@ Proof.
 move => H H0 H1.
 rewrite /univalent_r.
 rewrite -H1 inv_cap_distr.
-apply (@inc_trans _ _ _ _ _ (@comp_cap_distr_l _ _ _ _ _ _)).
+apply (@inc_trans _ _ _ _ _ (comp_cap_distr_l)).
 apply cap_inc_compat.
-apply (@inc_trans _ _ _ _ _ (@comp_cap_distr_r _ _ _ _ _ _)).
-apply (@inc_trans _ _ _ _ _ (@cap_l _ _ _ _)).
+apply (@inc_trans _ _ _ _ _ (comp_cap_distr_r)).
+apply (@inc_trans _ _ _ _ _ (cap_l)).
 rewrite comp_inv inv_invol -comp_assoc (@comp_assoc _ _ _ _ rho).
 apply comp_inc_compat_ab_a'b.
 apply (comp_inc_compat_ab_a H).
-apply (@inc_trans _ _ _ _ _ (@comp_cap_distr_r _ _ _ _ _ _)).
-apply (@inc_trans _ _ _ _ _ (@cap_r _ _ _ _)).
+apply (@inc_trans _ _ _ _ _ (comp_cap_distr_r)).
+apply (@inc_trans _ _ _ _ _ (cap_r)).
 rewrite comp_inv inv_invol -comp_assoc (@comp_assoc _ _ _ _ tau).
 apply comp_inc_compat_ab_a'b.
 apply (comp_inc_compat_ab_a H0).
@@ -693,7 +693,7 @@ Proof.
 move => H.
 rewrite /rectangular.
 apply (@inc_trans _ _ _ (∩_ (fun l : L => (alpha_L l ・ ∇ B A) ・ alpha_L l))).
-apply (@inc_trans _ _ _ _ _ (@comp_capL_distr_l _ _ _ _ _ _)).
+apply (@inc_trans _ _ _ _ _ (comp_capL_distr_l)).
 apply inc_capL.
 move => l.
 apply (@inc_trans _ _ _ (((∩_ alpha_L) ・ ∇ B A) ・ alpha_L l)).
@@ -771,7 +771,7 @@ exists (∇ i A ・ alpha).
 rewrite comp_inv inv_invol inv_universal.
 rewrite -comp_assoc (@comp_assoc _ _ _ _ alpha) lemma_for_tarski2.
 apply inc_antisym.
-apply (@inc_trans _ _ _ _ _ (@relation_rel_inv_rel _ _ _)).
+apply (@inc_trans _ _ _ _ _ (relation_rel_inv_rel)).
 apply comp_inc_compat_ab_a'b.
 apply comp_inc_compat_ab_ab'.
 apply inc_alpha_universal.
