@@ -388,22 +388,21 @@ Qed.
 
 (** %
 \begin{screen}
-\begin{lemma}[cupL\_domain\_distr, cupL\_domain\_distr]
-Let $\alpha_\lambda :A \rel B$. Then,
+\begin{lemma}[cupP\_domain\_distr, cup\_domain\_distr]
+Let $\alpha_\lambda :A \rel B$ and $P$ : predicate. Then,
 $$
-\domain{\sqcup_{\lambda \in \Lambda} \alpha_\lambda} = \sqcup_{\lambda \in \Lambda} \domain{\alpha_\lambda}.
+\domain{\sqcup_{P(\lambda)} \alpha_\lambda} = \sqcup_{P(\lambda)} \domain{\alpha_\lambda}.
 $$
 \end{lemma}
 \end{screen}
 % **)
-Lemma cupL_domain_distr {A B L : eqType} {alpha_L : L -> Rel A B}:
- domain (∪_ alpha_L) = ∪_ (fun l : L => domain (alpha_L l)).
+Lemma cupP_domain_distr {A B L : eqType} {alpha_L : L -> Rel A B} {P : L -> Prop}:
+ domain (∪_{P} alpha_L) = ∪_{P} (fun l : L => domain (alpha_L l)).
 Proof.
 rewrite /domain.
-rewrite inv_cupL_distr comp_cupL_distr_l cap_cupL_distr_r.
-apply f_equal.
-apply functional_extensionality.
-move => l.
+rewrite inv_cupP_distr comp_cupP_distr_l cap_cupP_distr_r.
+apply cupP_eq.
+move => l H.
 rewrite -cap_domain -cap_domain.
 apply f_equal.
 rewrite cap_idem.
@@ -411,7 +410,8 @@ apply inc_antisym.
 apply cap_r.
 apply inc_cap.
 split.
-apply inc_cupL.
+move : l H.
+apply inc_cupP.
 apply inc_refl.
 apply inc_refl.
 Qed.
@@ -419,8 +419,8 @@ Qed.
 Lemma cup_domain_distr {A B : eqType} {alpha alpha' : Rel A B}:
  domain (alpha ∪ alpha') = domain alpha ∪ domain alpha'.
 Proof.
-rewrite cup_to_cupL cup_to_cupL.
-rewrite cupL_domain_distr.
+rewrite cup_to_cupP cup_to_cupP.
+rewrite cupP_domain_distr.
 apply f_equal.
 apply functional_extensionality.
 induction x.
@@ -682,33 +682,34 @@ Qed.
 
 (** %
 \begin{screen}
-\begin{lemma}[rectangular\_capL, rectangular\_cap]
-Let $\alpha_\lambda :A \rel B$ are rectangular relations, then $\sqcap_{\lambda \in \Lambda} \alpha_\lambda$ is also a rectangular relation.
+\begin{lemma}[rectangular\_capP, rectangular\_cap]
+Let $\alpha_\lambda :A \rel B$ are rectangular relations and $P$ : predicate, then $\sqcap_{P(\lambda)} \alpha_\lambda$ is also a rectangular relation.
 \end{lemma}
 \end{screen}
 % **)
-Lemma rectangular_capL {A B L : eqType} {alpha_L : L -> Rel A B}:
- (forall l : L, rectangular (alpha_L l)) -> rectangular (∩_ alpha_L).
+Lemma rectangular_capP {A B L : eqType} {alpha_L : L -> Rel A B} {P : L -> Prop}:
+ (forall l : L, rectangular (alpha_L l)) -> rectangular (∩_{P} alpha_L).
 Proof.
 move => H.
 rewrite /rectangular.
-apply (@inc_trans _ _ _ (∩_ (fun l : L => (alpha_L l ・ ∇ B A) ・ alpha_L l))).
-apply (@inc_trans _ _ _ _ _ (comp_capL_distr_l)).
-apply inc_capL.
-move => l.
-apply (@inc_trans _ _ _ (((∩_ alpha_L) ・ ∇ B A) ・ alpha_L l)).
-move : l.
-apply inc_capL.
+apply (@inc_trans _ _ _ (∩_{P} (fun l : L => (alpha_L l ・ ∇ B A) ・ alpha_L l))).
+apply (@inc_trans _ _ _ _ _ (comp_capP_distr_l)).
+apply inc_capP.
+move => l H0.
+apply (@inc_trans _ _ _ (((∩_{P} alpha_L) ・ ∇ B A) ・ alpha_L l)).
+move : l H0.
+apply inc_capP.
 apply inc_refl.
 apply comp_inc_compat_ab_a'b.
 apply comp_inc_compat_ab_a'b.
-apply inc_capL.
+move : H0.
+apply inc_capP.
 apply inc_refl.
-apply inc_capL.
-move => l.
+apply inc_capP.
+move => l H0.
 apply (fun H' => @inc_trans _ _ _ _ _ H' (H l)).
-move : l.
-apply inc_capL.
+move : l H0.
+apply inc_capP.
 apply inc_refl.
 Qed.
 
@@ -716,8 +717,8 @@ Lemma rectangular_cap {A B : eqType} {alpha beta : Rel A B}:
  rectangular alpha -> rectangular beta -> rectangular (alpha ∩ beta).
 Proof.
 move => H H0.
-rewrite cap_to_capL.
-apply rectangular_capL.
+rewrite cap_to_capP.
+apply rectangular_capP.
 induction l.
 apply H.
 apply H0.

@@ -211,34 +211,34 @@ Qed.
 
 (** %
 \begin{screen}
-\begin{lemma}[residual\_capL\_distr, residual\_cap\_distr]
-Let $\alpha :A \rel B$ and $\beta_\lambda :B \rel C$. Then
+\begin{lemma}[residual\_capP\_distr, residual\_cap\_distr]
+Let $\alpha :A \rel B$, $\beta_\lambda :B \rel C$ and $P$ : predicate. Then
 $$
-\alpha \rhd (\sqcap_{\lambda \in \Lambda} \beta_\lambda) = \sqcap_{\lambda \in \Lambda} (\alpha \rhd \beta_\lambda).
+\alpha \rhd (\sqcap_{P(\lambda)} \beta_\lambda) = \sqcap_{P(\lambda)} (\alpha \rhd \beta_\lambda).
 $$
 \end{lemma}
 \end{screen}
 % **)
-Lemma residual_capL_distr
- {A B C L : eqType} {alpha : Rel A B} {beta_L : L -> Rel B C}:
- alpha △ (∩_ beta_L) = ∩_ (fun l : L => alpha △ beta_L l).
+Lemma residual_capP_distr
+ {A B C L : eqType} {alpha : Rel A B} {beta_L : L -> Rel B C} {P : L -> Prop}:
+ alpha △ (∩_{P} beta_L) = ∩_{P} (fun l : L => alpha △ beta_L l).
 Proof.
 apply inc_lower.
 move => gamma.
 split; move => H.
-apply inc_capL.
-move => l.
+apply inc_capP.
+move => l H0.
 apply inc_residual.
-move : l.
-apply inc_capL.
+move : l H0.
+apply inc_capP.
 apply inc_residual.
 apply H.
 apply inc_residual.
-apply inc_capL.
-move => l.
+apply inc_capP.
+move => l H0.
 apply inc_residual.
-move : l.
-apply inc_capL.
+move : l H0.
+apply inc_capP.
 apply H.
 Qed.
 
@@ -246,8 +246,8 @@ Lemma residual_cap_distr
  {A B C : eqType} {alpha : Rel A B} {beta gamma : Rel B C}:
  alpha △ (beta ∩ gamma) = (alpha △ beta) ∩ (alpha △ gamma).
 Proof.
-rewrite cap_to_capL cap_to_capL.
-rewrite residual_capL_distr.
+rewrite cap_to_capP cap_to_capP.
+rewrite residual_capP_distr.
 apply f_equal.
 apply functional_extensionality.
 induction x.
@@ -257,36 +257,36 @@ Qed.
 
 (** %
 \begin{screen}
-\begin{lemma}[residual\_cupL\_distr, residual\_cup\_distr]
-Let $\alpha_\lambda :A \rel B$ and $\beta :B \rel C$. Then
+\begin{lemma}[residual\_cupP\_distr, residual\_cup\_distr]
+Let $\alpha_\lambda :A \rel B$, $\beta :B \rel C$ and $P$ : predicate. Then
 $$
-(\sqcup_{\lambda \in \Lambda} \alpha_\lambda) \rhd \beta = \sqcap_{\lambda \in \Lambda} (\alpha_\lambda \rhd \beta).
+(\sqcup_{P(\lambda)} \alpha_\lambda) \rhd \beta = \sqcap_{P(\lambda)} (\alpha_\lambda \rhd \beta).
 $$
 \end{lemma}
 \end{screen}
 % **)
-Lemma residual_cupL_distr
- {A B C L : eqType} {beta : Rel B C} {alpha_L : L -> Rel A B}:
- (∪_ alpha_L) △ beta = ∩_ (fun l : L => alpha_L l △ beta).
+Lemma residual_cupP_distr
+ {A B C L : eqType} {beta : Rel B C} {alpha_L : L -> Rel A B} {P : L -> Prop}:
+ (∪_{P} alpha_L) △ beta = ∩_{P} (fun l : L => alpha_L l △ beta).
 Proof.
 apply inc_lower.
 move => gamma.
 split; move => H.
-apply inc_capL.
-move => l.
+apply inc_capP.
+move => l H0.
 apply inc_residual.
-move : l.
-apply inc_cupL.
-rewrite -comp_cupL_distr_r -inv_cupL_distr.
+move : l H0.
+apply inc_cupP.
+rewrite -comp_cupP_distr_r -inv_cupP_distr.
 apply inc_residual.
 apply H.
 apply inc_residual.
-rewrite inv_cupL_distr comp_cupL_distr_r.
-apply inc_cupL.
-move => l.
+rewrite inv_cupP_distr comp_cupP_distr_r.
+apply inc_cupP.
+move => l H0.
 apply inc_residual.
-move : l.
-apply inc_capL.
+move : l H0.
+apply inc_capP.
 apply H.
 Qed.
 
@@ -294,8 +294,8 @@ Lemma residual_cup_distr
  {A B C : eqType} {alpha beta : Rel A B} {gamma : Rel B C}:
  (alpha ∪ beta) △ gamma = (alpha △ gamma) ∩ (beta △ gamma).
 Proof.
-rewrite cup_to_cupL cap_to_capL.
-rewrite residual_cupL_distr.
+rewrite cup_to_cupP cap_to_capP.
+rewrite residual_cupP_distr.
 apply f_equal.
 apply functional_extensionality.
 induction x.
@@ -1035,6 +1035,209 @@ apply inc_refl.
 move : (@residual_property2 _ _ _ _ alpha (alpha #) (alpha #)) => H.
 rewrite inv_invol in H.
 apply H.
+Qed.
+
+(** %
+\begin{screen}
+\begin{lemma}[residual\_property17]
+Let $P(\lambda):=$ ``$y_\lambda :I \rel Y$ is a function''. Then,
+$$
+\sqcup_{P(\lambda)} {y_\lambda}^\sharp \cdot y_\lambda = id_Y \Rightarrow \alpha \rhd \beta = \sqcap_{P(\lambda)} (\alpha \cdot {y_\lambda}^\sharp \cdot \nabla_{IZ} \Rightarrow \alpha \cdot {y_\lambda}^\sharp \cdot y_\lambda \cdot \beta).
+$$
+\end{lemma}
+\end{screen}
+% **)
+Lemma residual_property17 {X Y Z L : eqType}
+ {alpha : Rel X Y} {beta : Rel Y Z} {y_L : L -> Rel i Y} {P : L -> Prop}:
+ P = (fun l : L => function_r (y_L l)) ->
+ ∪_{P} (fun l : L => y_L l # ・ y_L l) = Id Y ->
+ alpha △ beta = ∩_{P} (fun l : L => ((alpha ・ y_L l #) ・ ∇ i Z) >> ((alpha ・ y_L l #) ・ (y_L l ・ beta))).
+Proof.
+move => H H0.
+replace (alpha △ beta) with ((alpha ・ Id Y) △ beta).
+rewrite -H0 comp_cupP_distr_l residual_cupP_distr.
+replace (∩_{P} (fun l : L => (alpha ・ (y_L l # ・ y_L l)) △ beta)) with (∩_{P} (fun l : L => (alpha ・ y_L l #) △ (y_L l ・ beta))).
+apply f_equal.
+apply functional_extensionality.
+move => l.
+apply residual_property9.
+rewrite /univalent_r.
+rewrite unit_identity_is_universal.
+apply inc_alpha_universal.
+apply capP_eq.
+rewrite H.
+move => l H1.
+rewrite -comp_assoc.
+apply Logic.eq_sym.
+apply (function_residual4 H1).
+by [rewrite comp_id_r].
+Qed.
+
+(** %
+\section{順序の関係と左剰余合成}
+\subsection{max, sup, min, inf}
+\begin{screen}
+$\xi : X \rel X$ を集合 $X$ における順序と見なしたときの, 関係 $\rho : V \rel X$ の 最大値(max), 上限(sup), 最小値(min), 下限(inf)はそれぞれ, 以下のように定義される.
+\begin{itemize}
+\item $max(\rho , \xi):= \rho \sqcap (\rho \rhd \xi)$
+\item $sup(\rho , \xi):= (\rho \rhd \xi) \sqcap ((\rho \rhd \xi) \rhd \xi^\sharp)$
+\item $min(\rho , \xi):= \rho \sqcap (\rho \rhd \xi^\sharp) (= max(\rho , \xi^\sharp))$
+\item $inf(\rho , \xi):= (\rho \rhd \xi^\sharp) \sqcap ((\rho \rhd \xi^\sharp) \rhd \xi) (= sup(\rho , \xi^\sharp))$
+\end{itemize}
+\end{screen}
+% **)
+Definition max {V X : eqType} (rho : Rel V X) (xi : Rel X X)
+ := rho ∩ (rho △ xi).
+Definition sup {V X : eqType} (rho : Rel V X) (xi : Rel X X)
+ := (rho △ xi) ∩ ((rho △ xi) △ xi #).
+Definition min {V X : eqType} (rho : Rel V X) (xi : Rel X X)
+ := rho ∩ (rho △ xi #).
+Definition inf {V X : eqType} (rho : Rel V X) (xi : Rel X X)
+ := (rho △ xi #) ∩ ((rho △ xi #) △ xi).
+
+(** %
+\begin{screen}
+\begin{lemma}[max\_inc\_sup]
+Let $\rho :V \rel X$ and $\xi :X \rel X$. Then,
+$$
+max(\rho , \xi) \sqsubseteq sup(\rho , \xi).
+$$
+\end{lemma}
+\end{screen}
+% **)
+Lemma max_inc_sup {V X : eqType} {rho : Rel V X} {xi : Rel X X}:
+ max rho xi ⊆ sup rho xi.
+Proof.
+rewrite /max/sup.
+rewrite cap_comm.
+apply cap_inc_compat_l.
+apply galois_corollary1.
+Qed.
+
+(** %
+\begin{screen}
+\begin{lemma}[min\_inc\_inf]
+Let $\rho :V \rel X$ and $\xi :X \rel X$. Then,
+$$
+min(\rho , \xi) \sqsubseteq inf(\rho , \xi).
+$$
+\end{lemma}
+\end{screen}
+% **)
+Lemma min_inc_inf {V X : eqType} {rho : Rel V X} {xi : Rel X X}:
+ min rho xi ⊆ inf rho xi.
+Proof.
+rewrite /min/inf.
+rewrite cap_comm.
+apply cap_inc_compat_l.
+move : (@galois_corollary1 _ _ _ rho (xi #)) => H.
+rewrite inv_invol in H.
+apply H.
+Qed.
+
+(** %
+\begin{screen}
+\begin{lemma}[inf\_to\_sup]
+Let $\rho :V \rel X$ and $\xi :X \rel X$. Then,
+$$
+inf(\rho , \xi) = sup(\rho \rhd \xi^\sharp , \xi).
+$$
+\end{lemma}
+\end{screen}
+% **)
+Lemma inf_to_sup {V X : eqType} {rho : Rel V X} {xi : Rel X X}:
+ inf rho xi = sup (rho △ xi #) xi.
+Proof.
+rewrite /sup/inf.
+rewrite cap_comm.
+move : (@galois_corollary2 _ _ _ rho (xi #)) => H.
+rewrite inv_invol in H.
+by [rewrite H].
+Qed.
+
+(** %
+\begin{screen}
+\begin{lemma}[sup\_to\_inf]
+Let $\rho :V \rel X$ and $\xi :X \rel X$. Then,
+$$
+sup(\rho , \xi) = inf(\rho \rhd \xi , \xi).
+$$
+\end{lemma}
+\end{screen}
+% **)
+Lemma sup_to_inf {V X : eqType} {rho : Rel V X} {xi : Rel X X}:
+ sup rho xi = inf (rho △ xi) xi.
+Proof.
+rewrite /sup/inf.
+rewrite cap_comm.
+by [rewrite galois_corollary2].
+Qed.
+
+(** %
+\begin{screen}
+\begin{lemma}[residual\_inc\_sup1, residual\_inc\_sup2]
+Let $\rho :V \rel X$ and $\xi :X \rel X$. Then,
+$$
+sup(\rho , \xi) \sqsubseteq \rho \rhd \xi \sqsubseteq sup(\rho , \xi) \rhd \xi.
+$$
+\end{lemma}
+\end{screen}
+% **)
+Lemma residual_inc_sup1 {V X : eqType} {rho : Rel V X} {xi : Rel X X}:
+ sup rho xi ⊆ (rho △ xi).
+Proof.
+apply cap_l.
+Qed.
+
+Lemma residual_inc_sup2 {V X : eqType} {rho : Rel V X} {xi : Rel X X}:
+ (rho △ xi) ⊆ ((sup rho xi) △ xi).
+Proof.
+rewrite galois.
+apply cap_r.
+Qed.
+
+(** %
+\begin{screen}
+\begin{lemma}[max\_inc\_xi\_cap]
+Let $\rho :V \rel X$ and $\xi :X \rel X$. Then,
+$$
+(max(\rho , \xi))^\sharp \cdot max(\rho , \xi) \sqsubseteq \xi \sqcap \xi^\sharp.
+$$
+\end{lemma}
+\end{screen}
+% **)
+Lemma max_inc_xi_cap {V X : eqType} {rho : Rel V X} {xi : Rel X X}:
+ (max rho xi # ・ max rho xi) ⊆ (xi ∩ xi #).
+Proof.
+rewrite /max.
+rewrite inv_cap_distr.
+apply (@inc_trans _ _ _ _ _ (comp_cap_distr_r)).
+apply cap_inc_compat.
+apply inc_residual.
+apply cap_r.
+apply inv_inc_move.
+rewrite comp_inv inv_invol.
+apply inc_residual.
+apply residual_inc_compat_r.
+apply cap_l.
+Qed.
+
+(** %
+\begin{screen}
+\begin{lemma}[sup\_inc\_xi\_cap]
+Let $\rho :V \rel X$ and $\xi :X \rel X$. Then,
+$$
+(sup(\rho , \xi))^\sharp \cdot sup(\rho , \xi) \sqsubseteq \xi \sqcap \xi^\sharp.
+$$
+\end{lemma}
+\end{screen}
+% **)
+Lemma sup_inc_xi_cap {V X : eqType} {rho : Rel V X} {xi : Rel X X}:
+ (sup rho xi # ・ sup rho xi) ⊆ (xi ∩ xi #).
+Proof.
+move : (@max_inc_xi_cap _ _ (rho △ xi) (xi #)).
+rewrite /max/sup.
+by [rewrite inv_invol (@cap_comm _ _ xi)].
 Qed.
 
 (* *)

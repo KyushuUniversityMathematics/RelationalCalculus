@@ -49,31 +49,17 @@ Notation "a '^'" := (complement a) (at level 20).
 Definition difference {A B : eqType} (alpha beta : Rel A B) := alpha ∩ beta ^.
 Notation "a -- b" := (difference a b) (at level 50).
 
-Definition cupL {A B L : eqType} (alpha_L : L -> Rel A B) : Rel A B
- := (fun (a : A)(b : B) => exists l : L, alpha_L l a b).
-Notation "'∪_' a" := (cupL a) (at level 50).
-Definition capL {A B L : eqType} (alpha_L : L -> Rel A B) : Rel A B
- := (fun (a : A)(b : B) => forall l : L, alpha_L l a b).
-Notation "'∩_' a" := (capL a) (at level 50).
-Definition cupP {A B L : eqType} (alpha_L : L -> Rel A B) (P : L -> Prop) : Rel A B
+Definition capP {A B L : eqType} (P : L -> Prop) (alpha_L : L -> Rel A B) : Rel A B
+ := (fun (a : A)(b : B) => forall l : L, P l -> alpha_L l a b).
+Notation "'∩_{' p '}'  a" := (capP p a) (at level 50).
+Definition cupP {A B L : eqType} (P : L -> Prop) (alpha_L : L -> Rel A B) : Rel A B
  := (fun (a : A)(b : B) => exists l : L, P l /\ alpha_L l a b).
-Notation "'∪p' p ',' a" := (cupP a p) (at level 50).
+Notation "'∪_{' p '}'  a" := (cupP p a) (at level 50).
 
 Notation "'i'" := unit_eqType.
 
 (** %
 \section{関数の定義}
-\begin{screen}
-$\alpha :A \rel B$ に対し, 全域性 \verb|total_r|, 一価性 \verb|univalent_r|, 関数 \verb|function_r|, 全射 \verb|surjective_r|, 単射 \verb|injective_r|, 全単射 \verb|bijection_r| を以下のように定義する.
-\begin{itemize}
-\item \verb|total_r| : $id_A \sqsubseteq \alpha \cdot \alpha^\sharp$
-\item \verb|univalent_r| : $\alpha^\sharp \cdot \alpha \sqsubseteq id_B$
-\item \verb|function_r| : $id_A \sqsubseteq \alpha \cdot \alpha^\sharp \land \alpha^\sharp \cdot \alpha \sqsubseteq id_B$
-\item \verb|surjection_r| : $id_A \sqsubseteq \alpha \cdot \alpha^\sharp \land \alpha^\sharp \cdot \alpha = id_B$
-\item \verb|injection_r| : $id_A = \alpha \cdot \alpha^\sharp \land \alpha^\sharp \cdot \alpha \sqsubseteq id_B$
-\item \verb|bijection_r| : $id_A = \alpha \cdot \alpha^\sharp \land \alpha^\sharp \cdot \alpha = id_B$
-\end{itemize}
-\end{screen}
 % **)
 Definition total_r {A B : eqType} (alpha : Rel A B) := (Id A) ⊆ (alpha ・ alpha #).
 Definition univalent_r {A B : eqType} (alpha : Rel A B) := (alpha # ・ alpha) ⊆ (Id B).
@@ -341,49 +327,54 @@ Qed.
 
 (** %
 \begin{screen}
-\begin{lemma}[inc\_capL]
-Let $\alpha , \beta_\lambda :A \rel B$. Then,
+\begin{lemma}[inc\_capP]
+Let $\alpha , \beta_\lambda :A \rel B$ and $P$ : predicate. Then,
 $$
-\alpha \sqsubseteq (\sqcap_{\lambda \in \Lambda} \beta_\lambda) \Leftrightarrow \forall \lambda \in \Lambda , \alpha \sqsubseteq \beta_\lambda.
+\alpha \sqsubseteq (\sqcap_{P(\lambda)} \beta_\lambda) \Leftrightarrow \forall \lambda \in \Lambda , P(\lambda) \Rightarrow \alpha \sqsubseteq \beta_\lambda.
 $$
 \end{lemma}
 \end{screen}
 % **)
-Definition axiom10 := forall (A B L : eqType)(alpha : Rel A B)(beta_L : L -> Rel A B),
- alpha ⊆ (∩_ beta_L) <-> forall l : L, alpha ⊆ beta_L l.
-Lemma inc_capL : axiom10.
+Definition axiom10 :=
+ forall (A B L : eqType)(alpha : Rel A B)(beta_L : L -> Rel A B)(P : L -> Prop),
+ alpha ⊆ (∩_{P} beta_L) <-> forall l : L, P l -> alpha ⊆ beta_L l.
+Lemma inc_capP : axiom10.
 Proof.
-move => A B L alpha beta_L.
-split; move=> H.
-move => l a b H0.
-apply (H _ _ H0).
-move => a b H0 l.
-apply (H _ _ _ H0).
+move => A B L alpha beta_L P.
+split; move => H.
+move => l H0 a b H1.
+apply (H _ _ H1 _ H0).
+move => a b H0 l H1.
+apply (H _ H1 _ _ H0).
 Qed.
 
 (** %
 \begin{screen}
-\begin{lemma}[inc\_cupL]
+\begin{lemma}[inc\_cupP]
 Let $\alpha , \beta_\lambda :A \rel B$. Then,
 $$
-(\sqcup_{\lambda \in \Lambda} \beta_\lambda) \sqsubseteq \alpha \Leftrightarrow \forall \lambda \in \Lambda , \beta_\lambda \sqsubseteq \alpha.
+(\sqcup_{P(\lambda)} \beta_\lambda) \sqsubseteq \alpha \Leftrightarrow \forall \lambda \in \Lambda , P(\lambda) \Rightarrow \beta_\lambda \sqsubseteq \alpha.
 $$
 \end{lemma}
 \end{screen}
 % **)
-Definition axiom11 := forall (A B L : eqType)(alpha : Rel A B)(beta_L : L -> Rel A B),
- (∪_ beta_L) ⊆ alpha <-> forall l : L, beta_L l ⊆ alpha.
-Lemma inc_cupL : axiom11.
+Definition axiom11 :=
+ forall (A B L : eqType)(alpha : Rel A B)(beta_L : L -> Rel A B)(P : L -> Prop),
+ (∪_{P} beta_L) ⊆ alpha <-> forall l : L, P l -> beta_L l ⊆ alpha.
+Lemma inc_cupP : axiom11.
 Proof.
-move => A B L alpha beta_L.
-split; move => H.
-move => l a b H0.
+move => A B L alpha beta_L P.
+split.
+move => H l H0 a b H1.
 apply H.
 exists l.
+split.
 apply H0.
-move => a b.
-elim => l H0.
-apply (H _ _ _ H0).
+apply H1.
+move => H a b.
+elim => l.
+elim => H0 H1.
+apply (H l H0 _ _ H1).
 Qed.
 
 (** %
@@ -603,36 +594,6 @@ Qed.
 (** %
 \subsection{点公理}
 \begin{screen}
-まずは Dedekind 圏にない ``条件付和関係'' を定義する公理から.
-\begin{lemma}[inc\_cupP]
-Let $\alpha , \beta_\lambda :A \rel B$ and $P$ : predicate. Then,
-$$
-(\sqcup_{P(\lambda)} \beta_\lambda) \sqsubseteq \alpha \Leftrightarrow (\forall \lambda \in \Lambda , P(\lambda) \Rightarrow \beta_\lambda \sqsubseteq \alpha).
-$$
-\end{lemma}
-\end{screen}
-% **)
-Definition axiom20 :=
- forall (A B L : eqType)(alpha : Rel A B)(beta_L : L -> Rel A B)(P : L -> Prop),
- (∪p P , beta_L) ⊆ alpha <-> forall l : L, P l -> beta_L l ⊆ alpha.
-Lemma inc_cupP : axiom20.
-Proof.
-move => A B L alpha beta_L P.
-split.
-move => H l H0 a b H1.
-apply H.
-exists l.
-split.
-apply H0.
-apply H1.
-move => H a b.
-elim => l.
-elim => H0 H1.
-apply (H l H0 a b H1).
-Qed.
-
-(** %
-\begin{screen}
 この ``弱選択公理'' を仮定すれば, 排中律と単域の存在(厳密には全域性公理)を利用して点公理を導出できる.
 \begin{lemma}[weak\_axiom\_of\_choice]
 Let $\alpha :I \rel A$ be a total relation. Then,
@@ -642,9 +603,9 @@ $$
 \end{lemma}
 \end{screen}
 % **)
-Definition axiom21 := forall (A : eqType)(alpha : Rel i A),
+Definition axiom20 := forall (A : eqType)(alpha : Rel i A),
  total_r alpha -> exists beta : Rel i A, function_r beta /\ beta ⊆ alpha.
-Lemma weak_axiom_of_choice : axiom21.
+Lemma weak_axiom_of_choice : axiom20.
 Proof.
 move => A alpha.
 rewrite /function_r/total_r/univalent_r/identity/include/composite/inverse.
@@ -741,10 +702,10 @@ Qed.
 \hrulefill
 % **)
 
-Definition axiom22 := forall (A B : eqType)(alpha : Rel A B),
+Definition axiom21 := forall (A B : eqType)(alpha : Rel A B),
  exists (R : eqType)(f : Rel R A)(g : Rel R B),
  function_r f /\ function_r g /\ alpha = f # ・ g /\ ((f ・ f #) ∩ (g ・ g #)) = Id R.
-Lemma rationality : axiom22.
+Lemma rationality : axiom21.
 Proof.
 move => A B alpha.
 rewrite /function_r/total_r/univalent_r/identity/cap/composite/inverse/include.
@@ -822,11 +783,11 @@ $$
 \end{lemma}
 \end{screen}
 % **)
-Definition axiom23 :=
+Definition axiom22 :=
  forall (A B : eqType), exists (j : Rel A (sum_eqType A B))(k : Rel B (sum_eqType A B)),
  j ・ j # = Id A /\ k ・ k # = Id B /\ j ・ k # = φ A B /\
  (j # ・ j) ∪ (k # ・ k) = Id (sum_eqType A B).
-Lemma pair_of_inclusions : axiom23.
+Lemma pair_of_inclusions : axiom22.
 Proof.
 move => A B.
 exists (fun (a : A)(x : sum_eqType A B) => x = inl a).
@@ -908,10 +869,10 @@ $$
 \end{lemma}
 \end{screen}
 % **)
-Definition axiom24 :=
+Definition axiom23 :=
  forall (A B : eqType), exists (p : Rel (prod_eqType A B) A)(q : Rel (prod_eqType A B) B),
  p # ・ q = ∇ A B /\ (p ・ p #) ∩ (q ・ q #) = Id (prod_eqType A B) /\ univalent_r p /\ univalent_r q.
-Lemma pair_of_projections : axiom24.
+Lemma pair_of_projections : axiom23.
 Proof.
 move => A B.
 exists (fun (x : prod_eqType A B)(a : A) => a = (fst x)).

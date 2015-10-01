@@ -246,39 +246,39 @@ Qed.
 
 (** %
 \begin{screen}
-\begin{lemma}[function\_capL\_distr]
-Let $f:A \to B,g:D \to C$ be functions and $\alpha_\lambda :B \rel C$. Then,
+\begin{lemma}[function\_capP\_distr]
+Let $f:A \to B,g:D \to C$ be functions, $\alpha_\lambda :B \rel C$ and $P$ : predicate. Then,
 $$
-f \cdot (\sqcap_{\lambda \in \Lambda} \alpha_\lambda) \cdot g^\sharp = \sqcap_{\lambda \in \Lambda} (f \cdot \alpha_\lambda \cdot g^\sharp).
+f \cdot (\sqcap_{P(\lambda)} \alpha_\lambda) \cdot g^\sharp = \sqcap_{P(\lambda)} (f \cdot \alpha_\lambda \cdot g^\sharp).
 $$
 \end{lemma}
 \end{screen}
 % **)
-Lemma function_capL_distr
- {A B C D L : eqType} {f : Rel A B} {g : Rel D C} {alpha_L : L -> Rel B C}:
+Lemma function_capP_distr {A B C D L : eqType}
+ {f : Rel A B} {g : Rel D C} {alpha_L : L -> Rel B C} {P : L -> Prop}:
  function_r f -> function_r g ->
- (f ・ (∩_ alpha_L)) ・ g # = ∩_ (fun l : L => (f ・ alpha_L l) ・ g #).
+ (f ・ (∩_{P} alpha_L)) ・ g # = ∩_{P} (fun l : L => (f ・ alpha_L l) ・ g #).
 Proof.
 elim => H H0.
 elim => H1 H2.
 apply inc_antisym.
-apply comp_capL_distr.
-apply (@inc_trans _ _ _ (((f ・ f #) ・ ∩_ (fun l : L => (f ・ alpha_L l) ・ g #)) ・ (g ・ g #))).
-apply (@inc_trans _ _ _ ((f ・ f #) ・ (∩_ (fun l : L => (f ・ alpha_L l) ・ g #)))).
+apply comp_capP_distr.
+apply (@inc_trans _ _ _ (((f ・ f #) ・ ∩_{P} (fun l : L => (f ・ alpha_L l) ・ g #)) ・ (g ・ g #))).
+apply (@inc_trans _ _ _ ((f ・ f #) ・ (∩_{P} (fun l : L => (f ・ alpha_L l) ・ g #)))).
 apply (comp_inc_compat_b_ab H).
 apply (comp_inc_compat_a_ab H1).
 rewrite (@comp_assoc _ _ _ _ _ (f #)) comp_assoc -(@comp_assoc _ _ _ _ _ g) -comp_assoc.
 apply comp_inc_compat_ab_a'b.
 apply comp_inc_compat_ab_ab'.
-apply (@inc_trans _ _ _ (∩_ (fun l : L => (f # ・ ((f ・ alpha_L l) ・ g #)) ・ g))).
-apply comp_capL_distr.
+apply (@inc_trans _ _ _ (∩_{P} (fun l : L => (f # ・ ((f ・ alpha_L l) ・ g #)) ・ g))).
+apply comp_capP_distr.
 replace (fun l : L => (f # ・ ((f ・ alpha_L l) ・ g #)) ・ g) with (fun l : L => ((f # ・ f) ・ alpha_L l) ・ (g # ・ g)).
-apply inc_capL.
-move => l.
+apply inc_capP.
+move => l H3.
 apply (@inc_trans _ _ _ ((f # ・ f) ・ alpha_L l)).
 apply (@inc_trans _ _ _ (((f # ・ f) ・ alpha_L l) ・ (g # ・ g))).
-move : l.
-apply inc_capL.
+move : l H3.
+apply inc_capP.
 apply inc_refl.
 apply (comp_inc_compat_ab_a H2).
 apply (comp_inc_compat_ab_b H0).
@@ -302,9 +302,9 @@ Lemma function_cap_distr
  function_r f -> function_r g ->
  (f ・ (alpha ∩ beta)) ・ g # = ((f ・ alpha) ・ g #) ∩ ((f ・ beta) ・ g #).
 Proof.
-rewrite cap_to_capL cap_to_capL.
+rewrite cap_to_capP cap_to_capP.
 move => H H0.
-rewrite (function_capL_distr H H0).
+rewrite (function_capP_distr H H0).
 apply f_equal.
 apply functional_extensionality.
 induction x.
