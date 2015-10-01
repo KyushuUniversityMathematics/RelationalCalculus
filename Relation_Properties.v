@@ -203,101 +203,156 @@ Qed.
 
 (** %
 \begin{screen}
-\begin{lemma}[cupL\_emptyset]
-Let $\alpha_\lambda :A \rel B$ and $E= \emptyset$. Then,
+\begin{lemma}[cupP\_False]
+Let $\alpha_\lambda :A \rel B$ and $P(\lambda):=$ ``False''. Then,
 $$
-\sqcup_{\lambda \in E} \alpha_\lambda = \phi_{AB}.
+\sqcup_{P(\lambda)} \alpha_\lambda = \phi_{AB}.
 $$
 \end{lemma}
 \end{screen}
 % **)
-Lemma cupL_emptyset {A B L : eqType} {alpha_L : L -> Rel A B}:
- (L -> False) -> ∪_ alpha_L = φ A B.
+Lemma cupP_False {A B L : eqType} {alpha_L : L -> Rel A B}:
+ ∪_{fun _ : L => False} alpha_L = φ A B.
 Proof.
-move => H.
 apply inc_antisym.
-apply inc_cupL.
+apply inc_cupP.
 move => l.
 apply False_ind.
-apply (H l).
 apply inc_empty_alpha.
 Qed.
 
 (** %
 \begin{screen}
-\begin{lemma}[capL\_emptyset]
-Let $\alpha_\lambda :A \rel B$ and $E= \emptyset$. Then,
+\begin{lemma}[capP\_False]
+Let $\alpha_\lambda :A \rel B$ and $P(\lambda):=$ ``False''. Then,
 $$
-\sqcap_{\lambda \in E} \alpha_\lambda = \nabla_{AB}.
+\sqcap_{P(\lambda)} \alpha_\lambda = \nabla_{AB}.
 $$
 \end{lemma}
 \end{screen}
 % **)
-Lemma capL_emptyset {A B L : eqType} {alpha_L : L -> Rel A B}:
- (L -> False) -> ∩_ alpha_L = ∇ A B.
+Lemma capP_False {A B L : eqType} {alpha_L : L -> Rel A B}:
+ ∩_{fun _ : L => False} alpha_L = ∇ A B.
 Proof.
-move => H.
 apply inc_antisym.
 apply inc_alpha_universal.
-apply inc_capL.
+apply inc_capP.
 move => l.
 apply False_ind.
-apply (H l).
 Qed.
 
 (** %
 \begin{screen}
-\begin{lemma}[cap\_cupL\_distr\_l]
-Let $\alpha , \beta_\lambda :A \rel B$. Then,
+\begin{lemma}[cupP\_eq]
+Let $\alpha_\lambda , \beta_\lambda :A \rel B$ and $P$ : predicate. Then,
 $$
-\alpha \sqcap (\sqcup_{\lambda \in \Lambda} \beta_\lambda) = \sqcup_{\lambda \in \Lambda} (\alpha \sqcap \beta_\lambda).
+(\forall \lambda \in \Lambda , P(\lambda) \Rightarrow \alpha_\lambda = \beta_\lambda) \Rightarrow \sqcup_{P(\lambda)} \alpha_\lambda = \sqcup_{P(\lambda)} \beta_\lambda.
 $$
 \end{lemma}
 \end{screen}
 % **)
-Lemma cap_cupL_distr_l
- {A B L : eqType} {alpha : Rel A B} {beta_L : L -> Rel A B}:
- alpha ∩ (∪_ beta_L) = ∪_ (fun l : L => alpha ∩ beta_L l).
+Lemma cupP_eq {A B L : eqType} {alpha_L beta_L : L -> Rel A B} {P : L -> Prop}:
+ (forall l : L, P l -> alpha_L l = beta_L l) -> ∪_{P} alpha_L = ∪_{P} beta_L.
+Proof.
+move => H.
+apply inc_antisym.
+apply inc_cupP.
+move => l H0.
+rewrite (H _ H0).
+move : l H0.
+apply inc_cupP.
+apply inc_refl.
+apply inc_cupP.
+move => l H0.
+rewrite -(H _ H0).
+move : l H0.
+apply inc_cupP.
+apply inc_refl.
+Qed.
+
+(** %
+\begin{screen}
+\begin{lemma}[capP\_eq]
+Let $\alpha_\lambda , \beta_\lambda :A \rel B$ and $P$ : predicate. Then,
+$$
+(\forall \lambda \in \Lambda , P(\lambda) \Rightarrow \alpha_\lambda = \beta_\lambda) \Rightarrow \sqcap_{P(\lambda)} \alpha_\lambda = \sqcap_{P(\lambda)} \beta_\lambda.
+$$
+\end{lemma}
+\end{screen}
+% **)
+Lemma capP_eq {A B L : eqType} {alpha_L beta_L : L -> Rel A B} {P : L -> Prop}:
+ (forall l : L, P l -> alpha_L l = beta_L l) -> ∩_{P} alpha_L = ∩_{P} beta_L.
+Proof.
+move => H.
+apply inc_antisym.
+apply inc_capP.
+move => l H0.
+rewrite -(H _ H0).
+move : l H0.
+apply inc_capP.
+apply inc_refl.
+apply inc_capP.
+move => l H0.
+rewrite (H _ H0).
+move : l H0.
+apply inc_capP.
+apply inc_refl.
+Qed.
+
+(** %
+\begin{screen}
+\begin{lemma}[cap\_cupP\_distr\_l]
+Let $\alpha , \beta_\lambda :A \rel B$ and $P$ : predicate. Then,
+$$
+\alpha \sqcap (\sqcup_{P(\lambda)} \beta_\lambda) = \sqcup_{P(\lambda)} (\alpha \sqcap \beta_\lambda).
+$$
+\end{lemma}
+\end{screen}
+% **)
+Lemma cap_cupP_distr_l
+ {A B L : eqType} {alpha : Rel A B} {beta_L : L -> Rel A B} {P : L -> Prop}:
+ alpha ∩ (∪_{P} beta_L) = ∪_{P} (fun l : L => alpha ∩ beta_L l).
 Proof.
 apply inc_upper.
 move => gamma.
 split; move => H.
-apply inc_cupL.
-move => l.
-apply (@inc_trans _ _ _ (alpha ∩ ∪_ beta_L)).
+apply inc_cupP.
+move => l H0.
+apply (@inc_trans _ _ _ (alpha ∩ ∪_{P} beta_L)).
 apply cap_inc_compat_l.
-apply inc_cupL.
+move : H0.
+apply inc_cupP.
 apply inc_refl.
 apply H.
-assert (forall l : L, (alpha ∩ beta_L l) ⊆ gamma).
-apply inc_cupL.
+assert (forall l : L, P l -> (alpha ∩ beta_L l) ⊆ gamma).
+apply inc_cupP.
 apply H.
-assert (forall l : L, beta_L l ⊆ (alpha >> gamma)).
-move => l.
+assert (forall l : L, P l -> beta_L l ⊆ (alpha >> gamma)).
+move => l H1.
 rewrite inc_rpc cap_comm.
-apply H0.
+apply (H0 _ H1).
 rewrite cap_comm -inc_rpc.
-apply inc_cupL.
+apply inc_cupP.
 apply H1.
 Qed.
 
 (** %
 \begin{screen}
-\begin{lemma}[cap\_cupL\_distr\_r]
-Let $\alpha_\lambda , \beta :A \rel B$. Then,
+\begin{lemma}[cap\_cupP\_distr\_r]
+Let $\alpha_\lambda , \beta :A \rel B$ and $P$ : predicate. Then,
 $$
-(\sqcup_{\lambda \in \Lambda} \alpha_\lambda) \sqcap \beta = \sqcup_{\lambda \in \Lambda} (\alpha_\lambda \sqcap \beta).
+(\sqcup_{P(\lambda)} \alpha_\lambda) \sqcap \beta = \sqcup_{P(\lambda)} (\alpha_\lambda \sqcap \beta).
 $$
 \end{lemma}
 \end{screen}
 % **)
-Lemma cap_cupL_distr_r
- {A B L : eqType} {beta : Rel A B} {alpha_L : L -> Rel A B}:
- (∪_ alpha_L) ∩ beta = ∪_ (fun l : L => alpha_L l ∩ beta).
+Lemma cap_cupP_distr_r
+ {A B L : eqType} {beta : Rel A B} {alpha_L : L -> Rel A B} {P : L -> Prop}:
+ (∪_{P} alpha_L) ∩ beta = ∪_{P} (fun l : L => alpha_L l ∩ beta).
 Proof.
 rewrite cap_comm.
 replace (fun l : L => alpha_L l ∩ beta) with  (fun l : L => beta ∩ alpha_L l).
-apply cap_cupL_distr_l.
+apply cap_cupP_distr_l.
 apply functional_extensionality.
 move => l.
 by [rewrite cap_comm].
@@ -305,55 +360,56 @@ Qed.
 
 (** %
 \begin{screen}
-\begin{lemma}[cup\_capL\_distr\_l]
-Let $\alpha , \beta_\lambda :A \rel B$. Then,
+\begin{lemma}[cup\_capP\_distr\_l]
+Let $\alpha , \beta_\lambda :A \rel B$ and $P$ : predicate. Then,
 $$
-\alpha \sqcup (\sqcap_{\lambda \in \Lambda} \beta_\lambda) = \sqcap_{\lambda \in \Lambda} (\alpha \sqcup \beta_\lambda).
+\alpha \sqcup (\sqcap_{P(\lambda)} \beta_\lambda) = \sqcap_{P(\lambda)} (\alpha \sqcup \beta_\lambda).
 $$
 \end{lemma}
 \end{screen}
 % **)
-Lemma cup_capL_distr_l
- {A B L : eqType} {alpha : Rel A B} {beta_L : L -> Rel A B}:
- alpha ∪ (∩_ beta_L) = ∩_ (fun l : L => alpha ∪ beta_L l).
+Lemma cup_capP_distr_l
+ {A B L : eqType} {alpha : Rel A B} {beta_L : L -> Rel A B} {P : L -> Prop}:
+ alpha ∪ (∩_{P} beta_L) = ∩_{P} (fun l : L => alpha ∪ beta_L l).
 Proof.
 apply inc_lower.
 move => gamma.
 split; move => H.
-apply inc_capL.
-move => l.
-apply (@inc_trans _ _ _ (alpha ∪ ∩_ beta_L)).
+apply inc_capP.
+move => l H0.
+apply (@inc_trans _ _ _ (alpha ∪ ∩_{P} beta_L)).
 apply H.
 apply cup_inc_compat_l.
-apply inc_capL.
+move : H0.
+apply inc_capP.
 apply inc_refl.
 rewrite bool_lemma3.
-assert (forall l : L, gamma ⊆ (alpha ∪ beta_L l)).
-apply inc_capL.
+assert (forall l : L, P l -> gamma ⊆ (alpha ∪ beta_L l)).
+apply inc_capP.
 apply H.
-apply inc_capL.
-move => l.
+apply inc_capP.
+move => l H1.
 rewrite -bool_lemma3.
-apply H0.
+apply (H0 _ H1).
 Qed.
 
 (** %
 \begin{screen}
-\begin{lemma}[cup\_capL\_distr\_r]
-Let $\alpha_\lambda , \beta :A \rel B$. Then,
+\begin{lemma}[cup\_capP\_distr\_r]
+Let $\alpha_\lambda , \beta :A \rel B$ and $P$ : predicate. Then,
 $$
-(\sqcap_{\lambda \in \Lambda} \alpha_\lambda) \sqcup \beta = \sqcap_{\lambda \in \Lambda} (\alpha_\lambda \sqcup \beta).
+(\sqcap_{P(\lambda)} \alpha_\lambda) \sqcup \beta = \sqcap_{P(\lambda)} (\alpha_\lambda \sqcup \beta).
 $$
 \end{lemma}
 \end{screen}
 % **)
-Lemma cup_capL_distr_r
- {A B L : eqType} {beta : Rel A B} {alpha_L : L -> Rel A B}:
- (∩_ alpha_L) ∪ beta = ∩_ (fun l : L => alpha_L l ∪ beta).
+Lemma cup_capP_distr_r
+ {A B L : eqType} {beta : Rel A B} {alpha_L : L -> Rel A B} {P : L -> Prop}:
+ (∩_{P} alpha_L) ∪ beta = ∩_{P} (fun l : L => alpha_L l ∪ beta).
 Proof.
 rewrite cup_comm.
 replace (fun l : L => alpha_L l ∪ beta) with  (fun l : L => beta ∪ alpha_L l).
-apply cup_capL_distr_l.
+apply cup_capP_distr_l.
 apply functional_extensionality.
 move => l.
 by [rewrite cup_comm].
@@ -362,59 +418,54 @@ Qed.
 (** %
 \begin{screen}
 \begin{lemma}[de\_morgan3]
-Let $\alpha_\lambda :A \rel B$. Then,
+Let $\alpha_\lambda :A \rel B$ and $P$ : predicate. Then,
 $$
-(\sqcup_{\lambda \in \Lambda} \alpha_\lambda)^- = (\sqcap_{\lambda \in \Lambda} {\alpha_\lambda}^-).
+(\sqcup_{P(\lambda)} \alpha_\lambda)^- = (\sqcap_{P(\lambda)} {\alpha_\lambda}^-).
 $$
 \end{lemma}
 \end{screen}
 % **)
 Lemma de_morgan3
- {A B L : eqType} {alpha_L : L -> Rel A B}:
- (∪_ alpha_L) ^ = ∩_ (fun l : L => alpha_L l ^).
+ {A B L : eqType} {alpha_L : L -> Rel A B} {P : L -> Prop}:
+ (∪_{P} alpha_L) ^ = ∩_{P} (fun l : L => alpha_L l ^).
 Proof.
 apply inc_lower.
 move => gamma.
-rewrite inc_capL.
+rewrite inc_capP.
 split; move => H.
-move => l.
+move => l H0.
 rewrite bool_lemma1 -de_morgan2 complement_move complement_universal.
 apply bool_lemma2 in H.
 apply inc_antisym.
 apply inc_empty_alpha.
 rewrite -H complement_invol.
 apply cap_inc_compat_l.
-apply inc_cupL.
+move : H0.
+apply inc_cupP.
 apply inc_refl.
 rewrite bool_lemma2 complement_invol.
-rewrite cap_cupL_distr_l.
-replace (fun l : L => gamma ∩ alpha_L l) with (fun l : L => φ A B).
+rewrite cap_cupP_distr_l.
 apply inc_antisym.
-apply inc_cupL.
-move => l.
-apply inc_refl.
+apply inc_cupP.
+move => l H0.
+rewrite -inc_rpc.
+apply (H _ H0).
 apply inc_empty_alpha.
-apply functional_extensionality.
-move => l.
-rewrite -(@complement_invol _ _ (alpha_L l)).
-apply Logic.eq_sym.
-rewrite -bool_lemma2.
-apply H.
 Qed.
 
 (** %
 \begin{screen}
 \begin{lemma}[de\_morgan4]
-Let $\alpha_\lambda :A \rel B$. Then,
+Let $\alpha_\lambda :A \rel B$ and $P$ : predicate. Then,
 $$
-(\sqcap_{\lambda \in \Lambda} \alpha_\lambda)^- = (\sqcup_{\lambda \in \Lambda} {\alpha_\lambda}^-).
+(\sqcap_{P(\lambda)} \alpha_\lambda)^- = (\sqcup_{P(\lambda)} {\alpha_\lambda}^-).
 $$
 \end{lemma}
 \end{screen}
 % **)
 Lemma de_morgan4
- {A B L : eqType} {alpha_L : L -> Rel A B}:
- (∩_ alpha_L) ^ = ∪_ (fun l : L => alpha_L l ^).
+ {A B L : eqType} {alpha_L : L -> Rel A B} {P : L -> Prop}:
+ (∩_{P} alpha_L) ^ = ∪_{P} (fun l : L => alpha_L l ^).
 Proof.
 rewrite -complement_move de_morgan3.
 replace (fun l : L => (alpha_L l ^) ^) with alpha_L.
@@ -426,49 +477,51 @@ Qed.
 
 (** %
 \begin{screen}
-\begin{lemma}[cup\_to\_cupL, cap\_to\_capL]
-We can prove $\sqcup$ and $\sqcap$ lemmas as $\sqcup_{\lambda \in \Lambda}$ and $\sqcap_{\lambda \in \Lambda}$.
+\begin{lemma}[cup\_to\_cupP, cap\_to\_capP]
+We can prove $\sqcup$ and $\sqcap$ lemmas as $\sqcup_{P(\lambda)}$ and $\sqcap_{P(\lambda)}$.
 \end{lemma}
 \end{screen}
 % **)
-Lemma cup_to_cupL {A B : eqType} {alpha beta : Rel A B}:
- (alpha ∪ beta) = ∪_ (fun b : bool_eqType => if b then alpha else beta).
+Lemma cup_to_cupP {A B : eqType} {alpha beta : Rel A B}:
+ (alpha ∪ beta) = ∪_{fun _ : bool_eqType => True} (fun b : bool_eqType => if b then alpha else beta).
 Proof.
 apply inc_upper.
 move => gamma.
 split; move => H.
-apply inc_cupL.
+apply inc_cupP.
 apply inc_cup in H.
+move => l H0.
 induction l.
 apply H.
 apply H.
 apply inc_cup.
-assert (forall b : bool_eqType, (fun b : bool_eqType => if b then alpha else beta) b ⊆ gamma).
-apply inc_cupL.
+assert (forall b : bool_eqType, True -> (fun b : bool_eqType => if b then alpha else beta) b ⊆ gamma).
+apply inc_cupP.
 apply H.
 split.
-apply (H0 true).
-apply (H0 false).
+apply (H0 true I).
+apply (H0 false I).
 Qed.
 
-Lemma cap_to_capL {A B : eqType} {alpha beta : Rel A B}:
- (alpha ∩ beta) = ∩_ (fun b : bool_eqType => if b then alpha else beta).
+Lemma cap_to_capP {A B : eqType} {alpha beta : Rel A B}:
+ (alpha ∩ beta) = ∩_{fun _ : bool_eqType => True} (fun b : bool_eqType => if b then alpha else beta).
 Proof.
 apply inc_lower.
 move => gamma.
 split; move => H.
-apply inc_capL.
+apply inc_capP.
 apply inc_cap in H.
+move => l H0.
 induction l.
 apply H.
 apply H.
 apply inc_cap.
-assert (forall b : bool_eqType, gamma ⊆ (fun b : bool_eqType => if b then alpha else beta) b).
-apply inc_capL.
+assert (forall b : bool_eqType, True -> gamma ⊆ (fun b : bool_eqType => if b then alpha else beta) b).
+apply inc_capP.
 apply H.
 split.
-apply (H0 true).
-apply (H0 false).
+apply (H0 true I).
+apply (H0 false I).
 Qed.
 
 (** %
@@ -715,38 +768,39 @@ Qed.
 
 (** %
 \begin{screen}
-\begin{lemma}[inv\_cupL\_distr, inv\_cup\_distr]
-Let $\alpha_\lambda :A \rel B$. Then,
+\begin{lemma}[inv\_cupP\_distr, inv\_cup\_distr]
+Let $\alpha_\lambda :A \rel B$ and $P$ : predicate. Then,
 $$
-(\sqcup_{\lambda \in \Lambda} \alpha_\lambda)^\sharp = (\sqcup_{\lambda \in \Lambda} {\alpha_\lambda}^\sharp).
+(\sqcup_{P(\lambda)} \alpha_\lambda)^\sharp = (\sqcup_{P(\lambda)} {\alpha_\lambda}^\sharp).
 $$
 \end{lemma}
 \end{screen}
 % **)
-Lemma inv_cupL_distr {A B L : eqType} {alpha_L : L -> Rel A B}:
- (∪_ alpha_L) # = (∪_ (fun l : L => alpha_L l #)).
+Lemma inv_cupP_distr {A B L : eqType} {alpha_L : L -> Rel A B} {P : L -> Prop}:
+ (∪_{P} alpha_L) # = (∪_{P} (fun l : L => alpha_L l #)).
 Proof.
 apply inc_antisym.
 rewrite -inv_inc_move.
-apply inc_cupL.
-assert (forall l : L, alpha_L l # ⊆ ∪_ (fun l0 : L => alpha_L l0 #)).
-apply inc_cupL.
+apply inc_cupP.
+assert (forall l : L, P l -> alpha_L l # ⊆ ∪_{P} (fun l0 : L => alpha_L l0 #)).
+apply inc_cupP.
 apply inc_refl.
-move => l.
+move => l H0.
 rewrite inv_inc_move.
-apply H.
-apply inc_cupL.
-move => l.
+apply (H _ H0).
+apply inc_cupP.
+move => l H0.
 apply inc_inv.
-apply inc_cupL.
+move : H0.
+apply inc_cupP.
 apply inc_refl.
 Qed.
 
 Lemma inv_cup_distr {A B : eqType} {alpha beta : Rel A B}:
  (alpha ∪ beta) # = alpha # ∪ beta #.
 Proof.
-rewrite cup_to_cupL cup_to_cupL.
-rewrite inv_cupL_distr.
+rewrite cup_to_cupP cup_to_cupP.
+rewrite inv_cupP_distr.
 apply f_equal.
 apply functional_extensionality.
 induction x.
@@ -756,38 +810,39 @@ Qed.
 
 (** %
 \begin{screen}
-\begin{lemma}[inv\_capL\_distr, inv\_cap\_distr]
-Let $\alpha_\lambda :A \rel B$. Then,
+\begin{lemma}[inv\_capP\_distr, inv\_cap\_distr]
+Let $\alpha_\lambda :A \rel B$ and $P$ : predicate. Then,
 $$
-(\sqcap_{\lambda \in \Lambda} \alpha_\lambda)^\sharp = (\sqcap_{\lambda \in \Lambda} {\alpha_\lambda}^\sharp).
+(\sqcap_{P(\lambda)} \alpha_\lambda)^\sharp = (\sqcap_{P(\lambda)} {\alpha_\lambda}^\sharp).
 $$
 \end{lemma}
 \end{screen}
 % **)
-Lemma inv_capL_distr {A B L : eqType} {alpha_L : L -> Rel A B}:
- (∩_ alpha_L) # = (∩_ (fun l : L => alpha_L l #)).
+Lemma inv_capP_distr {A B L : eqType} {alpha_L : L -> Rel A B} {P : L -> Prop}:
+ (∩_{P} alpha_L) # = (∩_{P} (fun l : L => alpha_L l #)).
 Proof.
 apply inc_antisym.
-apply inc_capL.
-move => l.
+apply inc_capP.
+move => l H.
 apply inc_inv.
-apply inc_capL.
+move : H.
+apply inc_capP.
 apply inc_refl.
 rewrite inv_inc_move.
-apply inc_capL.
-assert (forall l : L, ∩_ (fun l0 : L => alpha_L l0 #) ⊆ alpha_L l #).
-apply inc_capL.
+apply inc_capP.
+assert (forall l : L, P l -> ∩_{P} (fun l0 : L => alpha_L l0 #) ⊆ alpha_L l #).
+apply inc_capP.
 apply inc_refl.
-move => l.
+move => l H0.
 rewrite -inv_inc_move.
-apply H.
+apply (H _ H0).
 Qed.
 
 Lemma inv_cap_distr {A B : eqType} {alpha beta : Rel A B}:
  (alpha ∩ beta) # = alpha # ∩ beta #.
 Proof.
-rewrite cap_to_capL cap_to_capL.
-rewrite inv_capL_distr.
+rewrite cap_to_capP cap_to_capP.
+rewrite inv_capP_distr.
 apply f_equal.
 apply functional_extensionality.
 induction x.
@@ -919,49 +974,49 @@ Qed.
 (** %
 \section{合成に関する補題}
 \begin{screen}
-\begin{lemma}[comp\_cupL\_distr\_l, comp\_cup\_distr\_l]
-Let $\alpha :A \rel B$ and $\beta_\lambda :B \rel C$. Then,
+\begin{lemma}[comp\_cupP\_distr\_l, comp\_cup\_distr\_l]
+Let $\alpha :A \rel B$, $\beta_\lambda :B \rel C$ and $P$ : predicate. Then,
 $$
-\alpha \cdot (\sqcup_{\lambda \in \Lambda} \beta_\lambda) = \sqcup_{\lambda \in \Lambda} (\alpha \cdot \beta_\lambda).
+\alpha \cdot (\sqcup_{P(\lambda)} \beta_\lambda) = \sqcup_{P(\lambda)} (\alpha \cdot \beta_\lambda).
 $$
 \end{lemma}
 \end{screen}
 % **)
-Lemma comp_cupL_distr_l
- {A B C L : eqType} {alpha : Rel A B} {beta_L : L -> Rel B C}:
- alpha ・ (∪_ beta_L) = ∪_ (fun l : L => (alpha ・ beta_L l)).
+Lemma comp_cupP_distr_l
+ {A B C L : eqType} {alpha : Rel A B} {beta_L : L -> Rel B C} {P : L -> Prop}:
+ alpha ・ (∪_{P} beta_L) = ∪_{P} (fun l : L => (alpha ・ beta_L l)).
 Proof.
 apply inc_upper.
 move => gamma.
 split; move => H.
 rewrite -(@inv_invol _ _ alpha) in H.
 apply inc_residual in H.
-apply inc_cupL.
-assert (forall l : L, beta_L l ⊆ (alpha # △ gamma)).
-apply inc_cupL.
+apply inc_cupP.
+assert (forall l : L, P l -> beta_L l ⊆ (alpha # △ gamma)).
+apply inc_cupP.
 apply H.
-move => l.
+move => l H1.
 rewrite -(@inv_invol _ _ alpha).
 apply inc_residual.
-apply H0.
+apply (H0 _ H1).
 rewrite -(@inv_invol _ _ alpha).
 apply inc_residual.
-apply inc_cupL.
-assert (forall l : L, (alpha ・ beta_L l) ⊆ gamma).
-apply inc_cupL.
+apply inc_cupP.
+assert (forall l : L, P l -> (alpha ・ beta_L l) ⊆ gamma).
+apply inc_cupP.
 apply H.
-move => l.
+move => l H1.
 apply inc_residual.
 rewrite inv_invol.
-apply H0.
+apply (H0 _ H1).
 Qed.
 
 Lemma comp_cup_distr_l
  {A B C : eqType} {alpha : Rel A B} {beta gamma : Rel B C}:
  alpha ・ (beta ∪ gamma) = (alpha ・ beta) ∪ (alpha ・ gamma).
 Proof.
-rewrite cup_to_cupL cup_to_cupL.
-rewrite comp_cupL_distr_l.
+rewrite cup_to_cupP cup_to_cupP.
+rewrite comp_cupP_distr_l.
 apply f_equal.
 apply functional_extensionality.
 induction x.
@@ -971,22 +1026,22 @@ Qed.
 
 (** %
 \begin{screen}
-\begin{lemma}[comp\_cupL\_distr\_r, comp\_cup\_distr\_r]
-Let $\alpha_\lambda :A \rel B$ and $\beta :B \rel C$. Then,
+\begin{lemma}[comp\_cupP\_distr\_r, comp\_cup\_distr\_r]
+Let $\alpha_\lambda :A \rel B$, $\beta :B \rel C$ and $P$ : predicate. Then,
 $$
-(\sqcup_{\lambda \in \Lambda} \alpha_\lambda) \cdot \beta = \sqcup_{\lambda \in \Lambda} (\alpha_\lambda \cdot \beta).
+(\sqcup_{P(\lambda)} \alpha_\lambda) \cdot \beta = \sqcup_{P(\lambda)} (\alpha_\lambda \cdot \beta).
 $$
 \end{lemma}
 \end{screen}
 % **)
-Lemma comp_cupL_distr_r
- {A B C L : eqType} {alpha_L : L -> Rel A B} {beta : Rel B C}:
- (∪_ alpha_L) ・ beta = ∪_ (fun l : L => (alpha_L l ・ beta)).
+Lemma comp_cupP_distr_r
+ {A B C L : eqType} {alpha_L : L -> Rel A B} {beta : Rel B C} {P : L -> Prop}:
+ (∪_{P} alpha_L) ・ beta = ∪_{P} (fun l : L => (alpha_L l ・ beta)).
 Proof.
 replace (fun l : L => alpha_L l ・ beta) with (fun l : L => (beta # ・ alpha_L l #) #).
-rewrite -inv_cupL_distr.
-rewrite -comp_cupL_distr_l.
-rewrite -inv_cupL_distr.
+rewrite -inv_cupP_distr.
+rewrite -comp_cupP_distr_l.
+rewrite -inv_cupP_distr.
 rewrite comp_inv.
 by [rewrite inv_invol inv_invol].
 apply functional_extensionality.
@@ -999,8 +1054,8 @@ Lemma comp_cup_distr_r
  {A B C : eqType} {alpha beta : Rel A B} {gamma : Rel B C}:
  (alpha ∪ beta) ・ gamma = (alpha ・ gamma) ∪ (beta ・ gamma).
 Proof.
-rewrite cup_to_cupL cup_to_cupL.
-rewrite comp_cupL_distr_r.
+rewrite cup_to_cupP cup_to_cupP.
+rewrite comp_cupP_distr_r.
 apply f_equal.
 apply functional_extensionality.
 induction x.
@@ -1010,42 +1065,43 @@ Qed.
 
 (** %
 \begin{screen}
-\begin{lemma}[comp\_capL\_distr]
-Let $\alpha :A \rel B$, $\beta_\lambda :B \rel C$ and $\gamma :C \rel D$. Then,
+\begin{lemma}[comp\_capP\_distr]
+Let $\alpha :A \rel B$, $\beta_\lambda :B \rel C$, $\gamma :C \rel D$ and $P$ : predicate. Then,
 $$
-\alpha \cdot (\sqcap_{\lambda \in \Lambda} \beta_\lambda) \cdot \gamma \sqsubseteq \sqcap_{\lambda \in \Lambda} (\alpha \cdot \beta_\lambda \cdot \gamma).
+\alpha \cdot (\sqcap_{P(\lambda)} \beta_\lambda) \cdot \gamma \sqsubseteq \sqcap_{P(\lambda)} (\alpha \cdot \beta_\lambda \cdot \gamma).
 $$
 \end{lemma}
 \end{screen}
 % **)
-Lemma comp_capL_distr {A B C D L : eqType}
- {alpha : Rel A B} {beta_L : L -> Rel B C} {gamma : Rel C D}:
- (alpha ・ (∩_ beta_L)) ・ gamma
- ⊆ ∩_ (fun l : L => ((alpha ・ beta_L l) ・ gamma)).
+Lemma comp_capP_distr {A B C D L : eqType}
+ {alpha : Rel A B} {beta_L : L -> Rel B C} {gamma : Rel C D} {P : L -> Prop}:
+ (alpha ・ (∩_{P} beta_L)) ・ gamma
+ ⊆ ∩_{P} (fun l : L => ((alpha ・ beta_L l) ・ gamma)).
 Proof.
-apply inc_capL.
-move => l.
+apply inc_capP.
+move => l H.
 apply comp_inc_compat_ab_a'b.
 apply comp_inc_compat_ab_ab'.
-apply inc_capL.
+move : H.
+apply inc_capP.
 apply inc_refl.
 Qed.
 
 (** %
 \begin{screen}
-\begin{lemma}[comp\_capL\_distr\_l, comp\_cap\_distr\_l]
-Let $\alpha :A \rel B$, $\beta_\lambda :B \rel C$. Then,
+\begin{lemma}[comp\_capP\_distr\_l, comp\_cap\_distr\_l]
+Let $\alpha :A \rel B$, $\beta_\lambda :B \rel C$ and $P$ : predicate. Then,
 $$
-\alpha \cdot (\sqcap_{\lambda \in \Lambda} \beta_\lambda) \sqsubseteq \sqcap_{\lambda \in \Lambda} (\alpha \cdot \beta_\lambda).
+\alpha \cdot (\sqcap_{P(\lambda)} \beta_\lambda) \sqsubseteq \sqcap_{P(\lambda)} (\alpha \cdot \beta_\lambda).
 $$
 \end{lemma}
 \end{screen}
 % **)
-Lemma comp_capL_distr_l
- {A B C L : eqType} {alpha : Rel A B} {beta_L : L -> Rel B C}:
- (alpha ・ (∩_ beta_L)) ⊆ ∩_ (fun l : L => (alpha ・ beta_L l)).
+Lemma comp_capP_distr_l
+ {A B C L : eqType} {alpha : Rel A B} {beta_L : L -> Rel B C} {P : L -> Prop}:
+ (alpha ・ (∩_{P} beta_L)) ⊆ ∩_{P} (fun l : L => (alpha ・ beta_L l)).
 Proof.
-move : (@comp_capL_distr _ _ _ _ _ alpha beta_L (Id C)) => H.
+move : (@comp_capP_distr _ _ _ _ _ alpha beta_L (Id C) P) => H.
 rewrite comp_id_r in H.
 replace (fun l : L => (alpha ・ beta_L l) ・ Id C) with (fun l : L => (alpha ・ beta_L l)) in H.
 apply H.
@@ -1058,11 +1114,10 @@ Lemma comp_cap_distr_l
  {A B C : eqType} {alpha : Rel A B} {beta gamma : Rel B C}:
  (alpha ・ (beta ∩ gamma)) ⊆ ((alpha ・ beta) ∩ (alpha ・ gamma)).
 Proof.
-rewrite cap_to_capL cap_to_capL.
-apply (@inc_trans _ _ _ _ _ comp_capL_distr_l).
-replace (∩_ (fun l : bool_eqType => alpha ・ (if l then beta else gamma))) with (∩_ (fun b : bool_eqType => if b then alpha ・ beta else alpha ・ gamma)).
+rewrite cap_to_capP cap_to_capP.
+apply (@inc_trans _ _ _ _ _ comp_capP_distr_l).
+replace (fun l : bool_eqType => alpha ・ (if l then beta else gamma)) with (fun b : bool_eqType => if b then alpha ・ beta else alpha ・ gamma).
 apply inc_refl.
-apply f_equal.
 apply functional_extensionality.
 induction x.
 by [].
@@ -1071,19 +1126,19 @@ Qed.
 
 (** %
 \begin{screen}
-\begin{lemma}[comp\_capL\_distr\_r, comp\_cap\_distr\_r]
-Let $\alpha_\lambda :A \rel B$, $\beta :B \rel C$. Then,
+\begin{lemma}[comp\_capP\_distr\_r, comp\_cap\_distr\_r]
+Let $\alpha_\lambda :A \rel B$, $\beta :B \rel C$ and $P$ : predicate. Then,
 $$
-(\sqcap_{\lambda \in \Lambda} \alpha_\lambda) \cdot \beta \sqsubseteq \sqcap_{\lambda \in \Lambda} (\alpha_\lambda \cdot \beta).
+(\sqcap_{P(\lambda)} \alpha_\lambda) \cdot \beta \sqsubseteq \sqcap_{P(\lambda)} (\alpha_\lambda \cdot \beta).
 $$
 \end{lemma}
 \end{screen}
 % **)
-Lemma comp_capL_distr_r
- {A B C L : eqType} {beta : Rel B C} {alpha_L : L -> Rel A B}:
- ((∩_ alpha_L) ・ beta) ⊆ ∩_ (fun l : L => (alpha_L l ・ beta)).
+Lemma comp_capP_distr_r
+ {A B C L : eqType} {beta : Rel B C} {alpha_L : L -> Rel A B} {P : L -> Prop}:
+ ((∩_{P} alpha_L) ・ beta) ⊆ ∩_{P} (fun l : L => (alpha_L l ・ beta)).
 Proof.
-move : (@comp_capL_distr _ _ _ _ _ (Id A) alpha_L beta) => H.
+move : (@comp_capP_distr _ _ _ _ _ (Id A) alpha_L beta P) => H.
 rewrite comp_id_l in H.
 replace (fun l : L => (Id A ・ alpha_L l) ・ beta) with (fun l : L => alpha_L l ・ beta) in H.
 apply H.
@@ -1096,11 +1151,10 @@ Lemma comp_cap_distr_r
  {A B C : eqType} {alpha beta : Rel A B} {gamma : Rel B C}:
  ((alpha ∩ beta) ・ gamma) ⊆ ((alpha ・ gamma) ∩ (beta ・ gamma)).
 Proof.
-rewrite cap_to_capL cap_to_capL.
-apply (@inc_trans _ _ _ _ _ comp_capL_distr_r).
-replace (∩_ (fun l : bool_eqType => (if l then alpha else beta) ・ gamma)) with (∩_ (fun b : bool_eqType => if b then alpha ・ gamma else beta ・ gamma)).
+rewrite cap_to_capP cap_to_capP.
+apply (@inc_trans _ _ _ _ _ comp_capP_distr_r).
+replace (fun l : bool_eqType => (if l then alpha else beta) ・ gamma) with (fun b : bool_eqType => if b then alpha ・ gamma else beta ・ gamma).
 apply inc_refl.
-apply f_equal.
 apply functional_extensionality.
 induction x.
 by [].

@@ -192,7 +192,7 @@ replace (f # ・ f) with (f # ・ (f ∩ (h' ・ j))).
 apply (@inc_trans _ _ _ ((f # ・ f) ・ (j # ・ j))).
 rewrite comp_assoc cap_comm -(@comp_assoc _ _ _ _ f).
 apply comp_inc_compat_ab_ab'.
-apply (@inc_trans _ _ _ _ _ (@dedekind2 _ _ _ _ _ _)).
+apply (@inc_trans _ _ _ _ _ (dedekind2)).
 apply comp_inc_compat_ab_a'b.
 apply cap_r.
 apply comp_inc_compat_ab_b.
@@ -350,7 +350,7 @@ apply comp_inc_compat_ab_b.
 rewrite unit_identity_is_universal.
 apply inc_alpha_universal.
 rewrite -(@inv_universal i A).
-apply (fun H' => @inc_trans _ _ _ _ _ H' (@dedekind1 _ _ _ _ _ _)).
+apply (fun H' => @inc_trans _ _ _ _ _ H' (dedekind1)).
 rewrite comp_id_r cap_comm cap_universal.
 apply inc_refl.
 move => beta H.
@@ -358,7 +358,7 @@ split.
 by [].
 apply inc_antisym.
 rewrite cap_comm -comp_assoc lemma_for_tarski2.
-apply (@inc_trans _ _ _ _ _ (@dedekind2 _ _ _ _ _ _)).
+apply (@inc_trans _ _ _ _ _ (dedekind2)).
 rewrite comp_id_l cap_comm cap_universal.
 apply comp_inc_compat_ab_b.
 rewrite -inv_inc_move inv_id.

@@ -51,9 +51,10 @@ $\beta: A \rel B$ の
 差関係 $\alpha - \beta : A \rel B$ は
 $(\verb|difference | \alpha \ \beta)$ で,
 $(\alpha \verb| -- | \beta)$ と記述する.
-\item \verb|(capL)| と
-\verb|(cupL)| は添字付の共通関係と和関係であり,
-\verb|(cupP)| は条件付の和関係である.
+\item \verb|(capP)| と
+\verb|(cupP)| は添字付の共通関係と和関係であり, 述語 $P$ に対し,
+$\alpha_\lambda (\lambda \in \{ \mu : \Lambda \mid P( \mu ) \} )$
+の共通関係, 和関係を表す. $P(\lambda):=$ ``True'' とすれば, $\sqcap_{\lambda \in \Lambda}$ や $\sqcup_{\lambda \in \Lambda}$ も表現できる.
 \item また, 1 点集合 $I= \{ * \}$ は \verb|i| と表記する.
 \end{itemize}
 
@@ -108,17 +109,13 @@ $\alpha - \beta$ &
 $(\verb|difference | \alpha \ \beta)$ &
 $(\alpha \verb| -- | \beta)$ \\ \hline
 添字付和関係 &
-$\sqcup_{\lambda \in \Lambda} \alpha_\lambda$ & 
-$(\verb|cupL | L)$ &
-$(\verb|∪_ | L)$ \\ \hline
-添字付共通関係 &
-$\sqcap_{\lambda \in \Lambda} \alpha_\lambda$ & 
-$(\verb|capL | L)$ &
-$(\verb|∩_ | L)$ \\ \hline
-条件付和関係 &
 $\sqcup_{P(\lambda)} \alpha_\lambda$ & 
-$(\verb|cupP | L \, P)$ &
-$(\verb|∪p | P \verb|,| L)$ \\ \hline
+$(\verb|cupP | L)$ &
+$(\verb|∪_{| P \verb|} | L)$ \\ \hline
+添字付共通関係 &
+$\sqcap_{P(\lambda)} \alpha_\lambda$ & 
+$(\verb|capP | L)$ &
+$(\verb|∩_{| P \verb|} | L)$ \\ \hline
 \end{tabular}
 \end{center}
 \caption{関係の表記について}\label{notation}
@@ -157,12 +154,11 @@ Definition difference {A B : eqType} (alpha beta : Rel A B) := alpha ∩ beta ^.
 Notation "a -- b" := (difference a b) (at level 50).
 (* complement および difference は, Dedekind 圏の公理に登場しないため, Parameter ではなく Definition で定義している. *)
 
-Parameter cupL : (forall A B L : eqType, (L -> Rel A B) -> Rel A B).
-Notation "'∪_' a" := (cupL _ _ _ a) (at level 50).
-Parameter capL : (forall A B L : eqType, (L -> Rel A B) -> Rel A B).
-Notation "'∩_' a" := (capL _ _ _ a) (at level 50).
-Parameter cupP : (forall A B L : eqType, (L -> Rel A B) -> (L -> Prop) -> Rel A B).
-Notation "'∪p' p ',' a" := (cupP _ _ _ a p) (at level 50).
+Parameter capP : (forall A B L : eqType, (L -> Prop) -> (L -> Rel A B) -> Rel A B).
+Notation "'∩_{' p '}'  a" := (capP _ _ _ p a) (at level 50).
+Parameter cupP : (forall A B L : eqType, (L -> Prop) -> (L -> Rel A B) -> Rel A B).
+Notation "'∪_{' p '}'  a" := (cupP _ _ _ p a) (at level 50).
+(* 本来なら sig_eqType で "L の元のうち述語 p を満たすもの" を指定したいところだが, その場合 p の型を L -> bool にする必要があるため面倒 *)
 
 Notation "'i'" := unit_eqType.
 
@@ -324,31 +320,33 @@ Axiom inc_cup : axiom9.
 
 (** %
 \begin{screen}
-\begin{axiom}[inc\_capL]
-Let $\alpha , \beta_\lambda :A \rel B$. Then,
+\begin{axiom}[inc\_capP]
+Let $\alpha , \beta_\lambda :A \rel B$ and $P$ : predicate. Then,
 $$
-\alpha \sqsubseteq (\sqcap_{\lambda \in \Lambda} \beta_\lambda) \Leftrightarrow \forall \lambda \in \Lambda , \alpha \sqsubseteq \beta_\lambda.
+\alpha \sqsubseteq (\sqcap_{P(\lambda)} \beta_\lambda) \Leftrightarrow \forall \lambda \in \Lambda , P(\lambda) \Rightarrow \alpha \sqsubseteq \beta_\lambda.
 $$
 \end{axiom}
 \end{screen}
 % **)
-Definition axiom10 := forall (A B L : eqType)(alpha : Rel A B)(beta_L : L -> Rel A B),
- alpha ⊆ (∩_ beta_L) <-> forall l : L, alpha ⊆ beta_L l.
-Axiom inc_capL : axiom10.
+Definition axiom10 :=
+ forall (A B L : eqType)(alpha : Rel A B)(beta_L : L -> Rel A B)(P : L -> Prop),
+ alpha ⊆ (∩_{P} beta_L) <-> forall l : L, P l -> alpha ⊆ beta_L l.
+Axiom inc_capP : axiom10.
 
 (** %
 \begin{screen}
-\begin{axiom}[inc\_cupL]
+\begin{axiom}[inc\_cupP]
 Let $\alpha , \beta_\lambda :A \rel B$. Then,
 $$
-(\sqcup_{\lambda \in \Lambda} \beta_\lambda) \sqsubseteq \alpha \Leftrightarrow \forall \lambda \in \Lambda , \beta_\lambda \sqsubseteq \alpha.
+(\sqcup_{P(\lambda)} \beta_\lambda) \sqsubseteq \alpha \Leftrightarrow \forall \lambda \in \Lambda , P(\lambda) \Rightarrow \beta_\lambda \sqsubseteq \alpha.
 $$
 \end{axiom}
 \end{screen}
 % **)
-Definition axiom11 := forall (A B L : eqType)(alpha : Rel A B)(beta_L : L -> Rel A B),
- (∪_ beta_L) ⊆ alpha <-> forall l : L, beta_L l ⊆ alpha.
-Axiom inc_cupL : axiom11.
+Definition axiom11 :=
+ forall (A B L : eqType)(alpha : Rel A B)(beta_L : L -> Rel A B)(P : L -> Prop),
+ (∪_{P} beta_L) ⊆ alpha <-> forall l : L, P l -> beta_L l ⊆ alpha.
+Axiom inc_cupP : axiom11.
 
 (** %
 \begin{screen}
@@ -473,22 +471,6 @@ Axiom unit_universal : axiom19.
 (** %
 \subsection{点公理}
 \begin{screen}
-まずは Dedekind 圏にない ``条件付和関係'' を定義する公理から.
-\begin{axiom}[inc\_cupP]
-Let $\alpha , \beta_\lambda :A \rel B$ and $P$ : predicate. Then,
-$$
-(\sqcup_{P(\lambda)} \beta_\lambda) \sqsubseteq \alpha \Leftrightarrow (\forall \lambda \in \Lambda , P(\lambda) \Rightarrow \beta_\lambda \sqsubseteq \alpha).
-$$
-\end{axiom}
-\end{screen}
-% **)
-Definition axiom20 :=
- forall (A B L : eqType)(alpha : Rel A B)(beta_L : L -> Rel A B)(P : L -> Prop),
- (∪p P , beta_L) ⊆ alpha <-> forall l : L, P l -> beta_L l ⊆ alpha.
-Axiom inc_cupP : axiom20.
-
-(** %
-\begin{screen}
 この ``弱選択公理'' を仮定すれば, 排中律と単域の存在(厳密には全域性公理)を利用して点公理を導出できる.
 \begin{axiom}[weak\_axiom\_of\_choice]
 Let $\alpha :I \rel A$ be a total relation. Then,
@@ -498,9 +480,9 @@ $$
 \end{axiom}
 \end{screen}
 % **)
-Definition axiom21 := forall (A : eqType)(alpha : Rel i A),
+Definition axiom20 := forall (A : eqType)(alpha : Rel i A),
  total_r alpha -> exists beta : Rel i A, function_r beta /\ beta ⊆ alpha.
-Axiom weak_axiom_of_choice : axiom21.
+Axiom weak_axiom_of_choice : axiom20.
 
 (** %
 \subsection{関係の有理性}
@@ -514,10 +496,10 @@ $$
 \end{axiom}
 \end{screen}
 % **)
-Definition axiom22 := forall (A B : eqType)(alpha : Rel A B),
+Definition axiom21 := forall (A B : eqType)(alpha : Rel A B),
  exists (R : eqType)(f : Rel R A)(g : Rel R B),
  function_r f /\ function_r g /\ alpha = f # ・ g /\ ((f ・ f #) ∩ (g ・ g #)) = Id R.
-Axiom rationality : axiom22.
+Axiom rationality : axiom21.
 
 (** %
 \subsection{直和と直積}
@@ -531,11 +513,11 @@ $$
 \end{axiom}
 \end{screen}
 % **)
-Definition axiom23 :=
+Definition axiom22 :=
  forall (A B : eqType), exists (j : Rel A (sum_eqType A B))(k : Rel B (sum_eqType A B)),
  j ・ j # = Id A /\ k ・ k # = Id B /\ j ・ k # = φ A B /\
  (j # ・ j) ∪ (k # ・ k) = Id (sum_eqType A B).
-Axiom pair_of_inclusions : axiom23.
+Axiom pair_of_inclusions : axiom22.
 
 (** %
 \begin{screen}
@@ -548,7 +530,7 @@ $$
 \end{axiom}
 \end{screen}
 % **)
-Definition axiom24 :=
+Definition axiom23 :=
  forall (A B : eqType), exists (p : Rel (prod_eqType A B) A)(q : Rel (prod_eqType A B) B),
  p # ・ q = ∇ A B /\ (p ・ p #) ∩ (q ・ q #) = Id (prod_eqType A B) /\ univalent_r p /\ univalent_r q.
-Axiom pair_of_projections : axiom24.
+Axiom pair_of_projections : axiom23.

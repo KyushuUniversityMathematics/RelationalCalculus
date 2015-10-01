@@ -6,8 +6,8 @@ Basic_Lemmas.v
 Relation_Properties.v
 Functions_Mappings.v
 Dedekind.v
-Residual.v
 Rationality.v
 Conjugate.v
 Domain.v
+Residual.v
 Sum_Product.v

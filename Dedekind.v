@@ -18,7 +18,7 @@ Lemma dedekind1
  {A B C : eqType} {alpha : Rel A B} {beta : Rel B C} {gamma : Rel A C}:
  ((alpha ・ beta) ∩ gamma) ⊆ (alpha ・ (beta ∩ (alpha # ・ gamma))).
 Proof.
-apply (@inc_trans _ _ _ _ _ (@dedekind _ _ _ _ _ _ )).
+apply (@inc_trans _ _ _ _ _ (@dedekind _ _ _ _ _ _)).
 apply comp_inc_compat_ab_a'b.
 apply cap_l.
 Qed.
@@ -37,7 +37,7 @@ Lemma dedekind2
  {A B C : eqType} {alpha : Rel A B} {beta : Rel B C} {gamma : Rel A C}:
  ((alpha ・ beta) ∩ gamma) ⊆ ((alpha ∩ (gamma ・ beta #)) ・ beta).
 Proof.
-apply (@inc_trans _ _ _ _ _ (@dedekind _ _ _ _ _ _ )).
+apply (@inc_trans _ _ _ _ _ (@dedekind _ _ _ _ _ _)).
 apply comp_inc_compat_ab_ab'.
 apply cap_l.
 Qed.
@@ -122,7 +122,7 @@ apply inc_alpha_universal.
 apply (@inc_trans _ _ _ (beta ∩ (∇ C A ・ alpha))).
 apply (cap_inc_compat_l H).
 rewrite cap_comm.
-apply (@inc_trans _ _ _ _ _ (@dedekind2 _ _ _ _ _ _)).
+apply (@inc_trans _ _ _ _ _ (dedekind2)).
 apply comp_inc_compat_ab_a'b.
 apply cap_r.
 Qed.
@@ -272,7 +272,7 @@ apply inc_cap.
 split.
 apply inc_refl.
 apply H.
-apply (@inc_trans _ _ _ _ _ (@dedekind1 _ _ _ _ _ _)).
+apply (@inc_trans _ _ _ _ _ (dedekind1)).
 apply comp_inc_compat_ab_ab'.
 rewrite H0 comp_id_r.
 apply cap_r.
