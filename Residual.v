@@ -1240,4 +1240,188 @@ rewrite /max/sup.
 by [rewrite inv_invol (@cap_comm _ _ xi)].
 Qed.
 
-(* *)
+(** %
+\begin{screen}
+\begin{lemma}[transitive\_sup1]
+Let $\rho :V \rel X$, $\xi :X \rel X$ and $\xi \cdot \xi \sqsubseteq \xi$. Then,
+$$
+sup(\rho , \xi) \cdot (\xi \sqcap \xi^\sharp) = sup(\rho , \xi).
+$$
+\end{lemma}
+\end{screen}
+% **)
+Lemma transitive_sup1 {V X : eqType} {rho : Rel V X} {xi : Rel X X}:
+ (xi ・ xi) ⊆ xi -> sup rho xi ・ (xi ∩ xi #) = sup rho xi.
+Proof.
+move => H.
+apply inc_antisym.
+rewrite /sup.
+apply (@inc_trans _ _ _ _ _ (comp_cap_distr_l)).
+apply cap_inc_compat.
+apply (@inc_trans _ _ _ _ _ (comp_cap_distr_r)).
+apply (@inc_trans _ _ _ _ _ (cap_l)).
+apply (@inc_trans _ _ _ _ _ (residual_property1)).
+apply (residual_inc_compat_l H).
+apply (@inc_trans _ _ _ _ _ (comp_cap_distr_r)).
+apply (@inc_trans _ _ _ _ _ (cap_r)).
+apply (@inc_trans _ _ _ _ _ (residual_property1)).
+apply residual_inc_compat_l.
+rewrite -comp_inv inv_inc_move inv_invol.
+apply H.
+apply (@inc_trans _ _ _ _ _ (relation_rel_inv_rel)).
+rewrite comp_assoc.
+apply (comp_inc_compat_ab_ab' sup_inc_xi_cap).
+Qed.
+
+(** %
+\begin{screen}
+\begin{lemma}[transitive\_sup2]
+Let $\rho :V \rel X$, $\xi :X \rel X$ and $\xi \cdot \xi \sqsubseteq \xi$. Then,
+$$
+sup(\rho , \xi) \cdot \xi = \domain{sup(\rho , \xi)} \cdot (\rho \rhd \xi).
+$$
+\end{lemma}
+\end{screen}
+% **)
+Lemma transitive_sup2 {V X : eqType} {rho : Rel V X} {xi : Rel X X}:
+ (xi ・ xi) ⊆ xi -> sup rho xi ・ xi = domain (sup rho xi) ・ (rho △ xi).
+Proof.
+move => H.
+apply inc_antisym.
+replace (sup rho xi ・ xi) with (domain (sup rho xi) ・ (sup rho xi ・ xi)).
+apply comp_inc_compat_ab_ab'.
+apply (@inc_trans _ _ _ ((rho △ xi) ・ xi)).
+apply (comp_inc_compat_ab_a'b cap_l).
+apply (@inc_trans _ _ _ _ _ (residual_property1) (residual_inc_compat_l H)).
+by [rewrite -comp_assoc domain_comp_alpha1].
+apply (@inc_trans _ _ _ (domain (sup rho xi) ・ (sup rho xi △ xi))).
+apply comp_inc_compat_ab_ab'.
+apply galois.
+apply cap_r.
+rewrite /domain.
+apply (@inc_trans _ _ _ _ _ (comp_cap_distr_r)).
+apply (@inc_trans _ _ _ _ _ (cap_l)).
+rewrite comp_assoc.
+apply comp_inc_compat_ab_ab'.
+apply inc_residual.
+apply inc_refl.
+Qed.
+
+(** %
+\begin{screen}
+\begin{lemma}[domain\_sup\_inc]
+Let $\rho :V \rel X$ and $\xi :X \rel X$. Then,
+$$
+\domain{sup(\rho , \xi)} \cdot \rho \sqsubseteq sup(\rho , \xi) \cdot \xi^\sharp.
+$$
+\end{lemma}
+\end{screen}
+% **)
+Lemma domain_sup_inc {V X : eqType} {rho : Rel V X} {xi : Rel X X}:
+ (domain (sup rho xi) ・ rho) ⊆ (sup rho xi ・ xi #).
+Proof.
+apply (@inc_trans _ _ _ (domain (sup rho xi) ・ (sup rho xi △ xi #))).
+apply comp_inc_compat_ab_ab'.
+rewrite -galois.
+apply cap_l.
+rewrite /domain.
+apply (@inc_trans _ _ _ _ _ (comp_cap_distr_r)).
+apply (@inc_trans _ _ _ _ _ (cap_l)).
+rewrite comp_assoc.
+apply comp_inc_compat_ab_ab'.
+apply inc_residual.
+apply inc_refl.
+Qed.
+
+(** %
+\begin{screen}
+\begin{lemma}[sup\_function]
+Let $\rho :V \rel X$, $\xi :X \rel X$ be relations and $f:W \to V$ be a function. Then,
+$$
+f \cdot sup(\rho , \xi) = sup(f \cdot \rho , \xi).
+$$
+\end{lemma}
+\end{screen}
+% **)
+Lemma sup_function {V W X : eqType} {rho : Rel V X} {xi : Rel X X} {f : Rel W V}:
+ function_r f -> f ・ sup rho xi = sup (f ・ rho) xi.
+Proof.
+move => H.
+rewrite /sup.
+rewrite (function_cap_distr_l H).
+by [rewrite (function_residual2 H) (function_residual2 H) (function_residual2 H)].
+Qed.
+
+(** %
+\begin{screen}
+\begin{lemma}[max\_univalent]
+Let $\rho :V \rel X$, $\xi :X \rel X$ be relations and $\varphi :W \rel V$ be a univalent relation. Then,
+$$
+\varphi \cdot max(\rho , \xi) = max(\varphi \cdot \rho , \xi).
+$$
+\end{lemma}
+\end{screen}
+% **)
+Lemma max_univalent {V W X : eqType} {rho : Rel V X} {xi : Rel X X} {phi : Rel W V}:
+ univalent_r phi -> phi ・ max rho xi = max (phi ・ rho) xi.
+Proof.
+move => H.
+rewrite /max.
+apply inc_antisym.
+apply (@inc_trans _ _ _ _ _ (comp_cap_distr_l)).
+apply cap_inc_compat_l.
+apply (@inc_trans _ _ _ _ _ (univalent_residual H)).
+rewrite double_residual.
+apply inc_refl.
+apply (@inc_trans _ _ _ _ _ (dedekind1)).
+apply comp_inc_compat_ab_ab'.
+apply cap_inc_compat_l.
+rewrite -inc_residual double_residual.
+apply inc_refl.
+Qed.
+
+(** %
+\subsection{左剰余合成}
+\begin{screen}
+関係 $\alpha :X \rel Y$, $\beta :Y \rel Z$ に対し, 左剰余合成を $\alpha \lhd \beta := (\beta^\sharp \rhd \alpha^\sharp)^\sharp$ で定義する.
+\end{screen}
+% **)
+Definition leftres {X Y Z : eqType} (alpha : Rel X Y) (beta : Rel Y Z)
+ := (beta # △ alpha #) #.
+
+(** %
+\begin{screen}
+\begin{lemma}[inc\_leftres]
+Let $\alpha :X \rel Y$, $\beta :Y \rel Z$ and $\delta :X \rel Z$. Then,
+$$
+\delta \sqsubseteq \alpha \lhd \beta \Leftrightarrow \delta \cdot \beta^\sharp \sqsubseteq \alpha.
+$$
+\end{lemma}
+\end{screen}
+% **)
+Lemma inc_leftres {X Y Z : eqType}
+ {alpha : Rel X Y} {beta : Rel Y Z} {delta : Rel X Z}:
+ delta ⊆ leftres alpha beta <-> (delta ・ beta #) ⊆ alpha.
+Proof.
+rewrite /leftres.
+by [rewrite inv_inc_move inc_residual -comp_inv inv_inc_move inv_invol].
+Qed.
+
+(** %
+\begin{screen}
+\begin{lemma}[residual\_leftres\_assoc]
+Let $\alpha :X \rel Y$, $\beta :Y \rel Z$ and $\gamma :Z \rel W$. Then,
+$$
+(\alpha \rhd \beta) \lhd \gamma = \alpha \rhd (\beta \lhd \gamma).
+$$
+\end{lemma}
+\end{screen}
+% **)
+Lemma residual_leftres_assoc {W X Y Z : eqType}
+ {alpha : Rel X Y} {beta : Rel Y Z} {gamma : Rel Z W}:
+ leftres (alpha △ beta) gamma = alpha △ leftres beta gamma.
+Proof.
+apply inc_lower.
+move => delta.
+by [rewrite inc_leftres inc_residual -comp_assoc -inc_leftres -inc_residual].
+Qed.
