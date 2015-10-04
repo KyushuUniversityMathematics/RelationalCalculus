@@ -1,3 +1,0 @@
-コミット用のコマンド
-git commit -a -m "by Matsushima"  
-git push origin master
