@@ -742,8 +742,7 @@ $$
 \end{lemma}
 \end{screen}
 % **)
-Lemma residual_property7a
- {X Y Z : eqType} {alpha : Rel X Y} {beta beta' : Rel Y Z}:
+Lemma residual_property7a {X Y Z : eqType} {alpha : Rel X Y} {beta beta' : Rel Y Z}:
  (alpha △ (beta >> beta')) ⊆ ((alpha ・ beta) >> (alpha ・ beta')).
 Proof.
 apply inc_rpc.
@@ -755,8 +754,7 @@ apply inc_rpc.
 apply inv_residual_inc.
 Qed.
 
-Lemma residual_property7b
- {X Y Z : eqType} {alpha : Rel X Y} {beta beta' : Rel Y Z}:
+Lemma residual_property7b {X Y Z : eqType} {alpha : Rel X Y} {beta beta' : Rel Y Z}:
  ((alpha ・ beta) >> (alpha ・ beta')) ⊆ (alpha △ (beta >> (alpha # ・ (alpha ・ beta')))).
 Proof.
 rewrite inc_residual inc_rpc.
@@ -776,8 +774,7 @@ $$
 \end{lemma}
 \end{screen}
 % **)
-Lemma residual_property8
- {X Y Z : eqType} {alpha : Rel X Y} {beta beta' : Rel Y Z}:
+Lemma residual_property8 {X Y Z : eqType} {alpha : Rel X Y} {beta beta' : Rel Y Z}:
  univalent_r alpha -> alpha △ (beta >> beta') = (alpha ・ beta) >> (alpha ・ beta').
 Proof.
 move => H.
@@ -800,8 +797,7 @@ $$
 \end{lemma}
 \end{screen}
 % **)
-Lemma residual_property9
- {X Y Z : eqType} {alpha : Rel X Y} {beta : Rel Y Z}:
+Lemma residual_property9 {X Y Z : eqType} {alpha : Rel X Y} {beta : Rel Y Z}:
  univalent_r alpha -> alpha △ beta = (alpha ・ ∇ Y Z) >> (alpha ・ beta).
 Proof.
 move => H.
@@ -818,8 +814,7 @@ $$
 \end{lemma}
 \end{screen}
 % **)
-Lemma residual_property10
- {X Y Z : eqType} {alpha : Rel X Y} {beta : Rel Y Z}:
+Lemma residual_property10 {X Y Z : eqType} {alpha : Rel X Y} {beta : Rel Y Z}:
  univalent_r alpha -> alpha ・ beta = domain alpha ・ (alpha △ beta).
 Proof.
 move => H.
@@ -869,8 +864,7 @@ $$
 \end{lemma}
 \end{screen}
 % **)
-Lemma residual_property12a
- {X Y : eqType} {u : Rel X X} {alpha : Rel X Y}:
+Lemma residual_property12a {X Y : eqType} {u : Rel X X} {alpha : Rel X Y}:
  u ⊆ Id X -> u △ alpha = (u ・ ∇ X Y) >> alpha.
 Proof.
 move => H.
@@ -891,8 +885,7 @@ rewrite -inv_id.
 apply (@inc_inv _ _ _ _ H).
 Qed.
 
-Lemma residual_property12b
- {X Y : eqType} {u : Rel X X} {alpha : Rel X Y}:
+Lemma residual_property12b {X Y : eqType} {u : Rel X X} {alpha : Rel X Y}:
  u ⊆ Id X -> u △ alpha = u △ (u ・ alpha).
 Proof.
 move => H.
@@ -984,8 +977,7 @@ $$
 \end{lemma}
 \end{screen}
 % **)
-Lemma residual_property14
- {X Y Z : eqType} {alpha : Rel X Y} {beta : Rel Y Z}:
+Lemma residual_property14 {X Y Z : eqType} {alpha : Rel X Y} {beta : Rel Y Z}:
  (∇ X X ・ alpha) ⊆ alpha -> (∇ X X ・ (alpha △ beta)) ⊆ (alpha △ beta).
 Proof.
 move => H.
@@ -1007,8 +999,7 @@ $$
 \end{lemma}
 \end{screen}
 % **)
-Lemma residual_property15
- {X Y Z : eqType} {alpha : Rel X Y} {beta : Rel Y Z}:
+Lemma residual_property15 {X Y Z : eqType} {alpha : Rel X Y} {beta : Rel Y Z}:
  (beta ・ ∇ Z Z) ⊆ beta -> ((alpha △ beta) ・ ∇ Z Z) ⊆ (alpha △ beta).
 Proof.
 move => H.
@@ -1025,9 +1016,9 @@ $$
 \end{lemma}
 \end{screen}
 % **)
-Lemma residual_property16
- {X Y : eqType} {alpha : Rel X Y}:
- Id X ⊆ (alpha △ alpha #) /\ ((alpha △ alpha #) ・ (alpha △ alpha #)) ⊆ (alpha △ alpha #).
+Lemma residual_property16 {X Y : eqType} {alpha : Rel X Y}:
+ Id X ⊆ (alpha △ alpha #) /\
+ ((alpha △ alpha #) ・ (alpha △ alpha #)) ⊆ (alpha △ alpha #).
 Proof.
 split.
 rewrite inc_residual comp_id_r.
@@ -1362,7 +1353,8 @@ $$
 \end{lemma}
 \end{screen}
 % **)
-Lemma max_univalent {V W X : eqType} {rho : Rel V X} {xi : Rel X X} {phi : Rel W V}:
+Lemma max_univalent {V W X : eqType}
+ {rho : Rel V X} {xi : Rel X X} {phi : Rel W V}:
  univalent_r phi -> phi ・ max rho xi = max (phi ・ rho) xi.
 Proof.
 move => H.

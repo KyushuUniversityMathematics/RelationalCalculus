@@ -437,7 +437,7 @@ Axiom inc_residual : axiom17.
 (** %
 \subsection{排中律}
 \begin{screen}
-Dedekind 圏の公理のほかに, 以下の ``排中律'' を仮定すれば, 与えられる圏は Schr$\ddot{\mbox{o}}$der 圏となり, Bool 代数の性質も満たされる.
+Dedekind 圏の公理のほかに, 以下の ``排中律'' を仮定すれば, 与えられる圏は Schr$\ddot{\mbox{o}}$der 圏となり, Bool 代数の性質も満たされる. ちなみに剰余合成は補関係から定義可能なので, 本来 Schr$\ddot{\mbox{o}}$der 圏には剰余合成に関する公理は存在しない.
 \begin{axiom}[complement\_classic]
 Let $\alpha :A \rel B$. Then,
 $$

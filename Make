@@ -10,4 +10,5 @@ Rationality.v
 Conjugate.v
 Domain.v
 Residual.v
+Schroder.v
 Sum_Product.v
