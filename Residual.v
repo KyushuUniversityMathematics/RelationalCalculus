@@ -211,7 +211,7 @@ Qed.
 
 (** %
 \begin{screen}
-\begin{lemma}[residual\_capP\_distr, residual\_cap\_distr]
+\begin{lemma}[residual\_capP\_distr\_l, residual\_cap\_distr\_l]
 Let $\alpha :A \rel B$, $\beta_\lambda :B \rel C$ and $P$ : predicate. Then
 $$
 \alpha \rhd (\sqcap_{P(\lambda)} \beta_\lambda) = \sqcap_{P(\lambda)} (\alpha \rhd \beta_\lambda).
@@ -219,7 +219,7 @@ $$
 \end{lemma}
 \end{screen}
 % **)
-Lemma residual_capP_distr
+Lemma residual_capP_distr_l
  {A B C L : eqType} {alpha : Rel A B} {beta_L : L -> Rel B C} {P : L -> Prop}:
  alpha △ (∩_{P} beta_L) = ∩_{P} (fun l : L => alpha △ beta_L l).
 Proof.
@@ -242,12 +242,12 @@ apply inc_capP.
 apply H.
 Qed.
 
-Lemma residual_cap_distr
+Lemma residual_cap_distr_l
  {A B C : eqType} {alpha : Rel A B} {beta gamma : Rel B C}:
  alpha △ (beta ∩ gamma) = (alpha △ beta) ∩ (alpha △ gamma).
 Proof.
 rewrite cap_to_capP cap_to_capP.
-rewrite residual_capP_distr.
+rewrite residual_capP_distr_l.
 apply f_equal.
 apply functional_extensionality.
 induction x.
@@ -257,7 +257,7 @@ Qed.
 
 (** %
 \begin{screen}
-\begin{lemma}[residual\_cupP\_distr, residual\_cup\_distr]
+\begin{lemma}[residual\_cupP\_distr\_r, residual\_cup\_distr\_r]
 Let $\alpha_\lambda :A \rel B$, $\beta :B \rel C$ and $P$ : predicate. Then
 $$
 (\sqcup_{P(\lambda)} \alpha_\lambda) \rhd \beta = \sqcap_{P(\lambda)} (\alpha_\lambda \rhd \beta).
@@ -265,7 +265,7 @@ $$
 \end{lemma}
 \end{screen}
 % **)
-Lemma residual_cupP_distr
+Lemma residual_cupP_distr_r
  {A B C L : eqType} {beta : Rel B C} {alpha_L : L -> Rel A B} {P : L -> Prop}:
  (∪_{P} alpha_L) △ beta = ∩_{P} (fun l : L => alpha_L l △ beta).
 Proof.
@@ -290,12 +290,12 @@ apply inc_capP.
 apply H.
 Qed.
 
-Lemma residual_cup_distr
+Lemma residual_cup_distr_r
  {A B C : eqType} {alpha beta : Rel A B} {gamma : Rel B C}:
  (alpha ∪ beta) △ gamma = (alpha △ gamma) ∩ (beta △ gamma).
 Proof.
 rewrite cup_to_cupP cap_to_capP.
-rewrite residual_cupP_distr.
+rewrite residual_cupP_distr_r.
 apply f_equal.
 apply functional_extensionality.
 induction x.
@@ -1046,7 +1046,7 @@ Lemma residual_property17 {X Y Z L : eqType}
 Proof.
 move => H H0.
 replace (alpha △ beta) with ((alpha ・ Id Y) △ beta).
-rewrite -H0 comp_cupP_distr_l residual_cupP_distr.
+rewrite -H0 comp_cupP_distr_l residual_cupP_distr_r.
 replace (∩_{P} (fun l : L => (alpha ・ (y_L l # ・ y_L l)) △ beta)) with (∩_{P} (fun l : L => (alpha ・ y_L l #) △ (y_L l ・ beta))).
 apply f_equal.
 apply functional_extensionality.
