@@ -49,12 +49,12 @@ Notation "a '^'" := (complement a) (at level 20).
 Definition difference {A B : eqType} (alpha beta : Rel A B) := alpha ∩ beta ^.
 Notation "a -- b" := (difference a b) (at level 50).
 
-Definition capP {A B L : eqType} (P : L -> Prop) (alpha_L : L -> Rel A B) : Rel A B
- := (fun (a : A)(b : B) => forall l : L, P l -> alpha_L l a b).
-Notation "'∩_{' p '}'  a" := (capP p a) (at level 50).
-Definition cupP {A B L : eqType} (P : L -> Prop) (alpha_L : L -> Rel A B) : Rel A B
- := (fun (a : A)(b : B) => exists l : L, P l /\ alpha_L l a b).
-Notation "'∪_{' p '}'  a" := (cupP p a) (at level 50).
+Definition capP {A B C D : eqType} (P : Rel C D -> Prop) (f : Rel C D -> Rel A B) : Rel A B
+ := (fun (a : A)(b : B) => forall alpha : Rel C D, P alpha -> (f alpha) a b).
+Notation "'∩_{' p '}'  f" := (capP p f) (at level 50).
+Definition cupP {A B C D : eqType} (P : Rel C D -> Prop) (f : Rel C D -> Rel A B) : Rel A B
+ := (fun (a : A)(b : B) => exists alpha : Rel C D, P alpha /\ (f alpha) a b).
+Notation "'∪_{' p '}'  f" := (cupP p f) (at level 50).
 
 Notation "'i'" := unit_eqType.
 
@@ -328,53 +328,55 @@ Qed.
 (** %
 \begin{screen}
 \begin{lemma}[inc\_capP]
-Let $\alpha , \beta_\lambda :A \rel B$ and $P$ : predicate. Then,
+Let $\alpha :A \rel B$, $f:(C \rel D) \to (A \rel B)$ and $P$ : predicate. Then,
 $$
-\alpha \sqsubseteq (\sqcap_{P(\lambda)} \beta_\lambda) \Leftrightarrow \forall \lambda \in \Lambda , P(\lambda) \Rightarrow \alpha \sqsubseteq \beta_\lambda.
+\alpha \sqsubseteq (\sqcap_{P(\beta)} f(\beta)) \Leftrightarrow \forall \beta :C \rel D, P(\beta) \Rightarrow \alpha \sqsubseteq f(\beta).
 $$
 \end{lemma}
 \end{screen}
 % **)
 Definition axiom10 :=
- forall (A B L : eqType)(alpha : Rel A B)(beta_L : L -> Rel A B)(P : L -> Prop),
- alpha ⊆ (∩_{P} beta_L) <-> forall l : L, P l -> alpha ⊆ beta_L l.
+ forall (A B C D : eqType)
+ (alpha : Rel A B)(f : Rel C D -> Rel A B)(P : Rel C D -> Prop),
+ alpha ⊆ (∩_{P} f) <-> forall beta : Rel C D, P beta -> alpha ⊆ f beta.
 Lemma inc_capP : axiom10.
 Proof.
-move => A B L alpha beta_L P.
+move => A B C D alpha f P.
 split; move => H.
-move => l H0 a b H1.
+move => beta H0 a b H1.
 apply (H _ _ H1 _ H0).
-move => a b H0 l H1.
+move => a b H0 beta H1.
 apply (H _ H1 _ _ H0).
 Qed.
 
 (** %
 \begin{screen}
 \begin{lemma}[inc\_cupP]
-Let $\alpha , \beta_\lambda :A \rel B$. Then,
+Let $\alpha :A \rel B$, $f:(C \rel D) \to (A \rel B)$ and $P$ : predicate. Then,
 $$
-(\sqcup_{P(\lambda)} \beta_\lambda) \sqsubseteq \alpha \Leftrightarrow \forall \lambda \in \Lambda , P(\lambda) \Rightarrow \beta_\lambda \sqsubseteq \alpha.
+(\sqcup_{P(\beta)} f(\beta)) \sqsubseteq \alpha \Leftrightarrow \forall \beta :C \rel D, P(\beta) \Rightarrow f(\beta) \sqsubseteq \alpha.
 $$
 \end{lemma}
 \end{screen}
 % **)
 Definition axiom11 :=
- forall (A B L : eqType)(alpha : Rel A B)(beta_L : L -> Rel A B)(P : L -> Prop),
- (∪_{P} beta_L) ⊆ alpha <-> forall l : L, P l -> beta_L l ⊆ alpha.
+ forall (A B C D : eqType)
+ (alpha : Rel A B)(f : Rel C D -> Rel A B)(P : Rel C D -> Prop),
+ (∪_{P} f) ⊆ alpha <-> forall beta : Rel C D, P beta -> f beta ⊆ alpha.
 Lemma inc_cupP : axiom11.
 Proof.
-move => A B L alpha beta_L P.
+move => A B C D alpha f P.
 split.
-move => H l H0 a b H1.
+move => H beta H0 a b H1.
 apply H.
-exists l.
+exists beta.
 split.
 apply H0.
 apply H1.
 move => H a b.
-elim => l.
+elim => beta.
 elim => H0 H1.
-apply (H l H0 _ _ H1).
+apply (H beta H0 _ _ H1).
 Qed.
 
 (** %

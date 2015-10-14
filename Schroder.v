@@ -13,7 +13,7 @@ Require Import Logic.FunctionalExtensionality.
 $$
 \xymatrix{
 X \ar@{-_>}[r]^\alpha \ar@/^8mm/@{-_>}[rr]^\delta & Y \ar@{-_>}[r]_{\beta ,{\beta}', \beta_\lambda} & Z \ar@{-_>}[r]^\gamma & W \\
-I \ar@{-_>}[u]_{\rho , \rho_\lambda} & & V \ar@{-_>}[u]_\tau & \\
+I \ar@{-_>}[u]_{\rho} & & V \ar@{-_>}[u]_\tau & \\
 }
 $$
 \end{screen}
@@ -266,41 +266,39 @@ Qed.
 (** %
 \begin{screen}
 \begin{lemma}[residual\_cupP\_distr\_l, residual\_cup\_distr\_l]
-Let $\alpha$ be a univalent relation and $\exists \lambda , P(\lambda)$. Then,
+Let $\alpha$ be a univalent relation, $f:(V \rel W) \to (Y \rel Z)$ and $\exists \beta , P(\beta)$. Then,
 $$
-\alpha \rhd (\sqcup_{P(\lambda)} \beta_\lambda) = \sqcup_{P(\lambda)} (\alpha \rhd \beta_\lambda).
+\alpha \rhd (\sqcup_{P(\beta)} f(\beta)) = \sqcup_{P(\beta)} (\alpha \rhd f(\beta)).
 $$
 \end{lemma}
 \end{screen}
 % **)
-Lemma residual_cupP_distr_l
- {L X Y Z : eqType} {alpha : Rel X Y} {beta_L : L -> Rel Y Z} {P : L -> Prop}:
- univalent_r alpha -> (exists l : L, P l) ->
- alpha △ (∪_{P} beta_L) = ∪_{P} (fun l : L => alpha △ beta_L l).
+Lemma residual_cupP_distr_l {V W X Y Z : eqType}
+ {alpha : Rel X Y} {f : Rel V W -> Rel Y Z} {P : Rel V W -> Prop}:
+ univalent_r alpha -> (exists beta' : Rel V W, P beta') ->
+ alpha △ (∪_{P} f) = ∪_{P} (fun beta : Rel V W => alpha △ f beta).
 Proof.
 move => H.
-elim => l H0.
+elim => beta' H0.
 rewrite (schroder_univalent4 H) comp_cupP_distr_l.
-replace (∪_{P} (fun l : L => alpha △ beta_L l)) with (∪_{P} (fun l : L => (alpha ・ ∇ Y Z) ^ ∪ (alpha ・ beta_L l))).
+replace (∪_{P} (fun beta : Rel V W => alpha △ f beta)) with (∪_{P} (fun beta : Rel V W => (alpha ・ ∇ Y Z) ^ ∪ (alpha ・ f beta))).
 apply (@cap_cup_unique _ _ (alpha ・ ∇ Y Z)).
 rewrite cap_cup_distr_l cap_cupP_distr_l cap_complement_empty cup_comm cup_empty.
 rewrite cap_cupP_distr_l.
-apply f_equal.
-apply functional_extensionality.
-move => l0.
+apply cupP_eq.
+move => gamma H1.
 by [rewrite cap_cup_distr_l cap_complement_empty cup_comm cup_empty].
 rewrite -cup_assoc complement_classic cup_comm cup_universal.
 rewrite -(@complement_invol _ _ (alpha ・ ∇ Y Z)).
 apply bool_lemma1.
 rewrite complement_invol.
-apply (@inc_trans _ _ _ ((alpha ・ ∇ Y Z) ^ ∪ (alpha ・ beta_L l))).
+apply (@inc_trans _ _ _ ((alpha ・ ∇ Y Z) ^ ∪ (alpha ・ f beta'))).
 apply cup_l.
-move : l H0.
+move : beta' H0.
 apply inc_cupP.
 apply inc_refl.
-apply f_equal.
-apply functional_extensionality.
-move => l0.
+apply cupP_eq.
+move => gamma H1.
 by [rewrite (schroder_univalent4 H)].
 Qed.
 
@@ -310,48 +308,44 @@ Lemma residual_cup_distr_l
  alpha △ (beta ∪ beta') = (alpha △ beta) ∪ (alpha △ beta').
 Proof.
 move => H.
-rewrite cup_to_cupP cup_to_cupP.
-rewrite (residual_cupP_distr_l H).
-apply f_equal.
-apply functional_extensionality.
-induction x.
-by [].
-by [].
-by [exists true].
+rewrite cup_to_cupP (@cup_to_cupP _ _ _ _ _ _ id).
+apply (residual_cupP_distr_l H).
+exists beta.
+by [left].
 Qed.
 
 (** %
 \begin{screen}
 \begin{lemma}[residual\_capP\_distr\_r, residual\_cap\_distr\_r]
-Let $\exists \lambda , P(\lambda)$. Then,
+Let $f:(Y \rel Z) \to (I \rel X)$ and $\exists \alpha , P(\alpha)$. Then,
 $$
-(\sqcap_{P(\lambda)} {\rho_\lambda}^\sharp) \rhd \rho = \sqcup_{P(\lambda)} ({\rho_\lambda}^\sharp \rhd \rho).
+(\sqcap_{P(\alpha)} f(\alpha)^\sharp) \rhd \rho = \sqcup_{P(\alpha)} (f(\alpha)^\sharp \rhd \rho).
 $$
 \end{lemma}
 \end{screen}
 % **)
 Lemma residual_capP_distr_r
- {L X : eqType} {rho : Rel i X} {rho_L : L -> Rel i X} {P : L -> Prop}:
- (exists l : L, P l) ->
- (∩_{P} (fun l : L => rho_L l #)) △ rho = ∪_{P} (fun l : L => rho_L l # △ rho).
+ {X Y Z : eqType} {rho : Rel i X} {f : Rel Y Z -> Rel i X} {P : Rel Y Z -> Prop}:
+ (exists alpha' : Rel Y Z, P alpha') ->
+ (∩_{P} (fun alpha : Rel Y Z => f alpha #)) △ rho = ∪_{P} (fun alpha : Rel Y Z => f alpha # △ rho).
 Proof.
-elim => l H.
+elim => alpha' H.
 rewrite residual_to_complement.
-rewrite -(@complement_invol _ _ (∪_{P} (fun l0 : L => rho_L l0 # △ rho))).
+rewrite -(@complement_invol _ _ (∪_{P} (fun alpha : Rel Y Z => f alpha # △ rho))).
 apply f_equal.
 rewrite de_morgan3.
-replace (fun l0 : L => (rho_L l0 # △ rho) ^) with (fun l0 : L => rho_L l0 # ・ rho ^).
+replace (fun alpha : Rel Y Z => (f alpha # △ rho) ^) with (fun alpha : Rel Y Z => f alpha # ・ rho ^).
 apply inc_antisym.
 apply comp_capP_distr_r.
 apply (@inc_trans _ _ _ _ _ (relation_rel_inv_rel)).
-apply (@inc_trans _ _ _ (((∩_{P} (fun l0 : L => rho_L l0 # ・ rho ^)) ・ (rho_L l # ・ rho ^) #) ・ (rho_L l # ・ rho ^))).
+apply (@inc_trans _ _ _ (((∩_{P} (fun alpha : Rel Y Z => f alpha # ・ rho ^)) ・ (f alpha' # ・ rho ^) #) ・ (f alpha' # ・ rho ^))).
 apply comp_inc_compat.
 apply comp_inc_compat_ab_ab'.
-move : l H.
+move : alpha' H.
 apply inc_capP.
 rewrite inv_capP_distr.
 apply inc_refl.
-move : l H.
+move : alpha' H.
 apply inc_capP.
 apply inc_refl.
 rewrite -comp_assoc.
@@ -359,9 +353,9 @@ apply comp_inc_compat_ab_a'b.
 rewrite comp_assoc.
 apply (@inc_trans _ _ _ _ _ (comp_capP_distr_r)).
 apply inc_capP.
-move => l0 H0.
-apply (@inc_trans _ _ _ ((rho_L l0 # ・ rho ^) ・ ((rho_L l # ・ rho ^) # ・ rho_L l #))).
-move : l0 H0.
+move => beta H0.
+apply (@inc_trans _ _ _ ((f beta # ・ rho ^) ・ ((f alpha' # ・ rho ^) # ・ f alpha' #))).
+move : beta H0.
 apply inc_capP.
 apply inc_refl.
 rewrite comp_assoc.
@@ -369,6 +363,6 @@ apply comp_inc_compat_ab_a.
 rewrite unit_identity_is_universal.
 apply inc_alpha_universal.
 apply functional_extensionality.
-move => l0.
+move => x.
 by [rewrite residual_to_complement complement_invol].
 Qed.

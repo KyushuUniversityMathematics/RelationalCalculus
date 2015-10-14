@@ -212,32 +212,32 @@ Qed.
 (** %
 \begin{screen}
 \begin{lemma}[residual\_capP\_distr\_l, residual\_cap\_distr\_l]
-Let $\alpha :A \rel B$, $\beta_\lambda :B \rel C$ and $P$ : predicate. Then
+Let $\alpha :A \rel B$, $f:(D \rel E) \to (B \rel C)$ and $P$ : predicate. Then
 $$
-\alpha \rhd (\sqcap_{P(\lambda)} \beta_\lambda) = \sqcap_{P(\lambda)} (\alpha \rhd \beta_\lambda).
+\alpha \rhd (\sqcap_{P(\beta)} f(\beta)) = \sqcap_{P(\beta)} (\alpha \rhd f(\beta)).
 $$
 \end{lemma}
 \end{screen}
 % **)
-Lemma residual_capP_distr_l
- {A B C L : eqType} {alpha : Rel A B} {beta_L : L -> Rel B C} {P : L -> Prop}:
- alpha △ (∩_{P} beta_L) = ∩_{P} (fun l : L => alpha △ beta_L l).
+Lemma residual_capP_distr_l {A B C D E : eqType}
+ {alpha : Rel A B} {f : Rel D E -> Rel B C} {P : Rel D E -> Prop}:
+ alpha △ (∩_{P} f) = ∩_{P} (fun beta : Rel D E => alpha △ f beta).
 Proof.
 apply inc_lower.
 move => gamma.
 split; move => H.
 apply inc_capP.
-move => l H0.
+move => beta H0.
 apply inc_residual.
-move : l H0.
+move : beta H0.
 apply inc_capP.
 apply inc_residual.
 apply H.
 apply inc_residual.
 apply inc_capP.
-move => l H0.
+move => beta H0.
 apply inc_residual.
-move : l H0.
+move : beta H0.
 apply inc_capP.
 apply H.
 Qed.
@@ -246,36 +246,31 @@ Lemma residual_cap_distr_l
  {A B C : eqType} {alpha : Rel A B} {beta gamma : Rel B C}:
  alpha △ (beta ∩ gamma) = (alpha △ beta) ∩ (alpha △ gamma).
 Proof.
-rewrite cap_to_capP cap_to_capP.
-rewrite residual_capP_distr_l.
-apply f_equal.
-apply functional_extensionality.
-induction x.
-by [].
-by [].
+rewrite cap_to_capP (@cap_to_capP _ _ _ _ _ _ id).
+apply residual_capP_distr_l.
 Qed.
 
 (** %
 \begin{screen}
 \begin{lemma}[residual\_cupP\_distr\_r, residual\_cup\_distr\_r]
-Let $\alpha_\lambda :A \rel B$, $\beta :B \rel C$ and $P$ : predicate. Then
+Let $f:(D \rel E) \to (A \rel B)$, $\beta :B \rel C$ and $P$ : predicate. Then
 $$
-(\sqcup_{P(\lambda)} \alpha_\lambda) \rhd \beta = \sqcap_{P(\lambda)} (\alpha_\lambda \rhd \beta).
+(\sqcup_{P(\alpha)} f(\alpha)) \rhd \beta = \sqcap_{P(\alpha)} (f(\alpha) \rhd \beta).
 $$
 \end{lemma}
 \end{screen}
 % **)
-Lemma residual_cupP_distr_r
- {A B C L : eqType} {beta : Rel B C} {alpha_L : L -> Rel A B} {P : L -> Prop}:
- (∪_{P} alpha_L) △ beta = ∩_{P} (fun l : L => alpha_L l △ beta).
+Lemma residual_cupP_distr_r {A B C D E : eqType}
+ {beta : Rel B C} {f : Rel D E -> Rel A B} {P : Rel D E -> Prop}:
+ (∪_{P} f) △ beta = ∩_{P} (fun alpha : Rel D E => f alpha △ beta).
 Proof.
 apply inc_lower.
 move => gamma.
 split; move => H.
 apply inc_capP.
-move => l H0.
+move => alpha H0.
 apply inc_residual.
-move : l H0.
+move : alpha H0.
 apply inc_cupP.
 rewrite -comp_cupP_distr_r -inv_cupP_distr.
 apply inc_residual.
@@ -283,9 +278,9 @@ apply H.
 apply inc_residual.
 rewrite inv_cupP_distr comp_cupP_distr_r.
 apply inc_cupP.
-move => l H0.
+move => alpha H0.
 apply inc_residual.
-move : l H0.
+move : alpha H0.
 apply inc_capP.
 apply H.
 Qed.
@@ -294,13 +289,8 @@ Lemma residual_cup_distr_r
  {A B C : eqType} {alpha beta : Rel A B} {gamma : Rel B C}:
  (alpha ∪ beta) △ gamma = (alpha △ gamma) ∩ (beta △ gamma).
 Proof.
-rewrite cup_to_cupP cap_to_capP.
-rewrite residual_cupP_distr_r.
-apply f_equal.
-apply functional_extensionality.
-induction x.
-by [].
-by [].
+rewrite (@cup_to_cupP _ _ _ _ _ _ id) (@cap_to_capP _ _ _ _ _ _ (fun x => x △ gamma)).
+apply residual_cupP_distr_r.
 Qed.
 
 (** %
@@ -1031,36 +1021,31 @@ Qed.
 (** %
 \begin{screen}
 \begin{lemma}[residual\_property17]
-Let $P(\lambda):=$ ``$y_\lambda :I \rel Y$ is a function''. Then,
+Let $P(y):=$ ``$y :I \rel Y$ is a function''. Then,
 $$
-\sqcup_{P(\lambda)} {y_\lambda}^\sharp \cdot y_\lambda = id_Y \Rightarrow \alpha \rhd \beta = \sqcap_{P(\lambda)} (\alpha \cdot {y_\lambda}^\sharp \cdot \nabla_{IZ} \Rightarrow \alpha \cdot {y_\lambda}^\sharp \cdot y_\lambda \cdot \beta).
+\sqcup_{P(y)} y^\sharp \cdot y = id_Y \Rightarrow \alpha \rhd \beta = \sqcap_{P(y)} (\alpha \cdot y^\sharp \cdot \nabla_{IZ} \Rightarrow \alpha \cdot y^\sharp \cdot y \cdot \beta).
 $$
 \end{lemma}
 \end{screen}
 % **)
-Lemma residual_property17 {X Y Z L : eqType}
- {alpha : Rel X Y} {beta : Rel Y Z} {y_L : L -> Rel i Y} {P : L -> Prop}:
- P = (fun l : L => function_r (y_L l)) ->
- ∪_{P} (fun l : L => y_L l # ・ y_L l) = Id Y ->
- alpha △ beta = ∩_{P} (fun l : L => ((alpha ・ y_L l #) ・ ∇ i Z) >> ((alpha ・ y_L l #) ・ (y_L l ・ beta))).
+Lemma residual_property17 {X Y Z : eqType}
+ {alpha : Rel X Y} {beta : Rel Y Z} {P : Rel i Y -> Prop}:
+ P = (fun y : Rel i Y => function_r y) ->
+ ∪_{P} (fun y : Rel i Y => y # ・ y) = Id Y ->
+ alpha △ beta = ∩_{P} (fun y : Rel i Y =>
+  ((alpha ・ y #) ・ ∇ i Z) >> ((alpha ・ y #) ・ (y ・ beta))).
 Proof.
 move => H H0.
 replace (alpha △ beta) with ((alpha ・ Id Y) △ beta).
 rewrite -H0 comp_cupP_distr_l residual_cupP_distr_r.
-replace (∩_{P} (fun l : L => (alpha ・ (y_L l # ・ y_L l)) △ beta)) with (∩_{P} (fun l : L => (alpha ・ y_L l #) △ (y_L l ・ beta))).
-apply f_equal.
-apply functional_extensionality.
-move => l.
+apply capP_eq.
+move => y H1.
+rewrite H in H1.
+rewrite -comp_assoc (function_residual4 H1).
 apply residual_property9.
 rewrite /univalent_r.
 rewrite unit_identity_is_universal.
 apply inc_alpha_universal.
-apply capP_eq.
-rewrite H.
-move => l H1.
-rewrite -comp_assoc.
-apply Logic.eq_sym.
-apply (function_residual4 H1).
 by [rewrite comp_id_r].
 Qed.
 

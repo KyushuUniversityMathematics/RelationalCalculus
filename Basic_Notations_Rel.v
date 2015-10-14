@@ -53,8 +53,8 @@ $(\verb|difference | \alpha \ \beta)$ で,
 $(\alpha \verb| -- | \beta)$ と記述する.
 \item \verb|(capP)| と
 \verb|(cupP)| は添字付の共通関係と和関係であり, 述語 $P$ に対し,
-$\alpha_\lambda (\lambda \in \{ \mu : \Lambda \mid P( \mu ) \} )$
-の共通関係, 和関係を表す. $P(\lambda):=$ ``True'' とすれば, $\sqcap_{\lambda \in \Lambda}$ や $\sqcup_{\lambda \in \Lambda}$ も表現できる.
+$f(\alpha) (\alpha \in \{ \alpha :C \rel D \mid P(\alpha) \} )$
+の共通関係, 和関係を表す.
 \item また, 1 点集合 $I= \{ * \}$ は \verb|i| と表記する.
 \end{itemize}
 
@@ -154,11 +154,11 @@ Definition difference {A B : eqType} (alpha beta : Rel A B) := alpha ∩ beta ^.
 Notation "a -- b" := (difference a b) (at level 50).
 (* complement および difference は, Dedekind 圏の公理に登場しないため, Parameter ではなく Definition で定義している. *)
 
-Parameter capP : (forall A B L : eqType, (L -> Prop) -> (L -> Rel A B) -> Rel A B).
-Notation "'∩_{' p '}'  a" := (capP _ _ _ p a) (at level 50).
-Parameter cupP : (forall A B L : eqType, (L -> Prop) -> (L -> Rel A B) -> Rel A B).
-Notation "'∪_{' p '}'  a" := (cupP _ _ _ p a) (at level 50).
-(* 本来なら sig_eqType で "L の元のうち述語 p を満たすもの" を指定したいところだが, その場合 p の型を L -> bool にする必要があるため面倒 *)
+Parameter capP : (forall A B C D : eqType, (Rel C D -> Prop) -> (Rel C D -> Rel A B) -> Rel A B).
+Notation "'∩_{' p '}'  f" := (capP _ _ _ _ p f) (at level 50).
+Parameter cupP : (forall A B C D : eqType, (Rel C D -> Prop) -> (Rel C D -> Rel A B) -> Rel A B).
+Notation "'∪_{' p '}'  f" := (cupP _ _ _ _ p f) (at level 50).
+(* 本来なら sig_eqType で "Rel C D の元のうち述語 p を満たすもの" を指定したいところだが, その場合 p の型を L -> bool にする必要があるため面倒 *)
 
 Notation "'i'" := unit_eqType.
 
@@ -321,31 +321,33 @@ Axiom inc_cup : axiom9.
 (** %
 \begin{screen}
 \begin{axiom}[inc\_capP]
-Let $\alpha , \beta_\lambda :A \rel B$ and $P$ : predicate. Then,
+Let $\alpha :A \rel B$, $f:(C \rel D) \to (A \rel B)$ and $P$ : predicate. Then,
 $$
-\alpha \sqsubseteq (\sqcap_{P(\lambda)} \beta_\lambda) \Leftrightarrow \forall \lambda \in \Lambda , P(\lambda) \Rightarrow \alpha \sqsubseteq \beta_\lambda.
+\alpha \sqsubseteq (\sqcap_{P(\beta)} f(\beta)) \Leftrightarrow \forall \beta :C \rel D, P(\beta) \Rightarrow \alpha \sqsubseteq f(\beta).
 $$
 \end{axiom}
 \end{screen}
 % **)
 Definition axiom10 :=
- forall (A B L : eqType)(alpha : Rel A B)(beta_L : L -> Rel A B)(P : L -> Prop),
- alpha ⊆ (∩_{P} beta_L) <-> forall l : L, P l -> alpha ⊆ beta_L l.
+ forall (A B C D : eqType)
+ (alpha : Rel A B)(f : Rel C D -> Rel A B)(P : Rel C D -> Prop),
+ alpha ⊆ (∩_{P} f) <-> forall beta : Rel C D, P beta -> alpha ⊆ f beta.
 Axiom inc_capP : axiom10.
 
 (** %
 \begin{screen}
 \begin{axiom}[inc\_cupP]
-Let $\alpha , \beta_\lambda :A \rel B$. Then,
+Let $\alpha :A \rel B$, $f:(C \rel D) \to (A \rel B)$ and $P$ : predicate. Then,
 $$
-(\sqcup_{P(\lambda)} \beta_\lambda) \sqsubseteq \alpha \Leftrightarrow \forall \lambda \in \Lambda , P(\lambda) \Rightarrow \beta_\lambda \sqsubseteq \alpha.
+(\sqcup_{P(\beta)} f(\beta)) \sqsubseteq \alpha \Leftrightarrow \forall \beta :C \rel D, P(\beta) \Rightarrow f(\beta) \sqsubseteq \alpha.
 $$
 \end{axiom}
 \end{screen}
 % **)
 Definition axiom11 :=
- forall (A B L : eqType)(alpha : Rel A B)(beta_L : L -> Rel A B)(P : L -> Prop),
- (∪_{P} beta_L) ⊆ alpha <-> forall l : L, P l -> beta_L l ⊆ alpha.
+ forall (A B C D : eqType)
+ (alpha : Rel A B)(f : Rel C D -> Rel A B)(P : Rel C D -> Prop),
+ (∪_{P} f) ⊆ alpha <-> forall beta : Rel C D, P beta -> f beta ⊆ alpha.
 Axiom inc_cupP : axiom11.
 
 (** %
