@@ -80,7 +80,8 @@ endif
 #                    #
 ######################
 
-VFILES:=Sum_Product.v\
+VFILES:=Point_Axiom.v\
+  Sum_Product.v\
   Schroder.v\
   Residual.v\
   Domain.v\

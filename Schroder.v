@@ -12,7 +12,7 @@ Require Import Logic.FunctionalExtensionality.
 この節では, 特記が無い限り, 記号は以下の図式に従って割り振られるものとする.
 $$
 \xymatrix{
-X \ar@{-_>}[r]^\alpha \ar@/^8mm/@{-_>}[rr]^\delta & Y \ar@{-_>}[r]^{\beta ,{\beta}', \beta_\lambda} & Z \ar@{-_>}[r]^\gamma & W \\
+X \ar@{-_>}[r]^\alpha \ar@/^8mm/@{-_>}[rr]^\delta & Y \ar@{-_>}[r]_{\beta ,{\beta}', \beta_\lambda} & Z \ar@{-_>}[r]^\gamma & W \\
 I \ar@{-_>}[u]_{\rho , \rho_\lambda} & & V \ar@{-_>}[u]_\tau & \\
 }
 $$
