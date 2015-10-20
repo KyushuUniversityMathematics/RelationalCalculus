@@ -16,7 +16,7 @@
 \end{screen}
 % **)
 
-Require Export Basic_Notations_Rel.
+Require Export Basic_Notations_Set.
 
 (** %
 \begin{screen}

@@ -16,7 +16,7 @@ $(\verb|inverse | \alpha)$ で,
 \verb|Coq| では $(\alpha \verb| #|)$ と記述する.
 \item 2 つの関係 $\alpha: A \rel B$,
 $\beta: B \rel C$ の
-合成関係 $\alpha \beta:A \rel C$ は
+合成関係 $\alpha \cdot \beta \mbox{(or $\alpha \beta$)} :A \rel C$ は
 $(\verb|composite | \alpha \ \beta)$ で,
 $(\alpha \verb| ・ | \beta)$ と記述する.
 \item 剰余合成関係 $\alpha \rhd \beta:A \rel C$ は
@@ -51,11 +51,16 @@ $\beta: A \rel B$ の
 差関係 $\alpha - \beta : A \rel B$ は
 $(\verb|difference | \alpha \ \beta)$ で,
 $(\alpha \verb| -- | \beta)$ と記述する.
-\item \verb|(capP)| と
-\verb|(cupP)| は添字付の共通関係と和関係であり, 述語 $P$ に対し,
-$f(\alpha) (\alpha \in \{ \alpha :C \rel D \mid P(\alpha) \} )$
-の共通関係, 和関係を表す.
+\item \verb|(cupP)| と
+\verb|(capP)| は添字付の和関係と共通関係であり, 述語 $P$ に対し,
+$\{ f(\alpha) \mid P(\alpha) \}$ の和関係, 共通関係を表す.
 \item また, 1 点集合 $I= \{ * \}$ は \verb|i| と表記する.
+\item なお, 通常の共通関係, 和関係も添字付のもので表現することができるため,
+ここではそれを用いて表記する.
+\item 後で述べるように, 剰余合成 $\alpha \rhd \beta$ も
+$(\alpha \cdot \beta^-)^-$ のように表現することは可能だが,
+``剰余合成が存在すれば, それは $(\alpha \cdot \beta^-)^-$ に等しい''
+というレベルのものであるため, 剰余合成に関する公理はやはり必要となる.
 \end{itemize}
 
 表\ref{notation}に関係の表記についてまとめる.
@@ -69,12 +74,12 @@ $\alpha^\sharp$ &
 $(\verb|inverse | \alpha)$ &
 $(\alpha \verb| #|)$ \\ \hline
 合成関係 &
-$\alpha\beta$ & 
-$(\verb|composite | \alpha \beta)$ &
+$\alpha \cdot \beta$ & 
+$(\verb|composite | \alpha \ \beta)$ &
 $(\alpha \verb| ・ | \beta)$ \\ \hline
 剰余合成関係 &
-$\alpha\rhd\beta$ & 
-$(\verb|residual | \alpha \beta)$ &
+$\alpha \rhd \beta$ & 
+$(\verb|residual | \alpha \ \beta)$ &
 $(\alpha \verb| △ | \beta)$ \\ \hline
 恒等関係 &
 $\id_A$ & 
@@ -90,11 +95,11 @@ $(\verb|universal | A \ B)$ &
 $(\verb|∇ | A \ B)$ \\ \hline
 和関係 &
 $\alpha \sqcup \beta$ & 
-$(\verb|cup | \alpha \beta)$ &
+$(\verb|cup | \alpha \ \beta)$ &
 $(\alpha \verb| ∪ | \beta) $ \\ \hline
 共通関係 &
 $\alpha \sqcap \beta$ & 
-$(\verb|cap | \alpha \beta)$ &
+$(\verb|cap | \alpha \ \beta)$ &
 $(\alpha \verb| ∩ | \beta)$ \\ \hline
 相対擬補関係 &
 $\alpha \Rightarrow \beta$ & 
@@ -109,13 +114,13 @@ $\alpha - \beta$ &
 $(\verb|difference | \alpha \ \beta)$ &
 $(\alpha \verb| -- | \beta)$ \\ \hline
 添字付和関係 &
-$\sqcup_{P(\lambda)} \alpha_\lambda$ & 
-$(\verb|cupP | L)$ &
-$(\verb|∪_{| P \verb|} | L)$ \\ \hline
+$\sqcup_{P(\alpha)} f(\alpha)$ & 
+$(\verb|cupP | P \ f)$ &
+$(\verb|∪_{| P \verb|} | f)$ \\ \hline
 添字付共通関係 &
-$\sqcap_{P(\lambda)} \alpha_\lambda$ & 
-$(\verb|capP | L)$ &
-$(\verb|∩_{| P \verb|} | L)$ \\ \hline
+$\sqcap_{P(\alpha)} f(\alpha)$ & 
+$(\verb|capP | P \ f)$ &
+$(\verb|∩_{| P \verb|} | f)$ \\ \hline
 \end{tabular}
 \end{center}
 \caption{関係の表記について}\label{notation}
@@ -142,10 +147,18 @@ Parameter include : (forall A B : eqType, Rel A B -> Rel A B -> Prop).
 Notation "a '⊆' b" := (include _ _ a b) (at level 50).
 (* Rel_Eq (≡) は, こちらでは採用していない. 集合論での定義と違い a ≡ b -> a = b が示せなくなるため, 証明での rewrite や replace が今まで以上に困難になると予想されるためである. *)
 
-Parameter cup : (forall A B : eqType, Rel A B -> Rel A B -> Rel A B).
-Notation "a '∪' b" := (cup _ _ a b) (at level 50).
-Parameter cap : (forall A B : eqType, Rel A B -> Rel A B -> Rel A B).
-Notation "a '∩' b" := (cap _ _ a b) (at level 50).
+Parameter cupP : (forall A B C D : eqType, (Rel C D -> Prop) -> (Rel C D -> Rel A B) -> Rel A B).
+Notation "'∪_{' p '}'  f" := (cupP _ _ _ _ p f) (at level 50).
+Parameter capP : (forall A B C D : eqType, (Rel C D -> Prop) -> (Rel C D -> Rel A B) -> Rel A B).
+Notation "'∩_{' p '}'  f" := (capP _ _ _ _ p f) (at level 50).
+(* 本来なら sig_eqType で "Rel C D の元のうち述語 p を満たすもの" を指定したいところだが, その場合 p の型を L -> bool にする必要があるため面倒 *)
+
+Definition cup {A B : eqType} (alpha beta : Rel A B)
+ := ∪_{fun gamma : Rel A B => gamma = alpha \/ gamma = beta} id.
+Notation "a '∪' b" := (cup a b) (at level 50).
+Definition cap {A B : eqType} (alpha beta : Rel A B)
+ := ∩_{fun gamma : Rel A B => gamma = alpha \/ gamma = beta} id.
+Notation "a '∩' b" := (cap a b) (at level 50).
 Parameter rpc : (forall A B : eqType, Rel A B -> Rel A B -> Rel A B).
 Notation "a '>>' b" := (rpc _ _ a b) (at level 50).
 Definition complement {A B : eqType} (alpha : Rel A B) := alpha >> φ A B.
@@ -153,12 +166,6 @@ Notation "a '^'" := (complement a) (at level 20).
 Definition difference {A B : eqType} (alpha beta : Rel A B) := alpha ∩ beta ^.
 Notation "a -- b" := (difference a b) (at level 50).
 (* complement および difference は, Dedekind 圏の公理に登場しないため, Parameter ではなく Definition で定義している. *)
-
-Parameter capP : (forall A B C D : eqType, (Rel C D -> Prop) -> (Rel C D -> Rel A B) -> Rel A B).
-Notation "'∩_{' p '}'  f" := (capP _ _ _ _ p f) (at level 50).
-Parameter cupP : (forall A B C D : eqType, (Rel C D -> Prop) -> (Rel C D -> Rel A B) -> Rel A B).
-Notation "'∪_{' p '}'  f" := (cupP _ _ _ _ p f) (at level 50).
-(* 本来なら sig_eqType で "Rel C D の元のうち述語 p を満たすもの" を指定したいところだが, その場合 p の型を L -> bool にする必要があるため面倒 *)
 
 Notation "'i'" := unit_eqType.
 
@@ -292,63 +299,78 @@ Axiom inc_alpha_universal : axiom7.
 
 (** %
 \begin{screen}
-\begin{axiom}[inc\_cap]
-Let $\alpha , \beta , \gamma :A \rel B$. Then,
-$$
-\alpha \sqsubseteq (\beta \sqcap \gamma) \Leftrightarrow \alpha \sqsubseteq \beta \land \alpha \sqsubseteq \gamma.
-$$
-\end{axiom}
-\end{screen}
-% **)
-Definition axiom8 := forall (A B : eqType)(alpha beta gamma : Rel A B),
- alpha ⊆ (beta ∩ gamma) <-> (alpha ⊆ beta) /\ (alpha ⊆ gamma).
-Axiom inc_cap : axiom8.
-
-(** %
-\begin{screen}
-\begin{axiom}[inc\_cup]
-Let $\alpha , \beta , \gamma :A \rel B$. Then,
-$$
-(\beta \sqcup \gamma) \sqsubseteq \alpha \Leftrightarrow \beta \sqsubseteq \alpha \land \gamma \sqsubseteq \alpha.
-$$
-\end{axiom}
-\end{screen}
-% **)
-Definition axiom9 := forall (A B : eqType)(alpha beta gamma : Rel A B),
- (beta ∪ gamma) ⊆ alpha <-> (beta ⊆ alpha) /\ (gamma ⊆ alpha).
-Axiom inc_cup : axiom9.
-
-(** %
-\begin{screen}
-\begin{axiom}[inc\_capP]
-Let $\alpha :A \rel B$, $f:(C \rel D) \to (A \rel B)$ and $P$ : predicate. Then,
+\begin{axiom}[inc\_capP, inc\_cap]
+\begin{verbatim}
+\end{verbatim}
+\begin{enumerate}
+\par \par
+\item {\bf inc\_capP :} Let $\alpha :A \rel B$, $f:(C \rel D) \to (A \rel B)$ and $P$ : predicate. Then,
 $$
 \alpha \sqsubseteq (\sqcap_{P(\beta)} f(\beta)) \Leftrightarrow \forall \beta :C \rel D, P(\beta) \Rightarrow \alpha \sqsubseteq f(\beta).
 $$
+\item {\bf inc\_cap :} Let $\alpha , \beta , \gamma :A \rel B$. Then,
+$$
+\alpha \sqsubseteq (\beta \sqcap \gamma) \Leftrightarrow \alpha \sqsubseteq \beta \land \alpha \sqsubseteq \gamma.
+$$
+\end{enumerate}
 \end{axiom}
 \end{screen}
 % **)
-Definition axiom10 :=
+Definition axiom8a :=
  forall (A B C D : eqType)
  (alpha : Rel A B)(f : Rel C D -> Rel A B)(P : Rel C D -> Prop),
  alpha ⊆ (∩_{P} f) <-> forall beta : Rel C D, P beta -> alpha ⊆ f beta.
-Axiom inc_capP : axiom10.
+Axiom inc_capP : axiom8a.
+Definition axiom8b := forall (A B : eqType)(alpha beta gamma : Rel A B),
+ alpha ⊆ (beta ∩ gamma) <-> (alpha ⊆ beta) /\ (alpha ⊆ gamma).
+Lemma inc_cap : axiom8b.
+Proof.
+move => A B alpha beta gamma.
+rewrite inc_capP.
+split; move => H.
+split; apply H.
+by [left].
+by [right].
+move => delta H0.
+case H0 => H1; rewrite H1; apply H.
+Qed.
 
 (** %
 \begin{screen}
-\begin{axiom}[inc\_cupP]
-Let $\alpha :A \rel B$, $f:(C \rel D) \to (A \rel B)$ and $P$ : predicate. Then,
+\begin{axiom}[inc\_cupP, inc\_cup]
+\begin{verbatim}
+\end{verbatim}
+\begin{enumerate}
+\item {\bf inc\_cupP :} Let $\alpha :A \rel B$, $f:(C \rel D) \to (A \rel B)$ and $P$ : predicate. Then,
 $$
 (\sqcup_{P(\beta)} f(\beta)) \sqsubseteq \alpha \Leftrightarrow \forall \beta :C \rel D, P(\beta) \Rightarrow f(\beta) \sqsubseteq \alpha.
 $$
+\item {\bf inc\_cup :} Let $\alpha , \beta , \gamma :A \rel B$. Then,
+$$
+(\beta \sqcup \gamma) \sqsubseteq \alpha \Leftrightarrow \beta \sqsubseteq \alpha \land \gamma \sqsubseteq \alpha.
+$$
+\end{enumerate}
 \end{axiom}
 \end{screen}
 % **)
-Definition axiom11 :=
+Definition axiom9a :=
  forall (A B C D : eqType)
  (alpha : Rel A B)(f : Rel C D -> Rel A B)(P : Rel C D -> Prop),
  (∪_{P} f) ⊆ alpha <-> forall beta : Rel C D, P beta -> f beta ⊆ alpha.
-Axiom inc_cupP : axiom11.
+Axiom inc_cupP : axiom9a.
+Definition axiom9b := forall (A B : eqType)(alpha beta gamma : Rel A B),
+ (beta ∪ gamma) ⊆ alpha <-> (beta ⊆ alpha) /\ (gamma ⊆ alpha).
+Lemma inc_cup : axiom9b.
+Proof.
+move => A B alpha beta gamma.
+rewrite inc_cupP.
+split; move => H.
+split; apply H.
+by [left].
+by [right].
+move => delta H0.
+case H0 => H1; rewrite H1; apply H.
+Qed.
 
 (** %
 \begin{screen}
@@ -360,9 +382,9 @@ $$
 \end{axiom}
 \end{screen}
 % **)
-Definition axiom12 := forall (A B : eqType)(alpha beta gamma : Rel A B),
+Definition axiom10 := forall (A B : eqType)(alpha beta gamma : Rel A B),
  alpha ⊆ (beta >> gamma) <-> (alpha ∩ beta) ⊆ gamma.
-Axiom inc_rpc : axiom12.
+Axiom inc_rpc : axiom10.
 
 (** %
 \begin{screen}
@@ -374,8 +396,8 @@ $$
 \end{axiom}
 \end{screen}
 % **)
-Definition axiom13 := forall (A B : eqType)(alpha : Rel A B), (alpha #) # = alpha.
-Axiom inv_invol : axiom13.
+Definition axiom11 := forall (A B : eqType)(alpha : Rel A B), (alpha #) # = alpha.
+Axiom inv_invol : axiom11.
 
 (** %
 \begin{screen}
@@ -387,9 +409,9 @@ $$
 \end{axiom}
 \end{screen}
 % **)
-Definition axiom14 := forall (A B C : eqType)(alpha : Rel A B)(beta : Rel B C),
+Definition axiom12 := forall (A B C : eqType)(alpha : Rel A B)(beta : Rel B C),
  (alpha ・ beta) # = (beta # ・ alpha #).
-Axiom comp_inv : axiom14.
+Axiom comp_inv : axiom12.
 
 (** %
 \begin{screen}
@@ -401,9 +423,9 @@ $$
 \end{axiom}
 \end{screen}
 % **)
-Definition axiom15 :=
+Definition axiom13 :=
  forall (A B : eqType)(alpha beta : Rel A B), alpha ⊆ beta -> alpha # ⊆ beta #.
-Axiom inc_inv : axiom15.
+Axiom inc_inv : axiom13.
 
 (** %
 \begin{screen}
@@ -415,11 +437,11 @@ $$
 \end{axiom}
 \end{screen}
 % **)
-Definition axiom16 :=
+Definition axiom14 :=
  forall (A B C : eqType)(alpha : Rel A B)(beta : Rel B C)(gamma : Rel A C),
  ((alpha ・ beta) ∩ gamma)
  ⊆ ((alpha ∩ (gamma ・ beta #)) ・ (beta ∩ (alpha # ・ gamma))).
-Axiom dedekind : axiom16.
+Axiom dedekind : axiom14.
 
 (** %
 \begin{screen}
@@ -431,10 +453,10 @@ $$
 \end{axiom}
 \end{screen}
 % **)
-Definition axiom17 :=
+Definition axiom15 :=
  forall (A B C : eqType)(alpha : Rel A B)(beta : Rel B C)(gamma : Rel A C),
  gamma ⊆ (alpha △ beta) <-> (alpha # ・ gamma) ⊆ beta.
-Axiom inc_residual : axiom17.
+Axiom inc_residual : axiom15.
 
 (** %
 \subsection{排中律}
@@ -448,9 +470,9 @@ $$
 \end{axiom}
 \end{screen}
 % **)
-Definition axiom18 := forall (A B : eqType)(alpha : Rel A B),
+Definition axiom16 := forall (A B : eqType)(alpha : Rel A B),
  alpha ∪ alpha ^ = ∇ A B.
-Axiom complement_classic : axiom18.
+Axiom complement_classic : axiom16.
 
 (** %
 \subsection{単域}
@@ -467,11 +489,11 @@ $$
 \end{axiom}
 \end{screen}
 % **)
-Definition axiom19 := forall (A : eqType), ∇ A i ・ ∇ i A = ∇ A A.
-Axiom unit_universal : axiom19.
+Definition axiom17 := forall (A : eqType), ∇ A i ・ ∇ i A = ∇ A A.
+Axiom unit_universal : axiom17.
 
 (** %
-\subsection{点公理}
+\subsection{弱選択公理}
 \begin{screen}
 この ``弱選択公理'' を仮定すれば, 排中律と単域の存在(厳密には全域性公理)を利用して点公理を導出できる.
 \begin{axiom}[weak\_axiom\_of\_choice]
@@ -482,14 +504,14 @@ $$
 \end{axiom}
 \end{screen}
 % **)
-Definition axiom20 := forall (A : eqType)(alpha : Rel i A),
+Definition axiom18 := forall (A : eqType)(alpha : Rel i A),
  total_r alpha -> exists beta : Rel i A, function_r beta /\ beta ⊆ alpha.
-Axiom weak_axiom_of_choice : axiom20.
+Axiom weak_axiom_of_choice : axiom18.
 
 (** %
 \subsection{関係の有理性}
 \begin{screen}
-集合論では色々インポートしながら頑張って証明したので, できればそちらもご参照ください.
+集合論では色々インポートしながら頑張って証明したので, できればそちらもご覧ください.
 \begin{axiom}[rationality]
 Let $\alpha :A \rel B$. Then,
 $$
@@ -498,10 +520,10 @@ $$
 \end{axiom}
 \end{screen}
 % **)
-Definition axiom21 := forall (A B : eqType)(alpha : Rel A B),
+Definition axiom19 := forall (A B : eqType)(alpha : Rel A B),
  exists (R : eqType)(f : Rel R A)(g : Rel R B),
  function_r f /\ function_r g /\ alpha = f # ・ g /\ ((f ・ f #) ∩ (g ・ g #)) = Id R.
-Axiom rationality : axiom21.
+Axiom rationality : axiom19.
 
 (** %
 \subsection{直和と直積}
@@ -515,11 +537,11 @@ $$
 \end{axiom}
 \end{screen}
 % **)
-Definition axiom22 :=
+Definition axiom20 :=
  forall (A B : eqType), exists (j : Rel A (sum_eqType A B))(k : Rel B (sum_eqType A B)),
  j ・ j # = Id A /\ k ・ k # = Id B /\ j ・ k # = φ A B /\
  (j # ・ j) ∪ (k # ・ k) = Id (sum_eqType A B).
-Axiom pair_of_inclusions : axiom22.
+Axiom pair_of_inclusions : axiom20.
 
 (** %
 \begin{screen}
@@ -532,7 +554,7 @@ $$
 \end{axiom}
 \end{screen}
 % **)
-Definition axiom23 :=
+Definition axiom21 :=
  forall (A B : eqType), exists (p : Rel (prod_eqType A B) A)(q : Rel (prod_eqType A B) B),
  p # ・ q = ∇ A B /\ (p ・ p #) ∩ (q ・ q #) = Id (prod_eqType A B) /\ univalent_r p /\ univalent_r q.
-Axiom pair_of_projections : axiom23.
+Axiom pair_of_projections : axiom21.

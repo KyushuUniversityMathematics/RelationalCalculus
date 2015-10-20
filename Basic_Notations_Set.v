@@ -35,11 +35,18 @@ Definition include {A B : eqType} (alpha beta : Rel A B) : Prop
  := (forall (a : A)(b : B), alpha a b -> beta a b).
 Notation "a '⊆' b" := (include a b) (at level 50).
 
-Definition cup {A B : eqType} (alpha beta : Rel A B) : Rel A B
- := (fun (a : A)(b : B) => alpha a b \/ beta a b).
+Definition cupP {A B C D : eqType} (P : Rel C D -> Prop) (f : Rel C D -> Rel A B) : Rel A B
+ := (fun (a : A)(b : B) => exists alpha : Rel C D, P alpha /\ (f alpha) a b).
+Notation "'∪_{' p '}'  f" := (cupP p f) (at level 50).
+Definition capP {A B C D : eqType} (P : Rel C D -> Prop) (f : Rel C D -> Rel A B) : Rel A B
+ := (fun (a : A)(b : B) => forall alpha : Rel C D, P alpha -> (f alpha) a b).
+Notation "'∩_{' p '}'  f" := (capP p f) (at level 50).
+
+Definition cup {A B : eqType} (alpha beta : Rel A B)
+ := ∪_{fun gamma : Rel A B => gamma = alpha \/ gamma = beta} id.
 Notation "a '∪' b" := (cup a b) (at level 50).
-Definition cap {A B : eqType} (alpha beta : Rel A B) : Rel A B
- := (fun (a : A)(b : B) => alpha a b /\ beta a b).
+Definition cap {A B : eqType} (alpha beta : Rel A B)
+ := ∩_{fun gamma : Rel A B => gamma = alpha \/ gamma = beta} id.
 Notation "a '∩' b" := (cap a b) (at level 50).
 Definition rpc {A B : eqType} (alpha beta : Rel A B) : Rel A B
  := (fun (a : A)(b : B) => alpha a b -> beta a b).
@@ -48,13 +55,6 @@ Definition complement {A B : eqType} (alpha : Rel A B) := alpha >> φ A B.
 Notation "a '^'" := (complement a) (at level 20).
 Definition difference {A B : eqType} (alpha beta : Rel A B) := alpha ∩ beta ^.
 Notation "a -- b" := (difference a b) (at level 50).
-
-Definition capP {A B C D : eqType} (P : Rel C D -> Prop) (f : Rel C D -> Rel A B) : Rel A B
- := (fun (a : A)(b : B) => forall alpha : Rel C D, P alpha -> (f alpha) a b).
-Notation "'∩_{' p '}'  f" := (capP p f) (at level 50).
-Definition cupP {A B C D : eqType} (P : Rel C D -> Prop) (f : Rel C D -> Rel A B) : Rel A B
- := (fun (a : A)(b : B) => exists alpha : Rel C D, P alpha /\ (f alpha) a b).
-Notation "'∪_{' p '}'  f" := (cupP p f) (at level 50).
 
 Notation "'i'" := unit_eqType.
 
@@ -269,77 +269,27 @@ Qed.
 
 (** %
 \begin{screen}
-\begin{lemma}[inc\_cap]
-Let $\alpha , \beta , \gamma :A \rel B$. Then,
-$$
-\alpha \sqsubseteq (\beta \sqcap \gamma) \Leftrightarrow \alpha \sqsubseteq \beta \land \alpha \sqsubseteq \gamma.
-$$
-\end{lemma}
-\end{screen}
-% **)
-Definition axiom8 := forall (A B : eqType)(alpha beta gamma : Rel A B),
- alpha ⊆ (beta ∩ gamma) <-> (alpha ⊆ beta) /\ (alpha ⊆ gamma).
-Lemma inc_cap : axiom8.
-Proof.
-move => A B alpha beta gamma.
-split; move => H.
-split.
-move => a b H0.
-apply (H a b H0).
-move => a b H0.
-apply (H a b H0).
-move => a b H0.
-split.
-apply H.
-apply H0.
-apply H.
-apply H0.
-Qed.
-
-(** %
-\begin{screen}
-\begin{lemma}[inc\_cup]
-Let $\alpha , \beta , \gamma :A \rel B$. Then,
-$$
-(\beta \sqcup \gamma) \sqsubseteq \alpha \Leftrightarrow \beta \sqsubseteq \alpha \land \gamma \sqsubseteq \alpha.
-$$
-\end{lemma}
-\end{screen}
-% **)
-Definition axiom9 := forall (A B : eqType)(alpha beta gamma : Rel A B),
- (beta ∪ gamma) ⊆ alpha <-> (beta ⊆ alpha) /\ (gamma ⊆ alpha).
-Lemma inc_cup : axiom9.
-Proof.
-move => A B alpha beta gamma.
-split; move => H.
-split.
-move => a b H0.
-apply H.
-left.
-apply H0.
-move => a b H0.
-apply H.
-right.
-apply H0.
-move => a b.
-case; apply H.
-Qed.
-
-(** %
-\begin{screen}
-\begin{lemma}[inc\_capP]
-Let $\alpha :A \rel B$, $f:(C \rel D) \to (A \rel B)$ and $P$ : predicate. Then,
+\begin{lemma}[inc\_capP, inc\_cap]
+\begin{verbatim}
+\end{verbatim}
+\begin{enumerate}
+\item {\bf inc\_capP :} Let $\alpha :A \rel B$, $f:(C \rel D) \to (A \rel B)$ and $P$ : predicate. Then,
 $$
 \alpha \sqsubseteq (\sqcap_{P(\beta)} f(\beta)) \Leftrightarrow \forall \beta :C \rel D, P(\beta) \Rightarrow \alpha \sqsubseteq f(\beta).
 $$
+\item {\bf inc\_cap :} Let $\alpha , \beta , \gamma :A \rel B$. Then,
+$$
+\alpha \sqsubseteq (\beta \sqcap \gamma) \Leftrightarrow \alpha \sqsubseteq \beta \land \alpha \sqsubseteq \gamma.
+$$
+\end{enumerate}
 \end{lemma}
 \end{screen}
 % **)
-Definition axiom10 :=
+Definition axiom8a :=
  forall (A B C D : eqType)
  (alpha : Rel A B)(f : Rel C D -> Rel A B)(P : Rel C D -> Prop),
  alpha ⊆ (∩_{P} f) <-> forall beta : Rel C D, P beta -> alpha ⊆ f beta.
-Lemma inc_capP : axiom10.
+Lemma inc_capP : axiom8a.
 Proof.
 move => A B C D alpha f P.
 split; move => H.
@@ -348,22 +298,43 @@ apply (H _ _ H1 _ H0).
 move => a b H0 beta H1.
 apply (H _ H1 _ _ H0).
 Qed.
+Definition axiom8b := forall (A B : eqType)(alpha beta gamma : Rel A B),
+ alpha ⊆ (beta ∩ gamma) <-> (alpha ⊆ beta) /\ (alpha ⊆ gamma).
+Lemma inc_cap : axiom8b.
+Proof.
+move => A B alpha beta gamma.
+rewrite inc_capP.
+split; move => H.
+split; apply H.
+by [left].
+by [right].
+move => delta H0.
+case H0 => H1; rewrite H1; apply H.
+Qed.
 
 (** %
 \begin{screen}
-\begin{lemma}[inc\_cupP]
-Let $\alpha :A \rel B$, $f:(C \rel D) \to (A \rel B)$ and $P$ : predicate. Then,
+\begin{lemma}[inc\_cupP, inc\_cup]
+\begin{verbatim}
+\end{verbatim}
+\begin{enumerate}
+\item {\bf inc\_cupP :} Let $\alpha :A \rel B$, $f:(C \rel D) \to (A \rel B)$ and $P$ : predicate. Then,
 $$
 (\sqcup_{P(\beta)} f(\beta)) \sqsubseteq \alpha \Leftrightarrow \forall \beta :C \rel D, P(\beta) \Rightarrow f(\beta) \sqsubseteq \alpha.
 $$
+\item {\bf inc\_cup :} Let $\alpha , \beta , \gamma :A \rel B$. Then,
+$$
+(\beta \sqcup \gamma) \sqsubseteq \alpha \Leftrightarrow \beta \sqsubseteq \alpha \land \gamma \sqsubseteq \alpha.
+$$
+\end{enumerate}
 \end{lemma}
 \end{screen}
 % **)
-Definition axiom11 :=
+Definition axiom9a :=
  forall (A B C D : eqType)
  (alpha : Rel A B)(f : Rel C D -> Rel A B)(P : Rel C D -> Prop),
  (∪_{P} f) ⊆ alpha <-> forall beta : Rel C D, P beta -> f beta ⊆ alpha.
-Lemma inc_cupP : axiom11.
+Lemma inc_cupP : axiom9a.
 Proof.
 move => A B C D alpha f P.
 split.
@@ -378,6 +349,19 @@ elim => beta.
 elim => H0 H1.
 apply (H beta H0 _ _ H1).
 Qed.
+Definition axiom9b := forall (A B : eqType)(alpha beta gamma : Rel A B),
+ (beta ∪ gamma) ⊆ alpha <-> (beta ⊆ alpha) /\ (gamma ⊆ alpha).
+Lemma inc_cup : axiom9b.
+Proof.
+move => A B alpha beta gamma.
+rewrite inc_cupP.
+split; move => H.
+split; apply H.
+by [left].
+by [right].
+move => delta H0.
+case H0 => H1; rewrite H1; apply H.
+Qed.
 
 (** %
 \begin{screen}
@@ -389,18 +373,22 @@ $$
 \end{lemma}
 \end{screen}
 % **)
-Definition axiom12 := forall (A B : eqType)(alpha beta gamma : Rel A B),
+Definition axiom10 := forall (A B : eqType)(alpha beta gamma : Rel A B),
  alpha ⊆ (beta >> gamma) <-> (alpha ∩ beta) ⊆ gamma.
-Lemma inc_rpc : axiom12.
+Lemma inc_rpc : axiom10.
 Proof.
 move => A B alpha beta gamma.
 split; move => H.
-move => a b.
-elim => H0 H1.
-apply (H _ _ H0 H1).
+move => a b H0.
+apply H.
+apply H0.
+by [left].
+apply H0.
+by [right].
 move => a b H0 H1.
 apply H.
-split.
+move => delta.
+case => H2; rewrite H2.
 apply H0.
 apply H1.
 Qed.
@@ -415,8 +403,8 @@ $$
 \end{lemma}
 \end{screen}
 % **)
-Definition axiom13 := forall (A B : eqType)(alpha : Rel A B), (alpha #) # = alpha.
-Lemma inv_invol : axiom13.
+Definition axiom11 := forall (A B : eqType)(alpha : Rel A B), (alpha #) # = alpha.
+Lemma inv_invol : axiom11.
 Proof.
 by [move => A B alpha].
 Qed.
@@ -431,9 +419,9 @@ $$
 \end{lemma}
 \end{screen}
 % **)
-Definition axiom14 := forall (A B C : eqType)(alpha : Rel A B)(beta : Rel B C),
+Definition axiom12 := forall (A B C : eqType)(alpha : Rel A B)(beta : Rel B C),
  (alpha ・ beta) # = (beta # ・ alpha #).
-Lemma comp_inv : axiom14.
+Lemma comp_inv : axiom12.
 Proof.
 move => A B C alpha beta.
 apply functional_extensionality.
@@ -464,9 +452,9 @@ $$
 \end{lemma}
 \end{screen}
 % **)
-Definition axiom15 :=
+Definition axiom13 :=
  forall (A B : eqType)(alpha beta : Rel A B), alpha ⊆ beta -> alpha # ⊆ beta #.
-Lemma inc_inv : axiom15.
+Lemma inc_inv : axiom13.
 Proof.
 move => A B alpha beta H b a H0.
 apply (H _ _ H0).
@@ -482,28 +470,38 @@ $$
 \end{lemma}
 \end{screen}
 % **)
-Definition axiom16 :=
+Definition axiom14 :=
  forall (A B C : eqType)(alpha : Rel A B)(beta : Rel B C)(gamma : Rel A C),
  ((alpha ・ beta) ∩ gamma)
  ⊆ ((alpha ∩ (gamma ・ beta #)) ・ (beta ∩ (alpha # ・ gamma))).
-Lemma dedekind : axiom16.
+Lemma dedekind : axiom14.
 Proof.
-move => A B C alpha beta gamma a c.
-elim.
-elim => b.
-move => H H0.
+move => A B C alpha beta gamma a c H.
+assert (exists b : B, alpha a b /\ beta b c).
+apply H.
+by [left].
+elim H0 => b.
+elim => H1 H2.
 exists b.
 repeat split.
-apply H.
+move => delta H3.
+case H3 => H4; rewrite H4.
+apply H1.
+unfold id.
 exists c.
 split.
-apply H0.
 apply H.
-apply H.
+by [right].
+apply H2.
+move => delta H3.
+case H3 => H4; rewrite H4.
+apply H2.
+unfold id.
 exists a.
 split.
+apply H1.
 apply H.
-apply H0.
+by [right].
 Qed.
 
 (** %
@@ -516,10 +514,10 @@ $$
 \end{lemma}
 \end{screen}
 % **)
-Definition axiom17 :=
+Definition axiom15 :=
  forall (A B C : eqType)(alpha : Rel A B)(beta : Rel B C)(gamma : Rel A C),
  gamma ⊆ (alpha △ beta) <-> (alpha # ・ gamma) ⊆ beta.
-Lemma inc_residual : axiom17.
+Lemma inc_residual : axiom15.
 Proof.
 move => A B C alpha beta gamma.
 split; move => H.
@@ -548,9 +546,9 @@ $$
 \end{lemma}
 \end{screen}
 % **)
-Definition axiom18 := forall (A B : eqType)(alpha : Rel A B),
+Definition axiom16 := forall (A B : eqType)(alpha : Rel A B),
  alpha ∪ alpha ^ = ∇ A B.
-Lemma complement_classic : axiom18.
+Lemma complement_classic : axiom16.
 Proof.
 move => A B alpha.
 apply functional_extensionality.
@@ -560,7 +558,15 @@ move => b.
 apply prop_extensionality_ok.
 split; move => H.
 apply I.
-apply classic.
+case (classic (alpha a b)) => H0.
+exists alpha.
+split.
+by [left].
+apply H0.
+exists (fun (a0 : A) (b0 : B) => alpha a0 b0 -> False).
+split.
+by [right].
+apply H0.
 Qed.
 
 (** %
@@ -578,8 +584,8 @@ $$
 \end{lemma}
 \end{screen}
 % **)
-Definition axiom19 := forall (A : eqType), ∇ A i ・ ∇ i A = ∇ A A.
-Lemma unit_universal : axiom19.
+Definition axiom17 := forall (A : eqType), ∇ A i ・ ∇ i A = ∇ A A.
+Lemma unit_universal : axiom17.
 Proof.
 move => A.
 apply functional_extensionality.
@@ -594,7 +600,7 @@ by [].
 Qed.
 
 (** %
-\subsection{点公理}
+\subsection{弱選択公理}
 \begin{screen}
 この ``弱選択公理'' を仮定すれば, 排中律と単域の存在(厳密には全域性公理)を利用して点公理を導出できる.
 \begin{lemma}[weak\_axiom\_of\_choice]
@@ -605,9 +611,9 @@ $$
 \end{lemma}
 \end{screen}
 % **)
-Definition axiom20 := forall (A : eqType)(alpha : Rel i A),
+Definition axiom18 := forall (A : eqType)(alpha : Rel i A),
  total_r alpha -> exists beta : Rel i A, function_r beta /\ beta ⊆ alpha.
-Lemma weak_axiom_of_choice : axiom20.
+Lemma weak_axiom_of_choice : axiom18.
 Proof.
 move => A alpha.
 rewrite /function_r/total_r/univalent_r/identity/include/composite/inverse.
@@ -704,13 +710,13 @@ Qed.
 \hrulefill
 % **)
 
-Definition axiom21 := forall (A B : eqType)(alpha : Rel A B),
+Definition axiom19 := forall (A B : eqType)(alpha : Rel A B),
  exists (R : eqType)(f : Rel R A)(g : Rel R B),
  function_r f /\ function_r g /\ alpha = f # ・ g /\ ((f ・ f #) ∩ (g ・ g #)) = Id R.
-Lemma rationality : axiom21.
+Lemma rationality : axiom19.
 Proof.
 move => A B alpha.
-rewrite /function_r/total_r/univalent_r/identity/cap/composite/inverse/include.
+rewrite /function_r/total_r/univalent_r/cap/capP/identity/composite/inverse/include.
 exists (sig_eqType (fun x : prod_eqType A B => is_true_inv (alpha (fst x) (snd x)))).
 exists (fun x a => a = (fst (sval x))).
 exists (fun x b => b = (snd (sval x))).
@@ -758,15 +764,19 @@ move => y0.
 apply prop_extensionality_ok.
 split; move => H.
 apply sval_injective.
-elim H => H0 H1.
-elim H0 => a.
-elim => H2 H3.
-elim H1 => b.
-elim => H4 H5.
-rewrite (surjective_pairing (sval y0)) -H3 -H5 H2 H4.
+move : (H (fun a c : {x : A * B | is_true (is_true_inv (alpha (fst x) (snd x)))} => exists b : A, b = fst (sval a) /\ b = fst (sval c)) (or_introl Logic.eq_refl)).
+move : (H (fun a c : {x : A * B | is_true (is_true_inv (alpha (fst x) (snd x)))} => exists b : B, b = snd (sval a) /\ b = snd (sval c)) (or_intror Logic.eq_refl)).
+unfold id.
+clear H.
+elim => b.
+elim => H H0.
+elim => a.
+elim => H1 H2.
+rewrite (surjective_pairing (sval y0)) -H0 -H2 H H1.
 apply surjective_pairing.
 rewrite H.
-split.
+move => beta H0.
+case H0 => H1; rewrite H1; unfold id.
 exists (fst (sval y0)).
 repeat split.
 exists (snd (sval y0)).
@@ -785,11 +795,11 @@ $$
 \end{lemma}
 \end{screen}
 % **)
-Definition axiom22 :=
+Definition axiom20 :=
  forall (A B : eqType), exists (j : Rel A (sum_eqType A B))(k : Rel B (sum_eqType A B)),
  j ・ j # = Id A /\ k ・ k # = Id B /\ j ・ k # = φ A B /\
  (j # ・ j) ∪ (k # ・ k) = Id (sum_eqType A B).
-Lemma pair_of_inclusions : axiom22.
+Lemma pair_of_inclusions : axiom20.
 Proof.
 move => A B.
 exists (fun (a : A)(x : sum_eqType A B) => x = inl a).
@@ -839,25 +849,37 @@ apply functional_extensionality.
 move => x0.
 apply prop_extensionality_ok.
 split.
-case.
-elim => a.
+elim => alpha.
 elim => H0 H1.
-by [rewrite H0 H1].
-elim => b.
-elim => H0 H1.
-by [rewrite H0 H1].
-move : x0.
-apply (sum_ind (fun x0 => x = x0 -> (exists b : A, x = inl b /\ x0 = inl b) \/ (exists b : B, x = inr b /\ x0 = inr b))).
-move => a H.
+case H0 => H2; rewrite H2 in H1.
+elim H1 => a.
+elim => H3 H4.
+by [rewrite H3 H4].
+elim H1 => b.
+elim => H3 H4.
+by [rewrite H3 H4].
+assert ((exists a : A, x = inl a) \/ (exists b : B, x = inr b)).
+move : x.
+apply sum_ind.
+move => a.
 left.
-exists a.
-repeat split.
-apply H.
-move => b H.
+by [exists a].
+move => b.
 right.
+by [exists b].
+case H.
+elim => a H0 H1.
+exists (fun x x0 => exists a0 : A, (x = inl a0 /\ x0 = inl a0)).
+split.
+by [left].
+exists a.
+by [rewrite -H1 H0].
+elim => b H0 H1.
+exists (fun x x0 => exists b0 : B, (x = inr b0 /\ x0 = inr b0)).
+split.
+by [right].
 exists b.
-repeat split.
-apply H.
+by [rewrite -H1 H0].
 Qed.
 
 (** %
@@ -871,10 +893,10 @@ $$
 \end{lemma}
 \end{screen}
 % **)
-Definition axiom23 :=
+Definition axiom21 :=
  forall (A B : eqType), exists (p : Rel (prod_eqType A B) A)(q : Rel (prod_eqType A B) B),
  p # ・ q = ∇ A B /\ (p ・ p #) ∩ (q ・ q #) = Id (prod_eqType A B) /\ univalent_r p /\ univalent_r q.
-Lemma pair_of_projections : axiom23.
+Lemma pair_of_projections : axiom21.
 Proof.
 move => A B.
 exists (fun (x : prod_eqType A B)(a : A) => a = (fst x)).
@@ -895,19 +917,24 @@ move => x.
 apply functional_extensionality.
 move => x0.
 apply prop_extensionality_ok.
-split.
-repeat elim.
-move => a.
-elim => H H0.
+split; move => H.
+move : (H (fun a c : prod_eqType A B => exists b : A, b = fst a /\ b = fst c) (or_introl Logic.eq_refl)).
+move : (H (fun a c : prod_eqType A B => exists b : B, b = snd a /\ b = snd c) (or_intror Logic.eq_refl)).
+unfold id.
+clear H.
 elim => b.
+elim => H H0.
+elim => a.
 elim => H1 H2.
 rewrite (surjective_pairing x0) -H0 -H2 H H1.
 apply surjective_pairing.
-move => H.
 rewrite H.
-split.
-by [exists (fst x0)].
-by [exists (snd x0)].
+move => alpha H0.
+case H0 => H1; rewrite H1; unfold id.
+exists (fst x0).
+repeat split.
+exists (snd x0).
+repeat split.
 split.
 move => a a0.
 elim => x.
