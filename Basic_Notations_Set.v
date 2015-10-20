@@ -600,38 +600,43 @@ by [].
 Qed.
 
 (** %
-\subsection{弱選択公理}
+\subsection{選択公理}
 \begin{screen}
-この ``弱選択公理'' を仮定すれば, 排中律と単域の存在(厳密には全域性公理)を利用して点公理を導出できる.
-\begin{lemma}[weak\_axiom\_of\_choice]
-Let $\alpha :I \rel A$ be a total relation. Then,
+この ``選択公理'' を仮定すれば, 排中律と単域の存在(厳密には全域性公理)を利用して点公理を導出できる. 証明には集合論の選択公理を用いる.
+\begin{lemma}[axiom\_of\_choice]
+Let $\alpha :A \rel B$ be a total relation. Then,
 $$
-\exists \beta :I \to A, \beta \sqsubseteq \alpha.
+\exists \beta :A \to B, \beta \sqsubseteq \alpha.
 $$
 \end{lemma}
 \end{screen}
 % **)
-Definition axiom18 := forall (A : eqType)(alpha : Rel i A),
- total_r alpha -> exists beta : Rel i A, function_r beta /\ beta ⊆ alpha.
-Lemma weak_axiom_of_choice : axiom18.
+Definition axiom18 := forall (A B : eqType)(alpha : Rel A B),
+ total_r alpha -> exists beta : Rel A B, function_r beta /\ beta ⊆ alpha.
+Lemma axiom_of_choice : axiom18.
 Proof.
-move => A alpha.
+move => A B alpha.
 rewrite /function_r/total_r/univalent_r/identity/include/composite/inverse.
 move => H.
-move : (H tt tt (Logic.eq_refl tt)).
-elim => a H0.
-exists (fun (_ : i)(a0 : A) => a = a0).
-repeat split.
-move => tt tt0 H1.
-by [exists a].
-move => a0 a1.
-elim => tt0.
-elim => H1 H2.
-by [rewrite -H1 -H2].
-induction a0.
-move => a0 H1.
-rewrite -H1.
+assert (forall a : A, {b : B | alpha a b}).
+move => a.
+apply constructive_indefinite_description.
+move : (H a a (Logic.eq_refl a)).
+elim => b H0.
+exists b.
 apply H0.
+exists (fun (a : A)(b : B) => b = sval (X a)).
+repeat split.
+move => a a0 H0.
+exists (sval (X a)).
+by [rewrite H0].
+move => b b0.
+elim => a.
+elim => H0 H1.
+by [rewrite H0 H1].
+move => a b H0.
+rewrite H0.
+apply proj2_sig.
 Qed.
 
 (** %

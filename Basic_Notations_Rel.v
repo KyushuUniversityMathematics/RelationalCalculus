@@ -493,20 +493,20 @@ Definition axiom17 := forall (A : eqType), ∇ A i ・ ∇ i A = ∇ A A.
 Axiom unit_universal : axiom17.
 
 (** %
-\subsection{弱選択公理}
+\subsection{選択公理}
 \begin{screen}
-この ``弱選択公理'' を仮定すれば, 排中律と単域の存在(厳密には全域性公理)を利用して点公理を導出できる.
-\begin{axiom}[weak\_axiom\_of\_choice]
-Let $\alpha :I \rel A$ be a total relation. Then,
+この ``選択公理'' を仮定すれば, 排中律と単域の存在(厳密には全域性公理)を利用して点公理を導出できる.
+\begin{axiom}[axiom\_of\_choice]
+Let $\alpha :A \rel B$ be a total relation. Then,
 $$
-\exists \beta :I \to A, \beta \sqsubseteq \alpha.
+\exists \beta :A \to B, \beta \sqsubseteq \alpha.
 $$
 \end{axiom}
 \end{screen}
 % **)
-Definition axiom18 := forall (A : eqType)(alpha : Rel i A),
- total_r alpha -> exists beta : Rel i A, function_r beta /\ beta ⊆ alpha.
-Axiom weak_axiom_of_choice : axiom18.
+Definition axiom18 := forall (A B : eqType)(alpha : Rel A B),
+ total_r alpha -> exists beta : Rel A B, function_r beta /\ beta ⊆ alpha.
+Axiom axiom_of_choice : axiom18.
 
 (** %
 \subsection{関係の有理性}
