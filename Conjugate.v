@@ -65,7 +65,8 @@ $$
 Lemma injection_conjugate {A B C : eqType} {j : Rel C B}:
  injection_r j ->
  conjugate A B A C (fun f : Rel A B => ((f # ・ f) ⊆ (j # ・ j)) /\ function_r f)
- (fun h : Rel A C => function_r h) (fun h : Rel A C => h ・ j) (fun f : Rel A B => f ・ j #).
+ (fun h : Rel A C => function_r h) (fun h : Rel A C => h ・ j)
+ (fun f : Rel A B => f ・ j #).
 Proof.
 elim.
 elim => H H0 H1.

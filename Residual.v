@@ -357,7 +357,7 @@ Qed.
 (** %
 \begin{screen}
 \begin{lemma}[residual\_id]
-Let $\alpha :A \to B$. Then
+Let $\alpha :A \rel B$. Then
 $$
 id_A \rhd \alpha = \alpha.
 $$
