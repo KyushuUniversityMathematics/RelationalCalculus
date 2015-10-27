@@ -545,7 +545,8 @@ Axiom pair_of_inclusions : axiom20.
 
 (** %
 \begin{screen}
-任意の直積に対して, 射影対が存在することを仮定する.
+任意の直積に対して, 射影対が存在することを仮定する. \\
+実は有理性公理(Axiom 19)があれば直積の公理は必要ないのだが, Axiom 19 の準用では直積が ``存在する'' ことまでしか示してくれないので, ``直積として \verb|prod_eqType A B| を用いてよい'' ことを公理の中に含めたものを用意しておく.
 \begin{axiom}[pair\_of\_projections]
 $\exists p:A \times B \to A, \exists q:A \times B \to B,$
 $$

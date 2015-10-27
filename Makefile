@@ -86,7 +86,6 @@ VFILES:=Point_Axiom.v\
   Residual.v\
   Domain.v\
   Conjugate.v\
-  Rationality.v\
   Dedekind.v\
   Functions_Mappings.v\
   Relation_Properties.v\
