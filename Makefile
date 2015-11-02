@@ -87,6 +87,7 @@ VFILES:=Point_Axiom.v\
   Domain.v\
   Conjugate.v\
   Dedekind.v\
+  Tactics.v\
   Functions_Mappings.v\
   Relation_Properties.v\
   Basic_Lemmas.v\
