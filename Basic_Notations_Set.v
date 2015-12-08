@@ -1,4 +1,4 @@
-Require Export ssreflect eqtype bigop.
+Require Export Ssreflect.ssreflect Ssreflect.eqtype MathComp.bigop.
 Require Export Logic.ClassicalFacts.
 Require Import Logic.FunctionalExtensionality.
 Require Import Logic.Classical_Prop.
