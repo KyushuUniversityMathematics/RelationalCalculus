@@ -5,6 +5,15 @@ Require Import Functions_Mappings.
 Require Import Dedekind.
 Require Import Tactics.
 
+Module main (def : Relation).
+Import def.
+Module Basic_Lemmas := Basic_Lemmas.main def.
+Module Relation_Properties := Relation_Properties.main def.
+Module Functions_Mappings := Functions_Mappings.main def.
+Module Dedekind := Dedekind.main def.
+Module Tactics := Tactics.main def.
+Import Basic_Lemmas Relation_Properties Functions_Mappings Dedekind Tactics.
+
 Check Tactics.total_comp.
 
 Lemma sample {A : eqType} {alpha : Rel A A}: alpha ⊆ Id A -> alpha # = alpha.
@@ -34,4 +43,4 @@ rewrite inv_inc_move.
 apply H0.
 Qed.
 
-(* *)
+End main.
