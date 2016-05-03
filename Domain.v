@@ -5,6 +5,14 @@ Require Import Functions_Mappings.
 Require Import Dedekind.
 Require Import Logic.FunctionalExtensionality.
 
+Module main (def : Relation).
+Import def.
+Module Basic_Lemmas := Basic_Lemmas.main def.
+Module Relation_Properties := Relation_Properties.main def.
+Module Functions_Mappings := Functions_Mappings.main def.
+Module Dedekind := Dedekind.main def.
+Import Basic_Lemmas Relation_Properties Functions_Mappings Dedekind.
+
 (** %
 \section{定義域の定義}
 \begin{screen}
@@ -784,3 +792,5 @@ apply comp_inc_compat_ab_a.
 rewrite unit_identity_is_universal.
 apply inc_alpha_universal.
 Qed.
+
+End main.

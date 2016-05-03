@@ -1,7 +1,12 @@
-Require Import Basic_Notations.
+Require Import Basic_Notations_Set.
 Require Import Basic_Lemmas.
 Require Import Logic.FunctionalExtensionality.
 Require Import Logic.Classical_Prop.
+
+Module main (def : Relation).
+Import def.
+Module Basic_Lemmas := Basic_Lemmas.main def.
+Import Basic_Lemmas.
 
 (** %
 \section{関係計算の基本的な性質}
@@ -1410,3 +1415,5 @@ case H0.
 by [].
 by [].
 Qed.
+
+End main.

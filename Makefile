@@ -91,9 +91,8 @@ VFILES:=Point_Axiom.v\
   Functions_Mappings.v\
   Relation_Properties.v\
   Basic_Lemmas.v\
-  Basic_Notations.v\
   Basic_Notations_Set.v\
-  Basic_Notations_Rel.v
+  Basic_Notations.v
 
 -include $(addsuffix .d,$(VFILES))
 .SECONDARY: $(addsuffix .d,$(VFILES))

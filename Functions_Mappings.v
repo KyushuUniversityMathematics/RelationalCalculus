@@ -1,7 +1,13 @@
-Require Import Basic_Notations.
+Require Import Basic_Notations_Set.
 Require Import Basic_Lemmas.
 Require Import Relation_Properties.
 Require Import Logic.FunctionalExtensionality.
+
+Module main (def : Relation).
+Import def.
+Module Basic_Lemmas := Basic_Lemmas.main def.
+Module Relation_Properties := Relation_Properties.main def.
+Import Basic_Lemmas Relation_Properties.
 
 (** %
 \section{全域性, 一価性, 写像に関する補題}
@@ -1005,3 +1011,5 @@ apply H0.
 by [rewrite inv_invol].
 apply H0.
 Qed.
+
+End main.

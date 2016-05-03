@@ -1,18 +1,15 @@
-Require Export Ssreflect.ssreflect Ssreflect.eqtype MathComp.bigop.
-Require Export Logic.ClassicalFacts.
+Require Export Basic_Notations.
 Require Import Logic.FunctionalExtensionality.
 Require Import Logic.Classical_Prop.
 Require Import Logic.IndefiniteDescription.
 Require Import Logic.ProofIrrelevance.
 
-Axiom prop_extensionality_ok : prop_extensionality.
-
 (** %
 \section{定義}
-この章では, 関係を集合論的に定義した場合の定義, およびその定義で諸公理が成立することを示す. 公理名や記号などは \verb|Basic_Notations| と同じものを使用するため, \verb|Basic_Lemms| 以降ではそれの代わりにこのライブラリをインポートすることもできる.
+この章では, 関係を集合論的に定義した場合の定義, およびその定義で諸公理が成立することを示す. 公理名や記号などは \verb|Basic_Notations| と同じものを使用する.
 % **)
 
-Definition Rel (A B : eqType) := A -> B -> Prop.
+Module Rel_Set <: Relation.
 
 Definition inverse {A B : eqType} (alpha : Rel A B) : Rel B A
  := (fun (b : B)(a : A) => alpha a b).
@@ -951,3 +948,5 @@ elim => x.
 elim => H H0.
 by [rewrite H H0].
 Qed.
+
+End Rel_Set.

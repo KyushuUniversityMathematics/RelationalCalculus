@@ -2,6 +2,12 @@ Require Import Basic_Notations.
 Require Import Basic_Lemmas.
 Require Import Relation_Properties.
 
+Module main (def : Relation).
+Import def.
+Module Basic_Lemmas := Basic_Lemmas.main def.
+Module Relation_Properties := Relation_Properties.main def.
+Import Basic_Lemmas Relation_Properties.
+
 (** %
 \section{Tactic 用の補題}
 \begin{screen}
@@ -162,4 +168,4 @@ Proof.
 Rel_simpl.
 Qed.
 
-(* *)
+End main.

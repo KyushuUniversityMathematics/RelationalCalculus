@@ -7,6 +7,16 @@ Require Import Conjugate.
 Require Import Domain.
 Require Import Logic.IndefiniteDescription.
 
+Module main (def : Relation).
+Import def.
+Module Basic_Lemmas := Basic_Lemmas.main def.
+Module Relation_Properties := Relation_Properties.main def.
+Module Functions_Mappings := Functions_Mappings.main def.
+Module Dedekind := Dedekind.main def.
+Module Conjugate := Conjugate.main def.
+Module Domain := Domain.main def.
+Import Basic_Lemmas Relation_Properties Functions_Mappings Dedekind Conjugate Domain.
+
 (** %
 \section{関係の直和}
 \subsection{入射対, 関係直和の定義}
@@ -1343,3 +1353,5 @@ apply (comp_inc_compat_ab_b H).
 rewrite -comp_assoc (dedekind_id1 H0).
 apply (comp_inc_compat_ab_a H0).
 Qed.
+
+End main.

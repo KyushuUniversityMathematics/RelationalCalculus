@@ -4,6 +4,14 @@ Require Import Relation_Properties.
 Require Import Functions_Mappings.
 Require Import Dedekind.
 
+Module main (def : Relation).
+Import def.
+Module Basic_Lemmas := Basic_Lemmas.main def.
+Module Relation_Properties := Relation_Properties.main def.
+Module Functions_Mappings := Functions_Mappings.main def.
+Module Dedekind := Dedekind.main def.
+Import Basic_Lemmas Relation_Properties Functions_Mappings Dedekind.
+
 (** %
 \section{共役性の定義}
 \begin{screen}
@@ -425,3 +433,5 @@ rewrite -H5.
 apply f_equal.
 apply H.
 Qed.
+
+End main.

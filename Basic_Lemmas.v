@@ -1,5 +1,8 @@
-Require Import Basic_Notations.
+Require Import Basic_Notations_Set.
 Require Import Logic.Classical_Prop.
+
+Module main (def : Relation).
+Import def.
 
 (** %
 \section{束論に関する補題}
@@ -1504,3 +1507,5 @@ Proof.
 rewrite bool_lemma1.
 by [rewrite cup_assoc].
 Qed.
+
+End main.

@@ -6,6 +6,15 @@ Require Import Dedekind.
 Require Import Domain.
 Require Import Logic.FunctionalExtensionality.
 
+Module main (def : Relation).
+Import def.
+Module Basic_Lemmas := Basic_Lemmas.main def.
+Module Relation_Properties := Relation_Properties.main def.
+Module Functions_Mappings := Functions_Mappings.main def.
+Module Dedekind := Dedekind.main def.
+Module Domain := Domain.main def.
+Import Basic_Lemmas Relation_Properties Functions_Mappings Dedekind Domain.
+
 (** %
 \section{剰余合成関係の性質}
 \subsection{基本的な性質}
@@ -1402,3 +1411,5 @@ apply inc_lower.
 move => delta.
 by [rewrite inc_leftres inc_residual -comp_assoc -inc_leftres -inc_residual].
 Qed.
+
+End main.

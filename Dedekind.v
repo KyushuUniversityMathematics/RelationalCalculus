@@ -1,7 +1,14 @@
-Require Import Basic_Notations.
+Require Import Basic_Notations_Set.
 Require Import Basic_Lemmas.
 Require Import Relation_Properties.
 Require Import Functions_Mappings.
+
+Module main (def : Relation).
+Import def.
+Module Basic_Lemmas := Basic_Lemmas.main def.
+Module Relation_Properties := Relation_Properties.main def.
+Module Functions_Mappings := Functions_Mappings.main def.
+Import Basic_Lemmas Relation_Properties Functions_Mappings.
 
 (** %
 \section{Dedekind formula に関する補題}
@@ -337,3 +344,5 @@ rewrite cap_comm -inc_rpc.
 apply H1.
 apply H2.
 Qed.
+
+End main.

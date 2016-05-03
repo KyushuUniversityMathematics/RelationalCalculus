@@ -6,6 +6,15 @@ Require Import Dedekind.
 Require Import Residual.
 Require Import Logic.FunctionalExtensionality.
 
+Module main (def : Relation).
+Import def.
+Module Basic_Lemmas := Basic_Lemmas.main def.
+Module Relation_Properties := Relation_Properties.main def.
+Module Functions_Mappings := Functions_Mappings.main def.
+Module Dedekind := Dedekind.main def.
+Module Residual := Residual.main def.
+Import Basic_Lemmas Relation_Properties Functions_Mappings Dedekind Residual.
+
 (** %
 \section{Schr$\ddot{\mbox{o}}$der 圏の性質}
 \begin{screen}
@@ -366,3 +375,5 @@ apply functional_extensionality.
 move => x.
 by [rewrite residual_to_complement complement_invol].
 Qed.
+
+End main.

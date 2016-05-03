@@ -1,9 +1,17 @@
-Require Import Basic_Notations.
+Require Import Basic_Notations_Set.
 Require Import Basic_Lemmas.
 Require Import Relation_Properties.
 Require Import Functions_Mappings.
 Require Import Dedekind.
 Require Import Logic.IndefiniteDescription.
+
+Module main (def : Relation).
+Import def.
+Module Basic_Lemmas := Basic_Lemmas.main def.
+Module Relation_Properties := Relation_Properties.main def.
+Module Functions_Mappings := Functions_Mappings.main def.
+Module Dedekind := Dedekind.main def.
+Import Basic_Lemmas Relation_Properties Functions_Mappings Dedekind.
 
 (** %
 \section{I-点}
@@ -643,3 +651,5 @@ rewrite -comp_assoc.
 apply comp_inc_compat_ab_b.
 apply H.
 Qed.
+
+End main.
