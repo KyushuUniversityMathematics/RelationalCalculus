@@ -1,4 +1,4 @@
-Require Export ssreflect eqtype bigop.
+Require Export Ssreflect.ssreflect Ssreflect.eqtype MathComp.bigop.
 Require Export Logic.ClassicalFacts.
 
 Axiom prop_extensionality_ok : prop_extensionality.
