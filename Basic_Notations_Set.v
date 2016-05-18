@@ -1,4 +1,4 @@
-Require Export Basic_Notations.
+From RelationalCalculus Require Export Basic_Notations.
 Require Import Logic.FunctionalExtensionality.
 Require Import Logic.Classical_Prop.
 Require Import Logic.IndefiniteDescription.
