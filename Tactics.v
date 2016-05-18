@@ -1,6 +1,4 @@
-Require Import Basic_Notations_Set.
-Require Import Basic_Lemmas.
-Require Import Relation_Properties.
+From RelationalCalculus Require Import Basic_Notations Basic_Lemmas Relation_Properties.
 
 Module main (def : Relation).
 Import def.

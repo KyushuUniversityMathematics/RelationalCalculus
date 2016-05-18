@@ -1,4 +1,4 @@
-Require Import Basic_Notations_Set.
+Require Import RelationalCalculus.Basic_Notations.
 Require Import Logic.Classical_Prop.
 
 Module main (def : Relation).

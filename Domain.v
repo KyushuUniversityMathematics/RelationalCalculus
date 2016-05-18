@@ -1,8 +1,4 @@
-Require Import Basic_Notations_Set.
-Require Import Basic_Lemmas.
-Require Import Relation_Properties.
-Require Import Functions_Mappings.
-Require Import Dedekind.
+From RelationalCalculus Require Import Basic_Notations Basic_Lemmas Relation_Properties Functions_Mappings Dedekind.
 Require Import Logic.FunctionalExtensionality.
 
 Module main (def : Relation).
