@@ -771,7 +771,7 @@ Proof.
 
   elim=>b[{}H H1].
   elim=>a[H2 H3].
-  have H4:forall x y:A*B, x.1=y.1 -> x.2=y.2 -> x = y.
+  have H4:forall x y:A*B, fst x=fst y -> x.2=y.2 -> x = y.
   move => x x0.
   destruct x, x0.
   simpl=>H4 H5.
@@ -779,7 +779,7 @@ Proof.
   apply/H4;by subst.
 
   move=>alpha0.
-  case=>H1;subst;by [exists (sval y0).1|exists (sval y0).2].
+  case=>H1;subst  ; by [exists (sval y0).1%PAIR|exists (sval y0).2].
 Qed.
 
 (** %
