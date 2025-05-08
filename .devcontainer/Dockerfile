@@ -8,3 +8,4 @@ RUN opam install coq-mathcomp-ssreflect.1.19.0 -y
 RUN opam install vscoq-language-server -y 
 # RUN coq_makefile -f _CoqProject -o Makefile 
 # RUN make
+CMD ["/bin/bash"]
