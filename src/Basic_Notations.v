@@ -1,4 +1,4 @@
-From mathcomp Require Export all_ssreflect.
+From mathcomp Require Export ssreflect.ssreflect ssreflect.eqtype ssrfun bigop ssrbool.
 Require Export Logic.ClassicalFacts.
 
 (** %

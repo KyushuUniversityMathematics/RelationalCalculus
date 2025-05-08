@@ -712,6 +712,7 @@ Qed.
 (** %
 \hrulefill
 % **)
+
 Definition axiom19 := forall (A B : eqType)(alpha : Rel A B),
  exists (R : eqType)(f : Rel R A)(g : Rel R B),
  function_r f /\ function_r g /\ alpha = f # ・ g /\ ((f ・ f #) ∩ (g ・ g #)) = Id R.
