@@ -8,4 +8,4 @@ FROM mathcomp/mathcomp:1.19.0-coq-8.20
 # RUN opam install vscoq-language-server -y 
 # RUN coq_makefile -f _CoqProject -o Makefile 
 # RUN make
-SHELL ["/bin/bash", "-it"]
+# SHELL ["/bin/bash", "-it"]
