@@ -1,5 +1,5 @@
 # Use the official Ubuntu 22.04 base image
-# FROM mathcomp/mathcomp:1.19.0-coq-8.20
+FROM mathcomp/mathcomp:1.19.0-coq-8.20
 #
 # RUN opam init -y 
 # RUN eval $(opam env) 
