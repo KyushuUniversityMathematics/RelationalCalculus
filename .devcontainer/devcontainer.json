@@ -13,9 +13,9 @@
         }
       }
     },
-    # "build": {
-    # "dockerfile": "Dockerfile"
-    # },
+    // "build": {
+    // "dockerfile": "Dockerfile"
+    // },
     "remoteUser": "vscode", // ユーザー名を指定
     "workspaceFolder": "/workspaces/CoqSticker", // コードが格納されるディレクトリ
     "shutdownAction": "none" // コンテナ終了時のアクション設定
