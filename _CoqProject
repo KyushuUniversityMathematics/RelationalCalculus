@@ -1,0 +1,15 @@
+-Q src MyLib
+src/Basic_Notations.v
+src/Basic_Notations_Set.v
+src/Basic_Lemmas.v
+src/Relation_Properties.v
+src/Functions_Mappings.v
+src/Tactics.v
+src/Dedekind.v
+src/Conjugate.v
+src/Domain.v
+src/Residual.v
+src/Schroder.v
+src/Sum_Product.v
+src/Point_Axiom.v
+src/RelationalCalculus.v
