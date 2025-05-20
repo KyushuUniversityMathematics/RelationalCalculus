@@ -2,12 +2,8 @@
 	"name": "OCaml",
 	"image": "mcr.microsoft.com/devcontainers/base:bullseye",
 	"features": { "ghcr.io/avsm/ocaml-devcontainers-feature/ocaml:latest": {} },
-#	"postCreateCommand": "opam init -ay --disable-sandboxing && sudo chown vscode _build && sudo apt-get update && make dev-switch && sudo apt install -y file npm",
 	"postCreateCommand": "opam init -ay --disable-sandboxing && sudo opam repo add coq-released https://coq.inria.fr/opam/released && sudo opam install coq-mathcomp-ssreflect.1.19.0 -y ",
 	"mounts": ["source=${localWorkspaceFolderBasename}-ocaml-build,target=${containerWorkspaceFolder}/_build,type=volume"],
 	"remoteUser": "vscode"
 }
-# RUN eval $(opam env) 
-# RUN opam repo add coq-released https://coq.inria.fr/opam/released
-# RUN opam install coq-mathcomp-ssreflect.1.19.0 -y 
-# RUN opam install vscoq-language-server -y 
+
