@@ -1,1 +1,23 @@
-
+{
+    "name": "Coq Development Container",
+    "features": {
+      "ghcr.io/devcontainers/features/common-utils:2": {}
+    },
+    "customizations": {
+      "vscode": {
+        "extensions": [
+          "maximedenes.vscoq" // VSCodeのCoq拡張をインストール
+        ],
+        "settings": {
+          "vscoq.path": "/home/vscode/.opam/default/bin/vscoqtop"  // VSCoqのパスを設定
+        }
+      }
+    },
+    "build": {
+     "dockerfile": "Dockerfile"
+    },
+    "remoteUser": "vscode", // ユーザー名を指定
+    "workspaceFolder": "/workspaces/CoqSticker", // コードが格納されるディレクトリ
+    "shutdownAction": "none" // コンテナ終了時のアクション設定
+    
+}
