@@ -2,8 +2,8 @@
 	"name": "OCaml",
 	"image": "mcr.microsoft.com/devcontainers/base:bullseye",
 	"features": { "ghcr.io/avsm/ocaml-devcontainers-feature/ocaml:latest": {} },
-	# "remoteUser": "vscode",
-	# "postCreateCommand": "USER=vscode; export USER && opam init -ay --disable-sandboxing && eval $(opam env) && sudo vscode repo add coq-released https://coq.inria.fr/opam/released && sudo vscode install coq-mathcomp-ssreflect.1.19.0 -y ",
+	// "remoteUser": "vscode",
+	// "postCreateCommand": "USER=vscode; export USER && opam init -ay --disable-sandboxing && eval $(opam env) && sudo vscode repo add coq-released https://coq.inria.fr/opam/released && sudo vscode install coq-mathcomp-ssreflect.1.19.0 -y ",
 	"mounts": ["source=${localWorkspaceFolderBasename}-ocaml-build,target=${containerWorkspaceFolder}/_build,type=volume"],
 }
 
