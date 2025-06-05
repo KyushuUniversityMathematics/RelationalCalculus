@@ -80,16 +80,25 @@ Fixpoint power_l {symbol : finType}(n : nat)(l : @language symbol): language :=
   | 0 => eps
   | S n' => l ・ power_l n' l 
   end.
-Notation "l '^' n" := (power_l l n) (at level 30):language_scope.
-Definition times_l{symbol:finType}(l:language):language:=
+Notation "l '^' n" := (power_l n l) (at level 30):language_scope.
+Definition star_l{symbol:finType}(l:language):language:=
 fun s:seq symbol=> exists n,power_l n l s.
-Notation "l '^*'" := (times_l l) (at level 30):language_scope.
+Notation "l '^*'" := (star_l l) (at level 30):language_scope.
 Definition plus_l{symbol:finType}(l:language):language:=
 fun s:seq symbol=> exists n,power_l(S n)l s.
 Notation "l '^+'" := (plus_l l) (at level 30):language_scope.
 Definition comp_lang{symbol:finType}(l:language):language:=
 fun s:seq symbol=>~ l s.
 Notation "l '^c'" := (comp_lang l) (at level 30):language_scope.
+Fixpoint is_shuffle {A:Type} (u v w : seq A) : Prop :=
+  match u, v, w with
+  | nil, _, _ => v = w
+  | _, nil, _ => u = w
+  | a::u', b::v', c::w' => (a = c /\ is_shuffle u' v w')\/(b = c /\ is_shuffle u v' w')
+  | _, _, _ => False
+  end.
+Definition shuffle_lang {symbol:finType}(l l':@language symbol):language :=
+fun x=> exists u v, l u /\ l' v /\ is_shuffle u v x. 
 
 Definition deterministic {state symbol:finType}(M:@automaton state symbol):Prop:=
 (forall s:symbol,function_r(delta M s))/\function_r(init M).
@@ -126,6 +135,11 @@ Definition plus_nfa {state symbol:finType}(M:@automaton state symbol):automaton 
     {|delta := fun x=>(delta M x∪(delta M x・(final M・init M)));
       init  := init M;
       final := final M|}.
+Definition shuffle_nfa {state state' symbol:finType}
+  (M:@automaton state symbol)(M':@automaton state' symbol):automaton :=
+  {|delta := fun x=>Rel_prod(fst_r state state'・delta M x)(snd_r state state')∪Rel_prod(fst_r state state')(snd_r state state'・delta M' x);
+    init  := Rel_prod(init M)(init M');
+    final := Rel_prod(final M #)(final M' #)# |}.
 
 
 Lemma is_true_false:forall P, ~P <-> is_true_inv P = false.
@@ -138,6 +152,8 @@ done.
 case:(Classical_Prop.classic P);[move=>/is_true_id H0|done].
 by rewrite H0 in H.
 Qed.
+
+
 
 Theorem NFA_DFA_equiv {state symbol:finType}(M:@automaton state symbol):
 exists(state':finType)(M':@automaton state' _),deterministic M'/\
@@ -647,16 +663,6 @@ by rewrite/=H comp_assoc.
 Qed.
 
 
-Fixpoint take_reg {state symbol:finType}(init0:Rel i state)
-(delta0:symbol->Rel state state)(final0:Rel state i)(w:seq symbol)(n:nat):nat:=
-match n with
-|0 => size w
-|S n' =>
-  if is_true_inv(init0・dstar delta0(take n w)・final0 = Id i)
-  then n
-  else take_reg init0 delta0 final0 w n'
-end.
-
 Theorem plus_regular {symbol:finType}(l:@language symbol):
 is_regular l -> is_regular(plus_l l).
 Proof.
@@ -720,391 +726,270 @@ apply/comp_inc_compat_ab_ab'=>x y/H.
 apply/cup_l.
 by rewrite H comp_id_l H1 unit_identity_is_universal cup_universal.
 
-move=>H0.
-have:exists u v, w = u ++ v /\ size v <= size w - 1 /\
-  init0・dstar delta0 u・final0・init0・dstar d v・final0 = Id i.
+have{}H:forall w,(init0 ・ dstar d w) ・ final0 = Id i ->
+l w\/exists u v, w = u ++ v /\ size v < size w /\
+  l u /\ init0・dstar d v・final0 = Id i.
+move=>{}w H0.
 have:Id i tt tt by [].
 rewrite-{1}H0=>[][]b[][]a[]{}H0 H1 H2.
-have:exists n, (take(S n)w = w/\(dstar delta0(take(S n)w)・final0) a tt) \/
-(dstar delta0(take(S n)w)・final0) a tt /\(init0・dstar d(drop(S n)w))tt b.
+have:(dstar delta0 w・final0) a tt \/ exists n,
+(dstar delta0(take(S n)w)・final0) a tt /\(init0・dstar d(drop(S n)w)・final0)tt tt.
 move:a{H0}H1.
 elim:w=>[|h w H0]a.
 rewrite/=comp_id_l comp_id_r=>H1.
 have{}H1:a = b;[done|subst].
-exists 0.
 by left.
-rewrite/==>[][]c[]H1/H0[]n[][]{}H0 H3.
-rewrite Heqd in H1.
-case:H1=>alpha[][]H' H1;rewrite{alpha}H' in H1.
-exists (S n).
-rewrite H0 in H3 *.
+rewrite/={1}Heqd/cup/cupP=>[][]c[][]alpha[][]H' H1;rewrite{alpha}H' in H1.
+move/H0.
+case=>H3.
 left.
-split;[done|].
 rewrite comp_assoc.
 by exists c.
-
-exists 0.
+case:H3=>n[]H3 H4.
 right.
-rewrite take0 drop0/=comp_id_r.
-rewrite H0 in H3 *.
-rewrite-comp_assoc in H1.
-case:H1=>[][][]H1 H4.
-
-by rewrite/=comp_id_l comp_id_r.
-simpl.
-elim:w.
-rewrite/=!comp_id_r.
-remember a as a'.
-rewrite{}Heqa' in H1.
-move:a H1.
-elim:w=>[a H1|h w H1 a].
-have{}H1:a'=b;[done|subst].
-exists 0.
-rewrite/=comp_id_l comp_id_r.
-have H3:a' = b -> 
-
-have H3: final0 b tt /\ init0 tt b.
-move=>{}H.
-rewrite H/= in H1.
-by have{}H1:a = b;[|subst]. *)
-move:a{H0}H1 H2.
-
-elim:w=>[|h w H0]a H1 H2.
-rewrite/=comp_id_l in H1 *.
-exists 0.
-(* have:(nil:seq symbol)=nil;[done|]=>/H3{}H3. *)
-by have{}H1:a=b;[|subst].
-
-rewrite/= in H1 *.
-case:H1=>c[]H1 H'.
-(* have{}H3:(w = [::] -> final0 b tt /\ init0 tt b). *)
-(* move=>H4.
-rewrite H4/= in H'. *)
-
-(* apply/H3. *)
-move:(H0 _ H' H2)=>[]n[]{}H0.
-rewrite Heqd/cup/cupP in H1.
-case:H1=>alpha[][]H1 H4;rewrite{alpha}H1 in H4.
-exists (S n).
+exists(S n).
 rewrite comp_assoc.
 by split;[exists c|].
+
+move=>{}H0.
+right.
 exists 0.
 rewrite take0 drop0/=comp_id_r.
-rewrite-comp_assoc in H4.
-case:H4=>[][][]H1 H4.
-by split;[|exists c].
-
-case=>n[]H3 H4.
-exists (take(S n)w),(drop(S n)w).
-rewrite cat_take_drop.
+rewrite-comp_assoc in H1.
+case:H1=>[][][]H1 H3.
 split;[done|].
-split.
-rewrite size_drop.
-case:(size w)=>[|n'];[done|].
-rewrite/=ssrnat.subSS PeanoNat.Nat.sub_0_r ssrnat.subnE.
-apply/PeanoNat.Nat.le_sub_l.
-remember(take(S n)w)as u.
-remember(drop(S n)w)as v.
-
-have H5:init0・dstar delta0 u・final0 = Id i.
-apply/inc_antisym_eq.
-split;[by rewrite unit_identity_is_universal|move=>[][] _].
-rewrite comp_assoc.
-by exists a.
-rewrite H5 comp_id_l.
-apply/inc_antisym_eq.
-split;[by rewrite unit_identity_is_universal|move=>[][] _].
-by exists b.
-case_eq(w == nil)=>/eqP H5.
-rewrite H5/=comp_id_r in H1 *.
-by have{}H1:a = b;[|subst;exists b].
-have{}H5:take(S n)w <> nil.
-case=>H6.
-have:size(take (S n) w)=0 by rewrite{}H6.
-rewrite size_take.
-case:(ssrnat.leq (S (S n)) (size w));[done|].
-move:{H1 H3 H4 H6}H5.
-by case:w.
-rewrite-(cat_take_drop(S n)w)dstar_cat in H1.
-case:H1=>c[]H1{}H4.
 exists b.
 split;[|done].
-exists c.
-split;[|done].
-have{}H1:dstar d()
-have H5:take (S n) w = nil -> init0 tt c.
-move=>H5.
-rewrite H5/= in H1.
-by have{}H1:a = c;[|subst].
-move:a H1 H3 H5{H0}.
-elim:(take(S n)w)=>[|h t H1]a.
-move=>_ _ H1.
-by have:(nil:seq symbol) = nil=>[|/H1].
-rewrite/==>[][]e[]H3/H1{}H1.
-
-rewrite/==>_{}H1.
-have{}H1:a = c by [].
-by subst.
-rewrite/=.
-case:H1=>t[]s H1.
-rewrite H1!dstar_rcons{2}Heqd comp_cup_distr_l.
-
-elim:(take(S n)w)=>[|a0 l0 H1].
-rewrite/==>_ H1.
+by exists c.
 
 
-move=>[][] _.
-Search ( _ - _ <= _).
-done.
-case:w.
-case_eq(take(S n)w)=>H4.
-have:size(take(S n)w)=0 by rewrite H4.
-rewrite size_take.
+case=>H3;[left|].
+rewrite H comp_assoc.
+Rel_simpl;[by rewrite unit_identity_is_universal|move=>[][] _].
+by exists a.
+case:H3=>n[]H3 H4.
+case_eq(w==nil)=>/eqP H5;[left|right].
+rewrite H H5/=comp_id_r in H1 *.
+Rel_simpl;[by rewrite unit_identity_is_universal|move=>[][] _].
+have{}H1:a=b;[done|subst].
+by exists b.
 
-rewrite/not.
-remember (take(S n)w) as u.
-have{H0 H1 H2}
-
-case:H2=>d[]H1[][][]H2 H5.
-exists (S n),e.
+exists(take (S n) w),(drop (S n) w).
+rewrite cat_take_drop size_drop.
+split;[done|split].
+move:{H1 H3 H4}H5.
+case:w=>[|h w];[done|simpl=>{h}_].
+rewrite ssrnat.subnE PeanoNat.Nat.sub_succ.
+apply/PeanoNat.le_lt_n_Sm/PeanoNat.Nat.le_sub_l.
 split.
+rewrite H.
+Rel_simpl;[by rewrite unit_identity_is_universal|move=>[][] _].
+rewrite comp_assoc.
+by exists a.
+by Rel_simpl;[rewrite unit_identity_is_universal|move=>[][] _].
 
-
-done.
-H3 H4.
-subst.
-
-
-rewrite/={1}Heqd/cup/cupP=>[][]c[][]alpha[][]H1 H2 H3;[left|right].
-
-
-rewrite/={1}Heqd/cup/cupP=>H1[]c[][]alpha[][]H2 H3 H4 H5.
-admit.
-subst.
-case:H3=>d[]H3[][][]H6 H7.
-move:(H0 a b H1).
-move:(H0 c b )
-exists (S n),c.
-rewrite H2.
-rewrite Heqd
-
-have H1:exists n, init0・dstar delta0(take(S n)w)・final0 = Id i.
-
-(* have:size w < S(size w) by [].
-remember(S(size w))as n=>{Heqn}.
+have:size w < S(size w)by [].
+remember(S(size w)) as n=>{Heqn}.
 move:w.
 elim:n=>[|n H0]w.
 by move/PeanoNat.Nat.nlt_0_r.
-move=>H1 H2. *)
-exists (take_reg init0 delta0 final0 w (size w)).
-
-
-move=>H0.
-have H1:exists n, init0・dstar d(take n w)・final0 = Id i.
-move:H0.
-elim:w=>[|h w{}H].
-rewrite/=comp_id_r=>{}H.
-by exists 0.
-
-have{}H0:exists n,
-init0・dstar d(take(S n)w)・final0・init0・dstar delta0(drop(S n)w)・final0 = Id i.
-case:(Classical_Prop.classic (exists n : nat,
-((((init0 ・ dstar d (take (S n) w)) ・ final0) ・ init0)
-・ dstar delta0 (drop (S n) w)) ・ final0 = Id i)).
-done.
-move/Classical_Pred_Type.not_ex_all_not=>H1.
-exfalso.
-have [n]: exists n : nat, True by exists 0.
-move:(H1 n)=>{}H1.
-exfalso.
-move:H1.
-elim:n.
-
-fix_rcons
-Search (~ (_ /\ _)).
-move=> (n0 : nat).
-pose n:nat.
-move=>n.
-move=>n.
-elim:H1.
-Search (~ (exists _, _)). 
-move:H0.
-elim:w=>[|h w H0].
-rewrite H/=.
-by left.
-rewrite/=comp_assoc{1}Heqd!comp_cup_distr_r comp_cup_distr_l-!comp_assoc=>H1.
-case:( @unit_empty_or_universal (init0・delta0 h・dstar d w・final0))=>H2.
-rewrite{}H2 cup_comm cup_empty in H1.
-right.
-case:( @unit_empty_or_universal((init0 ・ delta0 h) ・ final0))=>H2.
-rewrite H2!comp_empty_l in H1.
-move:unit_identity_not_empty.
-by rewrite H1.
-rewrite-unit_identity_is_universal in H2.
-rewrite H2 comp_id_l in H1.
-exists [::h],w.
-by rewrite/=comp_id_r H2 H1.
-left.
-rewrite H/=unit_identity_is_universal-!comp_assoc .
-
-
-
-
-
-
-
-case:(Classical_Prop.classic(exists n : nat, prod_lang l (power_l n l) w)).
-done.
-rewrite/not=>H0 H1.
-exfalso.
-case:H0.
-exfalso.
-apply/contrapositive.
-
-
-case:w=>[|h w].
-rewrite/=/prod_lang=>H0.
-exists 0,nil,nil.
-by rewrite H/=.
-
-
-
-rewrite/={1}Heqd!comp_cup_distr_r comp_cup_distr_l comp_cup_distr_r
-comp_id_l-!comp_assoc=>H0.
-have{}H0:(((init0 ・ delta0 h) ・ dstar d w) ・ final0) = Id i.
-case:( @unit_empty_or_universal (init0・final0))=>H1.
-by rewrite H1!comp_empty_l cup_empty in H0.
-by rewrite H1-unit_identity_is_universal comp_id_l cup_idem in H0.
-
-
-
-
-have H0:forall w,plus_l l w -> l w \/ (exists u v, w = u ++ v/\l u /\ plus_l l v).
-move=>{}w[]n.
-move:n w.
-elim=>[|n];[left|].
-by case:p=>a[][[]H0[]H1 _|b' b[] _ [] _];[rewrite H0 cats0|].
-
-remember (S n) as n'=>H0 w.
-rewrite/==>[][]a[]b[]H1[]H2/H0[];right.
-exists a,b.
-split;[done|split;[done|]].
-exists 0,b,nil.
+move=>H1/H.
+case=>H2.
+exists 0,w,nil.
 by rewrite cats0.
-exists a,b.
-split;[done|split;[done|]].
-rewrite/plus_l.
-exists 0.
-case=>x[]y[].
-rewrite/power_l
+
+case:H2=>u[]v[]H2[]H3[]H4.
+have{H3 H1}:size v < n.
+apply/PeanoNat.Nat.lt_le_trans/PeanoNat.lt_n_Sm_le/H1/H3.
+move/H0=>{}H0/H0[]n'{}H.
+by exists (S n'),u,v.
+
+Qed.
+
+Open Scope language_scope.
+Theorem star_regular {symbol:finType}(l:@language symbol):
+is_regular l -> is_regular (l^*).
+Proof.
+move/plus_regular=>H.
+move:(@regular_eps symbol)=>H0.
+have{H0}H:is_regular (plus_l l ∪ eps)by apply/regular_cup.
+rewrite/star_l/is_regular/plus_l in H *.
+case:H=>state[]M H.
+exists _,M=>w.
+rewrite-{state M}H/cup_lang.
+split.
+by case=>[][|n]H;[right|left;exists n].
+by case=>[[]n H|];[exists (S n)|exists 0].
+Qed.
 
 
+Ltac destruct_Id_i :=
+  repeat match goal with
+  | [H : _ = Id _ |- _ ] =>
+    have:Id i tt tt by [];rewrite-{1}H=>{}H
+  | [_ : _ |- _ = Id _] =>
+    apply/inc_antisym_eq;split;
+    [by rewrite unit_identity_is_universal|move=>[][] _]
+  end.
+
+
+Close Scope language_scope.
+Theorem shuffle_regular {symbol:finType}(l l':@language symbol):
+is_regular l /\ is_regular l' -> is_regular(shuffle_lang l l').
+Proof.
+rewrite/is_regular=>[][][]state[]M H[]state'[]M' H'.
+exists _,(shuffle_nfa M M')=>w.
+remember (delta(shuffle_nfa M M'))as d.
+remember (final(shuffle_nfa M M'))as f.
+destruct M,M'.
+rewrite/accept/= in H H' Heqd Heqf *.
+rewrite-Heqd-Heqf/shuffle_lang.
+
+have d_inv:forall x,d x =
+  Rel_prod(fst_r state state'・delta0 x #)(snd_r state state')#∪
+  Rel_prod(fst_r state state')(snd_r state state'・delta1 x #)#.
+move=>x.
+rewrite Heqd.
+by f_equal;rewrite/Rel_prod inv_cap_distr!comp_inv 3!inv_invol!comp_assoc.
+
+have sharpness':forall alpha beta gamma delta,
+Rel_prod alpha beta・
+Rel_prod(fst_r state state'・gamma #)(snd_r state state'・delta #)# =
+Rel_prod(alpha・gamma)(beta・delta).
+move=>t t0 t1 alpha beta gamma delta.
+rewrite/Rel_prod inv_cap_distr.
+remember(fst_r state state' ・ gamma #)as fg.
+remember(snd_r state state' ・ delta #)as sd.
+by rewrite!comp_inv 2!inv_invol-sharpness Heqfg Heqsd!comp_inv
+2!inv_invol!comp_assoc.
+
+have inid:forall x(alpha:Rel i _)beta,Rel_prod alpha beta・d x =
+  Rel_prod(alpha・delta0 x)beta∪Rel_prod alpha(beta・delta1 x).
+move=>x alpha beta.
+by rewrite d_inv comp_cup_distr_l-{1}(comp_id_r _ _(snd_r _ _))
+-{2}(comp_id_r _ _(fst_r _ _))-inv_id-(@inv_id state)!sharpness'
+!comp_id_r.
+
+have inif:forall(alpha:Rel i _)beta,Rel_prod alpha beta・f=alpha・final0∩(beta・final1).
+move=>alpha beta.
+by rewrite Heqf/Rel_prod inv_cap_distr!comp_inv
+!(inv_invol (prod state state'))-sharpness 2!inv_invol.
+
+have nilw:forall(init0:Rel i state)(init1:Rel i state')w,
+  init0・final0 = Id i/\init1・dstar delta1 w・final1 = Id i
+  -> Rel_prod init0 init1・dstar d w・f = Id i.
+move=>{H}init0{H'}init1{}w[]{}H{}H'.
+move:init1 H'.
+elim:w=>[|h w H0]init1.
+rewrite/=!comp_id_r=>H'.
+by rewrite inif H H' cap_idem.
+rewrite/=-!comp_assoc inid !comp_cup_distr_r=>/H0{}H0.
+by rewrite H0 unit_identity_is_universal cup_universal.
+
+have wnil:forall(init0:Rel i state)(init1:Rel i state')w,
+  init0・dstar delta0 w・final0 = Id i/\init1・final1 = Id i
+  -> Rel_prod init0 init1・dstar d w・f = Id i.
+move=>{H}init0{H'}init1{}w[]{}H{}H'.
+move:init0 H.
+elim:w=>[|h w H0]init0.
+rewrite/=!comp_id_r=>H.
+by rewrite inif H H' cap_idem.
+rewrite/=-!comp_assoc inid !comp_cup_distr_r=>/H0{}H0.
+by rewrite H0 unit_identity_is_universal cup_comm cup_universal.
+
+split=>[[]u[]v[]/H{}H[]/H'{}H'|].
+move:init0 init1 H H'.
+elim:w=>[|h w H0]init0 init1 H H'.
+destruct u,v;[|done|done|done].
+rewrite/=!comp_id_r in H H' *.
+by rewrite inif H H' cap_idem.
+destruct u=>H1.
+have{}H1:v = h::w by destruct v,w.
+rewrite-{w h H0}H1/=comp_id_r in H *.
+by apply/nilw.
+destruct v.
+remember(h::w)as w'.
+have{}H0:u'::u = w by destruct(u'::u),w.
+rewrite{u u'}H0/=comp_id_r in H H'.
+by apply/wnil.
+
+
+rewrite/is_shuffle.
+case:w;[|done].
+rewrite/=!comp_id_r in H H' *.
+by rewrite inif H H' cap_idem.
+
+
+
+
+rewrite!comp_assoc in H' *.
+case:H'=>a'[]H' H0'.
+case:H=>a[]H H0.
+exists (a,a').
+split.
+rewrite Heqini/Rel_prod/cap/capP=>alpha[]H1;rewrite H1;
+[exists a|exists a'];rewrite/inverse;(split;[done|]).
+rewrite/fst_r/=.
+
+
+elim:w=>[|h w H0]init1 ini Heqini inid inif H'.
+rewrite/=!comp_id_r in H' *.
+by rewrite inif H H' cap_idem.
+
+
+split=>[[]u[]v[]/H{}H[]/H'{}H'|].
+destruct u,v,w;[|done|done| |done| |done|].
+rewrite/=!comp_id_r in H H' *.
+by rewrite inif H H' cap_idem.
+
+move:u v H H'.
+elim:w=>[|h w H0]u v H H'.
+destruct u,v;[|done|done|done].
+rewrite/=!comp_id_r inif in H H' *.
+by rewrite H H' cap_idem.
+
+destruct u,v.
 done.
-case=>[][[]a[][[]H0[]H1 _|b' b[] _ [] _]|n].
-rewrite cats0 in H0.
-left.
-by subst.
+move=>[]H1 H2.
+rewrite{s}H1{v}H2 in H'.
+move:H H'=>/H0{}H0/H0.
+
+
+
+
+move=>H1.
+destruct u,v;simpl.
 done.
-rewrite/=
-case=>a[]b.
+move=>[]H1 H2{H0}.
+rewrite{s}H1{v}H2 in H'.
+rewrite/=comp_id_r in H H'.
+move:(H0 _ _ H H')=>{}H0.
 
+simpl.
+by des
 
-
-case:w=>[|h w].
-rewrite/=/prod_lang=>H0.
-exists 0,nil,nil.
-by rewrite H/=.
-
-rewrite/={1}Heqd!comp_cup_distr_r!comp_cup_distr_l!comp_cup_distr_r
-comp_id_l-!comp_assoc=>H0.
-have{}H0:(((init0 ・ delta0 h) ・ dstar d w) ・ final0) = Id i.
-case:( @unit_empty_or_universal (init0 ・ final0))=>H1;rewrite H1 in H0.
-by rewrite!comp_empty_l cup_empty in H0.
-by rewrite-unit_identity_is_universal comp_id_l cup_idem in H0.
-rewrite/prod_lang.
-exists 0.
-split;[done|split=>[|]].
-rewrite/=.
-
-
-
-rewrite/=!comp_cup_distr_r!comp_cup_distr_l!comp_cup_distr_r!comp_id_l=>H2.
-
-Search (_ ⊆ (_ ∪ _)).
-rewrite/==>H.
-Search ((_ ・_)⊆(_・_)).
-apply/
-
-admit.
 
 elim:w=>[|h w H0].
-rewrite/=comp_id_r/prod_lang=>H0.
-exists 0,nil,nil.
-by rewrite H/=comp_id_r.
-rewrite/=-comp_assoc.
+rewrite/=comp_id_r inif/shuffle_lang.
+split=>[[]u[]v[]H0[]H1 H2|H0].
+have{}H2:u = nil/\ v = nil by destruct u,v.
+case:H2=>H2 H3.
+rewrite{}H2{}H3{}H{}H'/=!comp_id_r in H0 H1.
+by rewrite H0 H1 cap_idem.
+exists nil,nil.
+rewrite{}H{}H'/=!comp_id_r.
+case:(@ unit_empty_or_universal(init1・final1))=>H1.
+rewrite H1 cap_empty in H0.
+move:unit_identity_not_empty.
+by rewrite H0.
+rewrite H1 cap_universal in H0.
+by rewrite H1 H0 unit_identity_is_universal.
 
-
-rewrite/=comp_id_r/prod_lang.
-split=>[|H0].
-case=>n[][|a' a][][|b' b][];[|done|done|done].
-by rewrite H/=comp_id_r=>[] _[]{}H.
-exists 0,nil,nil.
-by rewrite H/=comp_id_r.
-
-split.
-
-move:H.
-simpl.
-simpl.
-
-simpl.
+rewrite/shuffle_lang/=-comp_assoc inid.
+split=>[[]u[]v[]/H{}H[]/H'{}H' H1|].
+destruct u,v.
 done.
-done.
-done.
+case:H1=>H1 H2.
+rewrite{s}H1{v}H2 in H'.
 
 
-
-split.
-case=>x.
-rewrite/prod_lang.
-elim:x=>[|n H0].
-rewrite/=/prod_lang/eps=>[][]a[]b[]H0[]/H{}H H1.
-rewrite{b}H1 cats0 in H0.
-subst.
-
-apply/inc_antisym;[by rewrite unit_identity_is_universal|rewrite-{}H].
-apply/comp_inc_compat_ab_a'b/comp_inc_compat_ab_ab'.
-elim:a=>[|h w H];[done|].
-rewrite/=comp_cup_distr_r comp_id_l.
-apply/(inc_trans state state(delta0 h・dstar delta0 w)
-(delta0 h・dstar (fun x : symbol => (Id state ∪ (final0 ・ init0)) ・ delta0 x)w )
-((delta0 h ∪ ((final0 ・ init0) ・ delta0 h))
-・ dstar (fun x : symbol => (Id state ∪ (final0 ・ init0))
-・ delta0 x) w))/comp_inc_compat_ab_a'b/cup_l/comp_inc_compat_ab_ab'/H.
-
-rewrite/=.
-
-remember (S n) as n'=>{n Heqn'}
-.
-
-
-simpl.
-
-
-
-Search (_⊆(_∪_)).
-apply/inc_comp_r.
-
-Rel_simpl.
-by rewrite unit_identity_is_universal.
-case:H=>H _.
-apply (inc_trans i i ((init0 ・ dstar delta0 a) ・ final0)(Id i)
-((init0
-・ dstar (fun x : symbol => (Id state ∪ (final0 ・ init0))
-・ delta0 x) a) ・ final0) H).
-apply/H.
-simpl.
-
-
-admit.
-move.
