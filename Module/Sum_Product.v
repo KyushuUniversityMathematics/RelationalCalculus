@@ -1,10 +1,10 @@
-Require Import Basic_Notations_Set.
-Require Import Basic_Lemmas.
-Require Import Relation_Properties.
-Require Import Functions_Mappings.
-Require Import Dedekind.
-Require Import Conjugate.
-Require Import Domain.
+Require Import MyLib.Basic_Notations_Set.
+Require Import MyLib.Basic_Lemmas.
+Require Import MyLib.Relation_Properties.
+Require Import MyLib.Functions_Mappings.
+Require Import MyLib.Dedekind.
+Require Import MyLib.Conjugate.
+Require Import MyLib.Domain.
 Require Import Logic.IndefiniteDescription.
 
 Module main (def : Relation).
@@ -25,10 +25,10 @@ Import Basic_Lemmas Relation_Properties Functions_Mappings Dedekind Conjugate Do
 \end{screen}
 % **)
 Definition sum_r (A B : eqType):
- {x : (Rel A (sum_eqType A B)) * (Rel B (sum_eqType A B)) |
+ {x : (Rel A (sum A B)) * (Rel B (sum A B)) |
  (fst x) ・ (fst x) # = Id A /\ (snd x) ・ (snd x) # = Id B /\
  (fst x) ・ (snd x) # = φ A B /\
- ((fst x) # ・ (fst x)) ∪ ((snd x) # ・ (snd x)) = Id (sum_eqType A B)}.
+ ((fst x) # ・ (fst x)) ∪ ((snd x) # ・ (snd x)) = Id (sum A B)}.
 apply constructive_indefinite_description.
 elim (@pair_of_inclusions A B) => j.
 elim => k H.
@@ -63,7 +63,7 @@ rewrite comp_inv inv_invol inv_empty.
 apply inl_inr_empty.
 Qed.
 Lemma inl_inr_cup_id {A B : eqType}:
- (inl_r A B # ・ inl_r A B) ∪ (inr_r A B # ・ inr_r A B) = Id (sum_eqType A B).
+ (inl_r A B # ・ inl_r A B) ∪ (inr_r A B # ・ inr_r A B) = Id (sum A B).
 Proof.
 apply (proj2_sig (sum_r A B)).
 Qed.
@@ -238,7 +238,7 @@ $$
 \end{screen}
 % **)
 Lemma sum_conjugate
- {A B C : eqType} {alpha : Rel A C} {beta : Rel B C} {gamma : Rel (sum_eqType A B) C}:
+ {A B C : eqType} {alpha : Rel A C} {beta : Rel B C} {gamma : Rel (sum A B) C}:
  inl_r A B ・ gamma = alpha /\ inr_r A B ・ gamma = beta <->
  gamma = Rel_sum alpha beta.
 Proof.
@@ -388,9 +388,9 @@ Qed.
 \end{screen}
 % **)
 Definition prod_r (A B : eqType):
- {x : (Rel (prod_eqType A B) A) * (Rel (prod_eqType A B) B) |
+ {x : (Rel (prod A B) A) * (Rel (prod A B) B) |
  (fst x) # ・ (snd x) = ∇ A B /\
- ((fst x) ・ (fst x) #) ∩ ((snd x) ・ (snd x) #) = Id (prod_eqType A B) /\
+ ((fst x) ・ (fst x) #) ∩ ((snd x) ・ (snd x) #) = Id (prod A B) /\
  univalent_r (fst x) /\ univalent_r (snd x)}.
 apply constructive_indefinite_description.
 elim (@pair_of_projections A B) => p.
@@ -418,7 +418,7 @@ rewrite comp_inv inv_invol inv_universal.
 apply fst_snd_universal.
 Qed.
 Lemma fst_snd_cap_id {A B : eqType}:
- (fst_r A B ・ fst_r A B #) ∩ (snd_r A B ・ snd_r A B #) = Id (prod_eqType A B).
+ (fst_r A B ・ fst_r A B #) ∩ (snd_r A B ・ snd_r A B #) = Id (prod A B).
 Proof.
 apply (proj2_sig (prod_r A B)).
 Qed.
@@ -836,7 +836,7 @@ $$
 \end{lemma}
 \end{screen}
 % **)
-Lemma prod_conjugate2 {A B C : eqType} {gamma : Rel A (prod_eqType B C)}:
+Lemma prod_conjugate2 {A B C : eqType} {gamma : Rel A (prod B C)}:
  function_r gamma -> Rel_prod (gamma ・ fst_r B C) (gamma ・ snd_r B C) = gamma.
 Proof.
 move => H.
@@ -856,8 +856,8 @@ $$
 \end{screen}
 % **)
 Lemma diagonal_conjugate {A B : eqType} {alpha : Rel A B}:
- conjugate A B (prod_eqType A B) (prod_eqType A B)
- True_r (fun u => u ⊆ Id (prod_eqType A B))
+ conjugate A B (prod A B) (prod A B)
+ True_r (fun u => u ⊆ Id (prod A B))
  (fun u => (fst_r A B # ・ u) ・ snd_r A B)
  (fun alpha => domain ((fst_r A B ・ alpha) ∩ snd_r A B)).
 Proof.
@@ -877,7 +877,7 @@ apply comp_inc_compat_ab_a.
 apply snd_function.
 apply comp_inc_compat_ab_b.
 apply fst_function.
-apply (@inc_trans _ _ _ (alpha0 ∩ ((fst_r A B # ・ Id (prod_eqType A B)) ・ snd_r A B))).
+apply (@inc_trans _ _ _ (alpha0 ∩ ((fst_r A B # ・ Id (prod A B)) ・ snd_r A B))).
 rewrite comp_id_r fst_snd_universal cap_universal.
 apply inc_refl.
 rewrite cap_comm.
@@ -1330,8 +1330,8 @@ $$
 \end{screen}
 % **)
 Lemma fst_cap_snd_distr
- {A B : eqType} {u v : Rel (prod_eqType A B) (prod_eqType A B)}:
- u ⊆ Id (prod_eqType A B) -> v ⊆ Id (prod_eqType A B) ->
+ {A B : eqType} {u v : Rel (prod A B) (prod A B)}:
+ u ⊆ Id (prod A B) -> v ⊆ Id (prod A B) ->
  fst_r A B # ・ (u ∩ v) ・ snd_r A B =
  ((fst_r A B # ・ u) ・ snd_r A B) ∩ ((fst_r A B # ・ v) ・ snd_r A B).
 Proof.

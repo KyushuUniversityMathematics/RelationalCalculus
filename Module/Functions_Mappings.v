@@ -1,6 +1,6 @@
-Require Import Basic_Notations_Set.
-Require Import Basic_Lemmas.
-Require Import Relation_Properties.
+Require Import MyLib.Basic_Notations_Set.
+Require Import MyLib.Basic_Lemmas.
+Require Import MyLib.Relation_Properties.
 Require Import Logic.FunctionalExtensionality.
 
 Module main (def : Relation).

@@ -1,4 +1,4 @@
-From mathcomp Require Export ssreflect.ssreflect ssreflect.eqtype bigop.
+From mathcomp Require Export ssreflect.ssreflect ssreflect.eqtype ssrfun bigop ssrbool.
 Require Export Logic.ClassicalFacts.
 
 (** %
@@ -145,10 +145,10 @@ $(\verb|∩_{| P \verb|} | f)$ \\ \hline
 
 Axiom prop_extensionality_ok : prop_extensionality.
 
+Definition Rel (A B : eqType) := A -> B -> Prop.
+
 Module Type Relation.
 
-Parameter Rel : (forall A B : eqType, Type).
-  
 Parameter inverse : (forall A B : eqType, Rel A B -> Rel B A).
 Notation "a #" := (inverse _ _ a) (at level 20).
 Parameter composite : (forall A B C : eqType, Rel A B -> Rel B C -> Rel A C).
@@ -187,7 +187,7 @@ Definition difference {A B : eqType} (alpha beta : Rel A B) := alpha ∩ beta ^.
 Notation "a -- b" := (difference a b) (at level 50).
 (* complement および difference は, Dedekind 圏の公理に登場しないため, Parameter ではなく Definition で定義している. *)
 
-Notation "'i'" := unit_eqType.
+Notation "'i'" := unit.
 
 (** %
 \section{関数の定義}
@@ -558,9 +558,9 @@ $$
 \end{screen}
 % **)
 Definition axiom20 :=
- forall (A B : eqType), exists (j : Rel A (sum_eqType A B))(k : Rel B (sum_eqType A B)),
+ forall (A B : eqType), exists (j : Rel A (sum A B))(k : Rel B (sum A B)),
  j ・ j # = Id A /\ k ・ k # = Id B /\ j ・ k # = φ A B /\
- (j # ・ j) ∪ (k # ・ k) = Id (sum_eqType A B).
+ (j # ・ j) ∪ (k # ・ k) = Id (sum A B).
 Axiom pair_of_inclusions : axiom20.
 
 (** %
@@ -576,8 +576,8 @@ $$
 \end{screen}
 % **)
 Definition axiom21 :=
- forall (A B : eqType), exists (p : Rel (prod_eqType A B) A)(q : Rel (prod_eqType A B) B),
- p # ・ q = ∇ A B /\ (p ・ p #) ∩ (q ・ q #) = Id (prod_eqType A B) /\ univalent_r p /\ univalent_r q.
+ forall (A B : eqType), exists (p : Rel (prod A B) A)(q : Rel (prod A B) B),
+ p # ・ q = ∇ A B /\ (p ・ p #) ∩ (q ・ q #) = Id (prod A B) /\ univalent_r p /\ univalent_r q.
 Axiom pair_of_projections : axiom21.
 
 End Relation.

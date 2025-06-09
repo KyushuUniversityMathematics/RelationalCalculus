@@ -1,5 +1,5 @@
-Require Import Basic_Notations_Set.
-Require Import Basic_Lemmas.
+Require Import MyLib.Basic_Notations_Set.
+Require Import MyLib.Basic_Lemmas.
 Require Import Logic.FunctionalExtensionality.
 Require Import Logic.Classical_Prop.
 

@@ -1,4 +1,4 @@
-From RelationalCalculus Require Import Basic_Notations Basic_Lemmas Relation_Properties.
+From MyLib Require Import Basic_Notations Basic_Lemmas Relation_Properties.
 
 Module main (def : Relation).
 Import def.

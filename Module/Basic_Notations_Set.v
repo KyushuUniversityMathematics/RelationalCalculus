@@ -1,8 +1,9 @@
-From RelationalCalculus Require Export Basic_Notations.
+From MyLib Require Export Basic_Notations.
 Require Import Logic.FunctionalExtensionality.
 Require Import Logic.Classical_Prop.
 Require Import Logic.IndefiniteDescription.
 Require Import Logic.ProofIrrelevance.
+Require Import Logic.ClassicalChoice.
 
 (** %
 \section{定義}
@@ -53,7 +54,7 @@ Notation "a '^'" := (complement a) (at level 20).
 Definition difference {A B : eqType} (alpha beta : Rel A B) := alpha ∩ beta ^.
 Notation "a -- b" := (difference a b) (at level 50).
 
-Notation "'i'" := unit_eqType.
+Notation "'i'" := unit.
 
 (** %
 \section{関数の定義}
@@ -477,28 +478,28 @@ move => A B C alpha beta gamma a c H.
 assert (exists b : B, alpha a b /\ beta b c).
 apply H.
 by [left].
-elim H0 => b.
-elim => H1 H2.
+elim H0 => {H0}b[H0 H1].
 exists b.
 repeat split.
 move => delta H3.
 case H3 => H4; rewrite H4.
-apply H1.
-unfold id.
+apply H0.
 exists c.
 split.
 apply H.
 by [right].
-apply H2.
+apply H1.
 move => delta H3.
 case H3 => H4; rewrite H4.
-apply H2.
-unfold id.
+apply H1.
 exists a.
 split.
-apply H1.
-apply H.
-by [right].
+done.
+move=>{delta H3 H4}.
+have{H1}H0:(alpha・beta) a c.
+by exists b.
+apply/(H gamma).
+by right.
 Qed.
 
 (** %
@@ -717,72 +718,69 @@ Definition axiom19 := forall (A B : eqType)(alpha : Rel A B),
  function_r f /\ function_r g /\ alpha = f # ・ g /\ ((f ・ f #) ∩ (g ・ g #)) = Id R.
 Lemma rationality : axiom19.
 Proof.
-move => A B alpha.
-rewrite /function_r/total_r/univalent_r/cap/capP/identity/composite/inverse/include.
-exists (sig_eqType (fun x : prod_eqType A B => is_true_inv (alpha (fst x) (snd x)))).
-exists (fun x a => a = (fst (sval x))).
-exists (fun x b => b = (snd (sval x))).
-simpl.
-repeat split.
-move => x x0 H.
-exists (fst (sval x)).
-repeat split.
-by [rewrite H].
-move => a a0.
-elim => x.
-elim => H H0.
-by [rewrite H H0].
-move => x x0 H.
-exists (snd (sval x)).
-repeat split.
-by [rewrite H].
-move => b b0.
-elim => x.
-elim => H H0.
-by [rewrite H H0].
-apply functional_extensionality.
-move => a.
-apply functional_extensionality.
-move => b.
-apply prop_extensionality_ok.
-split; move => H.
-assert (is_true (is_true_inv (alpha (fst (a,b)) (snd (a,b))))).
-simpl.
-apply is_true_id.
-apply H.
-exists (exist (fun x => (is_true (is_true_inv (alpha (fst x) (snd x))))) (a,b) H0).
-by [simpl].
-elim H => x.
-elim => H0 H1.
-rewrite H0 H1.
-apply is_true_id.
-apply (@sig_ind (A * B) (fun x => is_true (is_true_inv (alpha (fst x) (snd x)))) (fun x => is_true (is_true_inv (alpha (fst (sval x)) (snd (sval x)))))).
-simpl.
-by [move => x0].
-apply functional_extensionality.
-move => y.
-apply functional_extensionality.
-move => y0.
-apply prop_extensionality_ok.
-split; move => H.
-apply sval_injective.
-move : (H (fun a c : {x : A * B | is_true (is_true_inv (alpha (fst x) (snd x)))} => exists b : A, b = fst (sval a) /\ b = fst (sval c)) (or_introl Logic.eq_refl)).
-move : (H (fun a c : {x : A * B | is_true (is_true_inv (alpha (fst x) (snd x)))} => exists b : B, b = snd (sval a) /\ b = snd (sval c)) (or_intror Logic.eq_refl)).
-unfold id.
-clear H.
-elim => b.
-elim => H H0.
-elim => a.
-elim => H1 H2.
-rewrite (surjective_pairing (sval y0)) -H0 -H2 H H1.
-apply surjective_pairing.
-rewrite H.
-move => beta H0.
-case H0 => H1; rewrite H1; unfold id.
-exists (fst (sval y0)).
-repeat split.
-exists (snd (sval y0)).
-repeat split.
+  move => A B alpha.
+  rewrite /function_r/total_r/univalent_r/cap/capP/identity/composite/inverse/include.
+  exists (sig (fun x : prod A B => is_true_inv (alpha (fst x) (snd x)))).
+  exists (fun x a => a = (fst (sval x))).
+  exists (fun x b => b = (snd (sval x))).
+  simpl.
+  repeat split.
+  move => x x0 H.
+  exists (fst (sval x)).
+  repeat split.
+  by [rewrite H].
+  move => a a0.
+  elim => x.
+  elim => H H0.
+  by [rewrite H H0].
+  move => x x0 H.
+  exists (snd (sval x)).
+  repeat split.
+  by [rewrite H].
+  move => b b0.
+  elim => x.
+  elim => H H0.
+  by [rewrite H H0].
+  apply functional_extensionality.
+  move => a.
+  apply functional_extensionality.
+  move => b.
+  apply prop_extensionality_ok.
+  split; move => H.
+  assert (is_true (is_true_inv (alpha (fst (a,b)) (snd (a,b))))).
+  simpl.
+  apply is_true_id.
+  apply H.
+  exists (exist (fun x => (is_true (is_true_inv (alpha (fst x) (snd x))))) (a,b) H0).
+  by [simpl].
+  elim H => x.
+  elim => H0 H1.
+  rewrite H0 H1.
+  apply is_true_id.
+  apply (@sig_ind (A * B) (fun x => is_true (is_true_inv (alpha (fst x) (snd x)))) (fun x => is_true (is_true_inv (alpha (fst (sval x)) (snd (sval x)))))).
+  simpl.
+  by [move => x0].
+  apply functional_extensionality.
+  move => y.
+  apply functional_extensionality.
+  move => y0.
+  apply prop_extensionality_ok.
+  split; move => H.
+  apply sval_injective.
+  move : (H (fun a c : {x : A * B | is_true (is_true_inv (alpha (fst x) (snd x)))} => exists b : A, b = fst (sval a) /\ b = fst (sval c)) (or_introl Logic.eq_refl)).
+  move : (H (fun a c : {x : A * B | is_true (is_true_inv (alpha (fst x) (snd x)))} => exists b : B, b = snd (sval a) /\ b = snd (sval c)) (or_intror Logic.eq_refl)).
+
+  elim=>b[{}H H1].
+  elim=>a[H2 H3].
+  have H4:forall x y:A*B, fst x=fst y -> x.2=y.2 -> x = y.
+  move => x x0.
+  destruct x, x0.
+  simpl=>H4 H5.
+  by subst.
+  apply/H4;by subst.
+
+  move=>alpha0.
+  case=>H1;subst  ; by [exists (sval y0).1%PAIR|exists (sval y0).2].
 Qed.
 
 (** %
@@ -798,14 +796,14 @@ $$
 \end{screen}
 % **)
 Definition axiom20 :=
- forall (A B : eqType), exists (j : Rel A (sum_eqType A B))(k : Rel B (sum_eqType A B)),
+ forall (A B : eqType), exists (j : Rel A (sum A B))(k : Rel B (sum A B)),
  j ・ j # = Id A /\ k ・ k # = Id B /\ j ・ k # = φ A B /\
- (j # ・ j) ∪ (k # ・ k) = Id (sum_eqType A B).
+ (j # ・ j) ∪ (k # ・ k) = Id (sum A B).
 Lemma pair_of_inclusions : axiom20.
 Proof.
 move => A B.
-exists (fun (a : A)(x : sum_eqType A B) => x = inl a).
-exists (fun (b : B)(x : sum_eqType A B) => x = inr b).
+exists (fun (a : A)(x : sum A B) => x = inl a).
+exists (fun (b : B)(x : sum A B) => x = inr b).
 repeat split.
 apply functional_extensionality.
 move => a.
@@ -897,13 +895,13 @@ $$
 \end{screen}
 % **)
 Definition axiom21 :=
- forall (A B : eqType), exists (p : Rel (prod_eqType A B) A)(q : Rel (prod_eqType A B) B),
- p # ・ q = ∇ A B /\ (p ・ p #) ∩ (q ・ q #) = Id (prod_eqType A B) /\ univalent_r p /\ univalent_r q.
+ forall (A B : eqType), exists (p : Rel (prod A B) A)(q : Rel (prod A B) B),
+ p # ・ q = ∇ A B /\ (p ・ p #) ∩ (q ・ q #) = Id (prod A B) /\ univalent_r p /\ univalent_r q.
 Lemma pair_of_projections : axiom21.
 Proof.
 move => A B.
-exists (fun (x : prod_eqType A B)(a : A) => a = (fst x)).
-exists (fun (x : prod_eqType A B)(b : B) => b = (snd x)).
+exists (fun (x : prod A B)(a : A) => a = (fst x)).
+exists (fun (x : prod A B)(b : B) => b = (snd x)).
 split.
 apply functional_extensionality.
 move => a.
@@ -921,9 +919,8 @@ apply functional_extensionality.
 move => x0.
 apply prop_extensionality_ok.
 split; move => H.
-move : (H (fun a c : prod_eqType A B => exists b : A, b = fst a /\ b = fst c) (or_introl Logic.eq_refl)).
-move : (H (fun a c : prod_eqType A B => exists b : B, b = snd a /\ b = snd c) (or_intror Logic.eq_refl)).
-unfold id.
+move : (H (fun a c : prod A B => exists b : A, b = fst a /\ b = fst c) (or_introl Logic.eq_refl)).
+move : (H (fun a c : prod A B => exists b : B, b = snd a /\ b = snd c) (or_intror Logic.eq_refl)).
 clear H.
 elim => b.
 elim => H H0.
@@ -933,7 +930,7 @@ rewrite (surjective_pairing x0) -H0 -H2 H H1.
 apply surjective_pairing.
 rewrite H.
 move => alpha H0.
-case H0 => H1; rewrite H1; unfold id.
+case H0 => H1; rewrite H1.
 exists (fst x0).
 repeat split.
 exists (snd x0).
