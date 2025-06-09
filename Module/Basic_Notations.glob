@@ -1,0 +1,1052 @@
+DIGEST 767e8a002958fa2addb0093a353b7aef
+FMyLib.Basic_Notations
+R29:47 mathcomp.ssreflect.ssreflect <> <> lib
+R49:64 mathcomp.ssreflect.eqtype <> <> lib
+R66:71 mathcomp.ssreflect.ssrfun <> <> lib
+R73:77 mathcomp.ssreflect.bigop <> <> lib
+R79:85 mathcomp.ssreflect.ssrbool <> <> lib
+R103:122 Stdlib.Logic.ClassicalFacts <> <> lib
+ax 5417:5438 <> prop_extensionality_ok
+R5442:5460 Stdlib.Logic.ClassicalFacts <> prop_extensionality def
+def 5475:5477 <> Rel
+R5486:5491 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 5480:5480 <> A:3
+binder 5482:5482 <> B:4
+R5498:5501 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R5497:5497 MyLib.Basic_Notations <> A:3 var
+R5503:5506 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R5502:5502 MyLib.Basic_Notations <> B:4 var
+modtype 5526:5533 <> Relation
+ax 5547:5553 Relation inverse
+R5571:5576 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 5565:5565 <> A:5
+binder 5567:5567 <> B:6
+R5586:5589 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R5579:5581 MyLib.Basic_Notations <> Rel def
+R5583:5583 MyLib.Basic_Notations <> A:5 var
+R5585:5585 MyLib.Basic_Notations <> B:6 var
+R5590:5592 MyLib.Basic_Notations <> Rel def
+R5594:5594 MyLib.Basic_Notations <> B:6 var
+R5596:5596 MyLib.Basic_Notations <> A:5 var
+R5619:5625 MyLib.Basic_Notations Relation inverse defax
+not 5609:5609 Relation :::x_'#'
+ax 5659:5667 Relation composite
+R5687:5692 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 5679:5679 <> A:9
+binder 5681:5681 <> B:10
+binder 5683:5683 <> C:11
+R5702:5705 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R5695:5697 MyLib.Basic_Notations <> Rel def
+R5699:5699 MyLib.Basic_Notations <> A:9 var
+R5701:5701 MyLib.Basic_Notations <> B:10 var
+R5713:5716 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R5706:5708 MyLib.Basic_Notations <> Rel def
+R5710:5710 MyLib.Basic_Notations <> B:10 var
+R5712:5712 MyLib.Basic_Notations <> C:11 var
+R5717:5719 MyLib.Basic_Notations <> Rel def
+R5721:5721 MyLib.Basic_Notations <> A:9 var
+R5723:5723 MyLib.Basic_Notations <> C:11 var
+R5752:5760 MyLib.Basic_Notations Relation composite defax
+not 5736:5736 Relation :::x_'・'_x
+ax 5798:5805 Relation residual
+R5825:5830 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 5817:5817 <> A:14
+binder 5819:5819 <> B:15
+binder 5821:5821 <> C:16
+R5840:5843 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R5833:5835 MyLib.Basic_Notations <> Rel def
+R5837:5837 MyLib.Basic_Notations <> A:14 var
+R5839:5839 MyLib.Basic_Notations <> B:15 var
+R5851:5854 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R5844:5846 MyLib.Basic_Notations <> Rel def
+R5848:5848 MyLib.Basic_Notations <> B:15 var
+R5850:5850 MyLib.Basic_Notations <> C:16 var
+R5855:5857 MyLib.Basic_Notations <> Rel def
+R5859:5859 MyLib.Basic_Notations <> A:14 var
+R5861:5861 MyLib.Basic_Notations <> C:16 var
+R5890:5897 MyLib.Basic_Notations Relation residual defax
+not 5874:5874 Relation :::x_'△'_x
+ax 5936:5943 Relation identity
+R5959:5964 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 5955:5955 <> A:19
+R5967:5969 MyLib.Basic_Notations <> Rel def
+R5971:5971 MyLib.Basic_Notations <> A:19 var
+R5973:5973 MyLib.Basic_Notations <> A:19 var
+R5996:6003 MyLib.Basic_Notations Relation identity defax
+not 5986:5986 Relation :::'Id'
+ax 6016:6020 Relation empty
+R6038:6043 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 6032:6032 <> A:22
+binder 6034:6034 <> B:23
+R6046:6048 MyLib.Basic_Notations <> Rel def
+R6050:6050 MyLib.Basic_Notations <> A:22 var
+R6052:6052 MyLib.Basic_Notations <> B:23 var
+R6075:6079 MyLib.Basic_Notations Relation empty defax
+not 6065:6065 Relation :::'φ'
+ax 6092:6100 Relation universal
+R6118:6123 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 6112:6112 <> A:26
+binder 6114:6114 <> B:27
+R6126:6128 MyLib.Basic_Notations <> Rel def
+R6130:6130 MyLib.Basic_Notations <> A:26 var
+R6132:6132 MyLib.Basic_Notations <> B:27 var
+R6156:6164 MyLib.Basic_Notations Relation universal defax
+not 6145:6145 Relation :::'∇'
+ax 6178:6184 Relation include
+R6202:6207 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 6196:6196 <> A:30
+binder 6198:6198 <> B:31
+R6217:6220 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R6210:6212 MyLib.Basic_Notations <> Rel def
+R6214:6214 MyLib.Basic_Notations <> A:30 var
+R6216:6216 MyLib.Basic_Notations <> B:31 var
+R6228:6231 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R6221:6223 MyLib.Basic_Notations <> Rel def
+R6225:6225 MyLib.Basic_Notations <> A:30 var
+R6227:6227 MyLib.Basic_Notations <> B:31 var
+R6264:6270 MyLib.Basic_Notations Relation include defax
+not 6248:6248 Relation :::x_'⊆'_x
+ax 6550:6553 Relation cupP
+R6575:6580 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 6565:6565 <> A:34
+binder 6567:6567 <> B:35
+binder 6569:6569 <> C:36
+binder 6571:6571 <> D:37
+R6583:6583 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R6599:6603 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R6591:6594 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R6584:6586 MyLib.Basic_Notations <> Rel def
+R6588:6588 MyLib.Basic_Notations <> C:36 var
+R6590:6590 MyLib.Basic_Notations <> D:37 var
+R6604:6604 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R6623:6627 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R6612:6615 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R6605:6607 MyLib.Basic_Notations <> Rel def
+R6609:6609 MyLib.Basic_Notations <> C:36 var
+R6611:6611 MyLib.Basic_Notations <> D:37 var
+R6616:6618 MyLib.Basic_Notations <> Rel def
+R6620:6620 MyLib.Basic_Notations <> A:34 var
+R6622:6622 MyLib.Basic_Notations <> B:35 var
+R6628:6630 MyLib.Basic_Notations <> Rel def
+R6632:6632 MyLib.Basic_Notations <> A:34 var
+R6634:6634 MyLib.Basic_Notations <> B:35 var
+R6670:6673 MyLib.Basic_Notations Relation cupP defax
+not 6647:6647 Relation :::'∪_{'_x_'}'_x
+ax 6713:6716 Relation capP
+R6738:6743 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 6728:6728 <> A:40
+binder 6730:6730 <> B:41
+binder 6732:6732 <> C:42
+binder 6734:6734 <> D:43
+R6746:6746 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R6762:6766 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R6754:6757 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R6747:6749 MyLib.Basic_Notations <> Rel def
+R6751:6751 MyLib.Basic_Notations <> C:42 var
+R6753:6753 MyLib.Basic_Notations <> D:43 var
+R6767:6767 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R6786:6790 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R6775:6778 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R6768:6770 MyLib.Basic_Notations <> Rel def
+R6772:6772 MyLib.Basic_Notations <> C:42 var
+R6774:6774 MyLib.Basic_Notations <> D:43 var
+R6779:6781 MyLib.Basic_Notations <> Rel def
+R6783:6783 MyLib.Basic_Notations <> A:40 var
+R6785:6785 MyLib.Basic_Notations <> B:41 var
+R6791:6793 MyLib.Basic_Notations <> Rel def
+R6795:6795 MyLib.Basic_Notations <> A:40 var
+R6797:6797 MyLib.Basic_Notations <> B:41 var
+R6833:6836 MyLib.Basic_Notations Relation capP defax
+not 6810:6810 Relation :::'∩_{'_x_'}'_x
+def 7072:7074 Relation cup
+R7083:7088 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 7077:7077 <> A:46
+binder 7079:7079 <> B:47
+R7105:7107 MyLib.Basic_Notations <> Rel def
+R7109:7109 MyLib.Basic_Notations <> A:46 var
+R7111:7111 MyLib.Basic_Notations <> B:47 var
+binder 7092:7096 <> alpha:48
+binder 7098:7101 <> beta:49
+R7118:7122 MyLib.Basic_Notations Relation :::'∪_{'_x_'}'_x not
+R7175:7176 MyLib.Basic_Notations Relation :::'∪_{'_x_'}'_x not
+R7135:7137 MyLib.Basic_Notations <> Rel def
+R7139:7139 MyLib.Basic_Notations <> A:46 var
+R7141:7141 MyLib.Basic_Notations <> B:47 var
+binder 7127:7131 <> gamma:50
+R7159:7162 Corelib.Init.Logic <> ::type_scope:x_'\/'_x not
+R7151:7153 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R7146:7150 MyLib.Basic_Notations <> gamma:50 var
+R7154:7158 MyLib.Basic_Notations <> alpha:48 var
+R7168:7170 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R7163:7167 MyLib.Basic_Notations <> gamma:50 var
+R7171:7174 MyLib.Basic_Notations <> beta:49 var
+R7177:7178 Corelib.ssr.ssrfun <> id abbrev
+R7206:7208 MyLib.Basic_Notations Relation cup def
+not 7190:7190 Relation :::x_'∪'_x
+def 7241:7243 Relation cap
+R7252:7257 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 7246:7246 <> A:51
+binder 7248:7248 <> B:52
+R7274:7276 MyLib.Basic_Notations <> Rel def
+R7278:7278 MyLib.Basic_Notations <> A:51 var
+R7280:7280 MyLib.Basic_Notations <> B:52 var
+binder 7261:7265 <> alpha:53
+binder 7267:7270 <> beta:54
+R7287:7291 MyLib.Basic_Notations Relation :::'∩_{'_x_'}'_x not
+R7344:7345 MyLib.Basic_Notations Relation :::'∩_{'_x_'}'_x not
+R7304:7306 MyLib.Basic_Notations <> Rel def
+R7308:7308 MyLib.Basic_Notations <> A:51 var
+R7310:7310 MyLib.Basic_Notations <> B:52 var
+binder 7296:7300 <> gamma:55
+R7328:7331 Corelib.Init.Logic <> ::type_scope:x_'\/'_x not
+R7320:7322 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R7315:7319 MyLib.Basic_Notations <> gamma:55 var
+R7323:7327 MyLib.Basic_Notations <> alpha:53 var
+R7337:7339 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R7332:7336 MyLib.Basic_Notations <> gamma:55 var
+R7340:7343 MyLib.Basic_Notations <> beta:54 var
+R7346:7347 Corelib.ssr.ssrfun <> id abbrev
+R7375:7377 MyLib.Basic_Notations Relation cap def
+not 7359:7359 Relation :::x_'∩'_x
+ax 7409:7411 Relation rpc
+R7429:7434 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 7423:7423 <> A:56
+binder 7425:7425 <> B:57
+R7444:7447 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R7437:7439 MyLib.Basic_Notations <> Rel def
+R7441:7441 MyLib.Basic_Notations <> A:56 var
+R7443:7443 MyLib.Basic_Notations <> B:57 var
+R7455:7458 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R7448:7450 MyLib.Basic_Notations <> Rel def
+R7452:7452 MyLib.Basic_Notations <> A:56 var
+R7454:7454 MyLib.Basic_Notations <> B:57 var
+R7459:7461 MyLib.Basic_Notations <> Rel def
+R7463:7463 MyLib.Basic_Notations <> A:56 var
+R7465:7465 MyLib.Basic_Notations <> B:57 var
+R7493:7495 MyLib.Basic_Notations Relation rpc defax
+not 7478:7478 Relation :::x_'>>'_x
+def 7532:7541 Relation complement
+R7550:7555 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 7544:7544 <> A:60
+binder 7546:7546 <> B:61
+R7567:7569 MyLib.Basic_Notations <> Rel def
+R7571:7571 MyLib.Basic_Notations <> A:60 var
+R7573:7573 MyLib.Basic_Notations <> B:61 var
+binder 7559:7563 <> alpha:62
+R7584:7587 MyLib.Basic_Notations Relation :::x_'>>'_x not
+R7579:7583 MyLib.Basic_Notations <> alpha:62 var
+R7588:7593 MyLib.Basic_Notations Relation :::'φ' not
+R7591:7591 MyLib.Basic_Notations <> A:60 var
+R7593:7593 MyLib.Basic_Notations <> B:61 var
+R7617:7626 MyLib.Basic_Notations Relation complement def
+not 7605:7605 Relation :::x_'^'
+def 7657:7666 Relation difference
+R7675:7680 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 7669:7669 <> A:63
+binder 7671:7671 <> B:64
+R7697:7699 MyLib.Basic_Notations <> Rel def
+R7701:7701 MyLib.Basic_Notations <> A:63 var
+R7703:7703 MyLib.Basic_Notations <> B:64 var
+binder 7684:7688 <> alpha:65
+binder 7690:7693 <> beta:66
+R7714:7718 MyLib.Basic_Notations Relation :::x_'∩'_x not
+R7709:7713 MyLib.Basic_Notations <> alpha:65 var
+R7723:7724 MyLib.Basic_Notations Relation :::x_'^' not
+R7719:7722 MyLib.Basic_Notations <> beta:66 var
+R7749:7758 MyLib.Basic_Notations Relation difference def
+not 7736:7736 Relation :::x_'--'_x
+R7946:7949 Corelib.Init.Datatypes <> unit ind
+not 7937:7937 Relation :::'i'
+def 8885:8891 Relation total_r
+R8900:8905 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 8894:8894 <> A:67
+binder 8896:8896 <> B:68
+R8917:8919 MyLib.Basic_Notations <> Rel def
+R8921:8921 MyLib.Basic_Notations <> A:67 var
+R8923:8923 MyLib.Basic_Notations <> B:68 var
+binder 8909:8913 <> alpha:69
+R8929:8929 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R8934:8940 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R8958:8958 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R8930:8933 MyLib.Basic_Notations Relation :::'Id' not
+R8933:8933 MyLib.Basic_Notations <> A:67 var
+R8946:8950 MyLib.Basic_Notations Relation :::x_'・'_x not
+R8941:8945 MyLib.Basic_Notations <> alpha:69 var
+R8956:8957 MyLib.Basic_Notations Relation :::x_'#' not
+R8951:8955 MyLib.Basic_Notations <> alpha:69 var
+def 8972:8982 Relation univalent_r
+R8991:8996 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 8985:8985 <> A:70
+binder 8987:8987 <> B:71
+R9008:9010 MyLib.Basic_Notations <> Rel def
+R9012:9012 MyLib.Basic_Notations <> A:70 var
+R9014:9014 MyLib.Basic_Notations <> B:71 var
+binder 9000:9004 <> alpha:72
+R9020:9020 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R9038:9044 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R9049:9049 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R9028:9032 MyLib.Basic_Notations Relation :::x_'・'_x not
+R9026:9027 MyLib.Basic_Notations Relation :::x_'#' not
+R9021:9025 MyLib.Basic_Notations <> alpha:72 var
+R9033:9037 MyLib.Basic_Notations <> alpha:72 var
+R9045:9048 MyLib.Basic_Notations Relation :::'Id' not
+R9048:9048 MyLib.Basic_Notations <> B:71 var
+def 9063:9072 Relation function_r
+R9081:9086 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 9075:9075 <> A:73
+binder 9077:9077 <> B:74
+R9098:9100 MyLib.Basic_Notations <> Rel def
+R9102:9102 MyLib.Basic_Notations <> A:73 var
+R9104:9104 MyLib.Basic_Notations <> B:74 var
+binder 9090:9094 <> alpha:75
+R9111:9111 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R9125:9130 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R9148:9148 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R9112:9118 MyLib.Basic_Notations Relation total_r def
+R9120:9124 MyLib.Basic_Notations <> alpha:75 var
+R9131:9141 MyLib.Basic_Notations Relation univalent_r def
+R9143:9147 MyLib.Basic_Notations <> alpha:75 var
+def 9162:9173 Relation surjection_r
+R9182:9187 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 9176:9176 <> A:76
+binder 9178:9178 <> B:77
+R9199:9201 MyLib.Basic_Notations <> Rel def
+R9203:9203 MyLib.Basic_Notations <> A:76 var
+R9205:9205 MyLib.Basic_Notations <> B:77 var
+binder 9191:9195 <> alpha:78
+R9212:9212 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R9229:9234 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R9252:9252 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R9213:9222 MyLib.Basic_Notations Relation function_r def
+R9224:9228 MyLib.Basic_Notations <> alpha:78 var
+R9235:9241 MyLib.Basic_Notations Relation total_r def
+R9249:9250 MyLib.Basic_Notations Relation :::x_'#' not
+R9244:9248 MyLib.Basic_Notations <> alpha:78 var
+def 9266:9276 Relation injection_r
+R9285:9290 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 9279:9279 <> A:79
+binder 9281:9281 <> B:80
+R9302:9304 MyLib.Basic_Notations <> Rel def
+R9306:9306 MyLib.Basic_Notations <> A:79 var
+R9308:9308 MyLib.Basic_Notations <> B:80 var
+binder 9294:9298 <> alpha:81
+R9315:9315 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R9332:9337 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R9359:9359 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R9316:9325 MyLib.Basic_Notations Relation function_r def
+R9327:9331 MyLib.Basic_Notations <> alpha:81 var
+R9338:9348 MyLib.Basic_Notations Relation univalent_r def
+R9356:9357 MyLib.Basic_Notations Relation :::x_'#' not
+R9351:9355 MyLib.Basic_Notations <> alpha:81 var
+def 9373:9383 Relation bijection_r
+R9392:9397 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 9386:9386 <> A:82
+binder 9388:9388 <> B:83
+R9409:9411 MyLib.Basic_Notations <> Rel def
+R9413:9413 MyLib.Basic_Notations <> A:82 var
+R9415:9415 MyLib.Basic_Notations <> B:83 var
+binder 9401:9405 <> alpha:84
+R9422:9422 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R9439:9443 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R9423:9432 MyLib.Basic_Notations Relation function_r def
+R9434:9438 MyLib.Basic_Notations <> alpha:84 var
+R9444:9444 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R9462:9467 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R9489:9489 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R9445:9451 MyLib.Basic_Notations Relation total_r def
+R9459:9460 MyLib.Basic_Notations Relation :::x_'#' not
+R9454:9458 MyLib.Basic_Notations <> alpha:84 var
+R9468:9478 MyLib.Basic_Notations Relation univalent_r def
+R9486:9487 MyLib.Basic_Notations Relation :::x_'#' not
+R9481:9485 MyLib.Basic_Notations <> alpha:84 var
+def 9904:9910 Relation axiom1a
+R9929:9934 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 9923:9923 <> A:85
+binder 9925:9925 <> B:86
+R9945:9947 MyLib.Basic_Notations <> Rel def
+R9949:9949 MyLib.Basic_Notations <> A:85 var
+R9951:9951 MyLib.Basic_Notations <> B:86 var
+binder 9937:9941 <> alpha:87
+R9969:9971 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R9959:9963 MyLib.Basic_Notations Relation :::x_'・'_x not
+R9955:9958 MyLib.Basic_Notations Relation :::'Id' not
+R9958:9958 MyLib.Basic_Notations <> A:85 var
+R9964:9968 MyLib.Basic_Notations <> alpha:87 var
+R9972:9976 MyLib.Basic_Notations <> alpha:87 var
+ax 9985:9993 Relation comp_id_l
+R9997:10003 MyLib.Basic_Notations Relation axiom1a def
+def 10017:10023 Relation axiom1b
+R10042:10047 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 10036:10036 <> A:90
+binder 10038:10038 <> B:91
+R10058:10060 MyLib.Basic_Notations <> Rel def
+R10062:10062 MyLib.Basic_Notations <> A:90 var
+R10064:10064 MyLib.Basic_Notations <> B:91 var
+binder 10050:10054 <> alpha:92
+R10082:10084 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R10073:10077 MyLib.Basic_Notations Relation :::x_'・'_x not
+R10068:10072 MyLib.Basic_Notations <> alpha:92 var
+R10078:10081 MyLib.Basic_Notations Relation :::'Id' not
+R10081:10081 MyLib.Basic_Notations <> B:91 var
+R10085:10089 MyLib.Basic_Notations <> alpha:92 var
+ax 10098:10106 Relation comp_id_r
+R10110:10116 MyLib.Basic_Notations Relation axiom1b def
+def 10360:10365 Relation axiom2
+R10389:10394 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 10379:10379 <> A:95
+binder 10381:10381 <> B:96
+binder 10383:10383 <> C:97
+binder 10385:10385 <> D:98
+R10405:10407 MyLib.Basic_Notations <> Rel def
+R10409:10409 MyLib.Basic_Notations <> A:95 var
+R10411:10411 MyLib.Basic_Notations <> B:96 var
+binder 10397:10401 <> alpha:99
+R10421:10423 MyLib.Basic_Notations <> Rel def
+R10425:10425 MyLib.Basic_Notations <> B:96 var
+R10427:10427 MyLib.Basic_Notations <> C:97 var
+binder 10414:10417 <> beta:100
+R10438:10440 MyLib.Basic_Notations <> Rel def
+R10442:10442 MyLib.Basic_Notations <> C:97 var
+R10444:10444 MyLib.Basic_Notations <> D:98 var
+binder 10430:10434 <> gamma:101
+R10475:10477 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R10449:10449 MyLib.Basic_Notations Relation :::x_'・'_x not
+R10464:10469 MyLib.Basic_Notations Relation :::x_'・'_x not
+R10455:10459 MyLib.Basic_Notations Relation :::x_'・'_x not
+R10450:10454 MyLib.Basic_Notations <> alpha:99 var
+R10460:10463 MyLib.Basic_Notations <> beta:100 var
+R10470:10474 MyLib.Basic_Notations <> gamma:101 var
+R10483:10488 MyLib.Basic_Notations Relation :::x_'・'_x not
+R10503:10503 MyLib.Basic_Notations Relation :::x_'・'_x not
+R10478:10482 MyLib.Basic_Notations <> alpha:99 var
+R10493:10497 MyLib.Basic_Notations Relation :::x_'・'_x not
+R10489:10492 MyLib.Basic_Notations <> beta:100 var
+R10498:10502 MyLib.Basic_Notations <> gamma:101 var
+ax 10512:10521 Relation comp_assoc
+R10525:10530 MyLib.Basic_Notations Relation axiom2 def
+def 10685:10690 Relation axiom3
+R10709:10714 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 10703:10703 <> A:104
+binder 10705:10705 <> B:105
+R10725:10727 MyLib.Basic_Notations <> Rel def
+R10729:10729 MyLib.Basic_Notations <> A:104 var
+R10731:10731 MyLib.Basic_Notations <> B:105 var
+binder 10717:10721 <> alpha:106
+R10740:10744 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R10735:10739 MyLib.Basic_Notations <> alpha:106 var
+R10745:10749 MyLib.Basic_Notations <> alpha:106 var
+ax 10758:10765 Relation inc_refl
+R10769:10774 MyLib.Basic_Notations Relation axiom3 def
+def 11015:11020 Relation axiom4
+R11039:11044 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 11033:11033 <> A:109
+binder 11035:11035 <> B:110
+R11066:11068 MyLib.Basic_Notations <> Rel def
+R11070:11070 MyLib.Basic_Notations <> A:109 var
+R11072:11072 MyLib.Basic_Notations <> B:110 var
+binder 11047:11051 <> alpha:111
+binder 11053:11056 <> beta:112
+binder 11058:11062 <> gamma:113
+R11091:11094 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R11082:11086 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R11077:11081 MyLib.Basic_Notations <> alpha:111 var
+R11087:11090 MyLib.Basic_Notations <> beta:112 var
+R11109:11112 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R11099:11103 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R11095:11098 MyLib.Basic_Notations <> beta:112 var
+R11104:11108 MyLib.Basic_Notations <> gamma:113 var
+R11118:11122 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R11113:11117 MyLib.Basic_Notations <> alpha:111 var
+R11123:11127 MyLib.Basic_Notations <> gamma:113 var
+ax 11136:11144 Relation inc_trans
+R11148:11153 MyLib.Basic_Notations Relation axiom4 def
+def 11376:11381 Relation axiom5
+R11400:11405 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 11394:11394 <> A:116
+binder 11396:11396 <> B:117
+R11421:11423 MyLib.Basic_Notations <> Rel def
+R11425:11425 MyLib.Basic_Notations <> A:116 var
+R11427:11427 MyLib.Basic_Notations <> B:117 var
+binder 11408:11412 <> alpha:118
+binder 11414:11417 <> beta:119
+R11446:11449 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R11437:11441 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R11432:11436 MyLib.Basic_Notations <> alpha:118 var
+R11442:11445 MyLib.Basic_Notations <> beta:119 var
+R11464:11467 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R11454:11458 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R11450:11453 MyLib.Basic_Notations <> beta:119 var
+R11459:11463 MyLib.Basic_Notations <> alpha:118 var
+R11473:11475 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R11468:11472 MyLib.Basic_Notations <> alpha:118 var
+R11476:11479 MyLib.Basic_Notations <> beta:119 var
+ax 11488:11498 Relation inc_antisym
+R11502:11507 MyLib.Basic_Notations Relation axiom5 def
+def 11673:11678 Relation axiom6
+R11697:11702 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 11691:11691 <> A:122
+binder 11693:11693 <> B:123
+R11713:11715 MyLib.Basic_Notations <> Rel def
+R11717:11717 MyLib.Basic_Notations <> A:122 var
+R11719:11719 MyLib.Basic_Notations <> B:123 var
+binder 11705:11709 <> alpha:124
+R11729:11733 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R11723:11728 MyLib.Basic_Notations Relation :::'φ' not
+R11726:11726 MyLib.Basic_Notations <> A:122 var
+R11728:11728 MyLib.Basic_Notations <> B:123 var
+R11734:11738 MyLib.Basic_Notations <> alpha:124 var
+ax 11747:11761 Relation inc_empty_alpha
+R11765:11770 MyLib.Basic_Notations Relation axiom6 def
+def 11942:11947 Relation axiom7
+R11966:11971 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 11960:11960 <> A:127
+binder 11962:11962 <> B:128
+R11982:11984 MyLib.Basic_Notations <> Rel def
+R11986:11986 MyLib.Basic_Notations <> A:127 var
+R11988:11988 MyLib.Basic_Notations <> B:128 var
+binder 11974:11978 <> alpha:129
+R11997:12001 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R11992:11996 MyLib.Basic_Notations <> alpha:129 var
+R12002:12008 MyLib.Basic_Notations Relation :::'∇' not
+R12006:12006 MyLib.Basic_Notations <> A:127 var
+R12008:12008 MyLib.Basic_Notations <> B:128 var
+ax 12017:12035 Relation inc_alpha_universal
+R12039:12044 MyLib.Basic_Notations Relation axiom7 def
+def 12663:12669 Relation axiom8a
+R12693:12698 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 12683:12683 <> A:132
+binder 12685:12685 <> B:133
+binder 12687:12687 <> C:134
+binder 12689:12689 <> D:135
+R12711:12713 MyLib.Basic_Notations <> Rel def
+R12715:12715 MyLib.Basic_Notations <> A:132 var
+R12717:12717 MyLib.Basic_Notations <> B:133 var
+binder 12703:12707 <> alpha:136
+R12731:12734 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R12724:12726 MyLib.Basic_Notations <> Rel def
+R12728:12728 MyLib.Basic_Notations <> C:134 var
+R12730:12730 MyLib.Basic_Notations <> D:135 var
+R12735:12737 MyLib.Basic_Notations <> Rel def
+R12739:12739 MyLib.Basic_Notations <> A:132 var
+R12741:12741 MyLib.Basic_Notations <> B:133 var
+binder 12720:12720 <> f:137
+R12755:12758 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R12748:12750 MyLib.Basic_Notations <> Rel def
+R12752:12752 MyLib.Basic_Notations <> C:134 var
+R12754:12754 MyLib.Basic_Notations <> D:135 var
+binder 12744:12744 <> P:138
+R12788:12792 Corelib.Init.Logic <> ::type_scope:x_'<->'_x not
+R12772:12777 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R12787:12787 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R12767:12771 MyLib.Basic_Notations <> alpha:136 var
+R12778:12782 MyLib.Basic_Notations Relation :::'∩_{'_x_'}'_x not
+R12784:12785 MyLib.Basic_Notations Relation :::'∩_{'_x_'}'_x not
+R12783:12783 MyLib.Basic_Notations <> P:138 var
+R12786:12786 MyLib.Basic_Notations <> f:137 var
+R12807:12809 MyLib.Basic_Notations <> Rel def
+R12811:12811 MyLib.Basic_Notations <> C:134 var
+R12813:12813 MyLib.Basic_Notations <> D:135 var
+binder 12800:12803 <> beta:139
+R12822:12825 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R12816:12816 MyLib.Basic_Notations <> P:138 var
+R12818:12821 MyLib.Basic_Notations <> beta:139 var
+R12831:12835 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R12826:12830 MyLib.Basic_Notations <> alpha:136 var
+R12836:12836 MyLib.Basic_Notations <> f:137 var
+R12838:12841 MyLib.Basic_Notations <> beta:139 var
+ax 12850:12857 Relation inc_capP
+R12861:12867 MyLib.Basic_Notations Relation axiom8a def
+def 12881:12887 Relation axiom8b
+R12906:12911 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 12900:12900 <> A:142
+binder 12902:12902 <> B:143
+R12933:12935 MyLib.Basic_Notations <> Rel def
+R12937:12937 MyLib.Basic_Notations <> A:142 var
+R12939:12939 MyLib.Basic_Notations <> B:143 var
+binder 12914:12918 <> alpha:144
+binder 12920:12923 <> beta:145
+binder 12925:12929 <> gamma:146
+R12970:12974 Corelib.Init.Logic <> ::type_scope:x_'<->'_x not
+R12949:12954 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R12969:12969 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R12944:12948 MyLib.Basic_Notations <> alpha:144 var
+R12959:12963 MyLib.Basic_Notations Relation :::x_'∩'_x not
+R12955:12958 MyLib.Basic_Notations <> beta:145 var
+R12964:12968 MyLib.Basic_Notations <> gamma:146 var
+R12975:12975 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R12990:12995 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R13011:13011 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R12981:12985 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R12976:12980 MyLib.Basic_Notations <> alpha:144 var
+R12986:12989 MyLib.Basic_Notations <> beta:145 var
+R13001:13005 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R12996:13000 MyLib.Basic_Notations <> alpha:144 var
+R13006:13010 MyLib.Basic_Notations <> gamma:146 var
+prf 13020:13026 Relation inc_cap
+R13030:13036 MyLib.Basic_Notations Relation axiom8b def
+R13084:13091 MyLib.Basic_Notations Relation inc_capP prfax
+R13084:13091 MyLib.Basic_Notations Relation inc_capP prfax
+R13084:13091 MyLib.Basic_Notations Relation inc_capP prfax
+def 13816:13822 Relation axiom9a
+R13846:13851 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 13836:13836 <> A:147
+binder 13838:13838 <> B:148
+binder 13840:13840 <> C:149
+binder 13842:13842 <> D:150
+R13864:13866 MyLib.Basic_Notations <> Rel def
+R13868:13868 MyLib.Basic_Notations <> A:147 var
+R13870:13870 MyLib.Basic_Notations <> B:148 var
+binder 13856:13860 <> alpha:151
+R13884:13887 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R13877:13879 MyLib.Basic_Notations <> Rel def
+R13881:13881 MyLib.Basic_Notations <> C:149 var
+R13883:13883 MyLib.Basic_Notations <> D:150 var
+R13888:13890 MyLib.Basic_Notations <> Rel def
+R13892:13892 MyLib.Basic_Notations <> A:147 var
+R13894:13894 MyLib.Basic_Notations <> B:148 var
+binder 13873:13873 <> f:152
+R13908:13911 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R13901:13903 MyLib.Basic_Notations <> Rel def
+R13905:13905 MyLib.Basic_Notations <> C:149 var
+R13907:13907 MyLib.Basic_Notations <> D:150 var
+binder 13897:13897 <> P:153
+R13941:13945 Corelib.Init.Logic <> ::type_scope:x_'<->'_x not
+R13920:13920 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R13930:13935 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R13921:13925 MyLib.Basic_Notations Relation :::'∪_{'_x_'}'_x not
+R13927:13928 MyLib.Basic_Notations Relation :::'∪_{'_x_'}'_x not
+R13926:13926 MyLib.Basic_Notations <> P:153 var
+R13929:13929 MyLib.Basic_Notations <> f:152 var
+R13936:13940 MyLib.Basic_Notations <> alpha:151 var
+R13960:13962 MyLib.Basic_Notations <> Rel def
+R13964:13964 MyLib.Basic_Notations <> C:149 var
+R13966:13966 MyLib.Basic_Notations <> D:150 var
+binder 13953:13956 <> beta:154
+R13975:13978 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R13969:13969 MyLib.Basic_Notations <> P:153 var
+R13971:13974 MyLib.Basic_Notations <> beta:154 var
+R13985:13989 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R13979:13979 MyLib.Basic_Notations <> f:152 var
+R13981:13984 MyLib.Basic_Notations <> beta:154 var
+R13990:13994 MyLib.Basic_Notations <> alpha:151 var
+ax 14003:14010 Relation inc_cupP
+R14014:14020 MyLib.Basic_Notations Relation axiom9a def
+def 14034:14040 Relation axiom9b
+R14059:14064 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 14053:14053 <> A:157
+binder 14055:14055 <> B:158
+R14086:14088 MyLib.Basic_Notations <> Rel def
+R14090:14090 MyLib.Basic_Notations <> A:157 var
+R14092:14092 MyLib.Basic_Notations <> B:158 var
+binder 14067:14071 <> alpha:159
+binder 14073:14076 <> beta:160
+binder 14078:14082 <> gamma:161
+R14123:14127 Corelib.Init.Logic <> ::type_scope:x_'<->'_x not
+R14097:14097 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R14112:14117 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R14102:14106 MyLib.Basic_Notations Relation :::x_'∪'_x not
+R14098:14101 MyLib.Basic_Notations <> beta:160 var
+R14107:14111 MyLib.Basic_Notations <> gamma:161 var
+R14118:14122 MyLib.Basic_Notations <> alpha:159 var
+R14128:14128 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R14143:14148 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R14164:14164 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R14133:14137 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R14129:14132 MyLib.Basic_Notations <> beta:160 var
+R14138:14142 MyLib.Basic_Notations <> alpha:159 var
+R14154:14158 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R14149:14153 MyLib.Basic_Notations <> gamma:161 var
+R14159:14163 MyLib.Basic_Notations <> alpha:159 var
+prf 14173:14179 Relation inc_cup
+R14183:14189 MyLib.Basic_Notations Relation axiom9b def
+R14237:14244 MyLib.Basic_Notations Relation inc_cupP prfax
+R14237:14244 MyLib.Basic_Notations Relation inc_cupP prfax
+R14237:14244 MyLib.Basic_Notations Relation inc_cupP prfax
+def 14608:14614 Relation axiom10
+R14633:14638 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 14627:14627 <> A:162
+binder 14629:14629 <> B:163
+R14660:14662 MyLib.Basic_Notations <> Rel def
+R14664:14664 MyLib.Basic_Notations <> A:162 var
+R14666:14666 MyLib.Basic_Notations <> B:163 var
+binder 14641:14645 <> alpha:164
+binder 14647:14650 <> beta:165
+binder 14652:14656 <> gamma:166
+R14696:14700 Corelib.Init.Logic <> ::type_scope:x_'<->'_x not
+R14676:14681 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R14695:14695 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R14671:14675 MyLib.Basic_Notations <> alpha:164 var
+R14686:14689 MyLib.Basic_Notations Relation :::x_'>>'_x not
+R14682:14685 MyLib.Basic_Notations <> beta:165 var
+R14690:14694 MyLib.Basic_Notations <> gamma:166 var
+R14701:14701 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R14716:14721 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R14707:14711 MyLib.Basic_Notations Relation :::x_'∩'_x not
+R14702:14706 MyLib.Basic_Notations <> alpha:164 var
+R14712:14715 MyLib.Basic_Notations <> beta:165 var
+R14722:14726 MyLib.Basic_Notations <> gamma:166 var
+ax 14735:14741 Relation inc_rpc
+R14745:14751 MyLib.Basic_Notations Relation axiom10 def
+def 14913:14919 Relation axiom11
+R14938:14943 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 14932:14932 <> A:169
+binder 14934:14934 <> B:170
+R14954:14956 MyLib.Basic_Notations <> Rel def
+R14958:14958 MyLib.Basic_Notations <> A:169 var
+R14960:14960 MyLib.Basic_Notations <> B:170 var
+binder 14946:14950 <> alpha:171
+R14975:14977 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R14964:14964 MyLib.Basic_Notations Relation :::x_'#' not
+R14972:14974 MyLib.Basic_Notations Relation :::x_'#' not
+R14970:14971 MyLib.Basic_Notations Relation :::x_'#' not
+R14965:14969 MyLib.Basic_Notations <> alpha:171 var
+R14978:14982 MyLib.Basic_Notations <> alpha:171 var
+ax 14991:14999 Relation inv_invol
+R15003:15009 MyLib.Basic_Notations Relation axiom11 def
+def 15223:15229 Relation axiom12
+R15250:15255 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 15242:15242 <> A:174
+binder 15244:15244 <> B:175
+binder 15246:15246 <> C:176
+R15266:15268 MyLib.Basic_Notations <> Rel def
+R15270:15270 MyLib.Basic_Notations <> A:174 var
+R15272:15272 MyLib.Basic_Notations <> B:175 var
+binder 15258:15262 <> alpha:177
+R15282:15284 MyLib.Basic_Notations <> Rel def
+R15286:15286 MyLib.Basic_Notations <> B:175 var
+R15288:15288 MyLib.Basic_Notations <> C:176 var
+binder 15275:15278 <> beta:178
+R15311:15314 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R15333:15333 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R15293:15293 MyLib.Basic_Notations Relation :::x_'#' not
+R15308:15310 MyLib.Basic_Notations Relation :::x_'#' not
+R15299:15303 MyLib.Basic_Notations Relation :::x_'・'_x not
+R15294:15298 MyLib.Basic_Notations <> alpha:177 var
+R15304:15307 MyLib.Basic_Notations <> beta:178 var
+R15321:15325 MyLib.Basic_Notations Relation :::x_'・'_x not
+R15319:15320 MyLib.Basic_Notations Relation :::x_'#' not
+R15315:15318 MyLib.Basic_Notations <> beta:178 var
+R15331:15332 MyLib.Basic_Notations Relation :::x_'#' not
+R15326:15330 MyLib.Basic_Notations <> alpha:177 var
+ax 15342:15349 Relation comp_inv
+R15353:15359 MyLib.Basic_Notations Relation axiom12 def
+def 15571:15577 Relation axiom13
+R15597:15602 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 15591:15591 <> A:181
+binder 15593:15593 <> B:182
+R15618:15620 MyLib.Basic_Notations <> Rel def
+R15622:15622 MyLib.Basic_Notations <> A:181 var
+R15624:15624 MyLib.Basic_Notations <> B:182 var
+binder 15605:15609 <> alpha:183
+binder 15611:15614 <> beta:184
+R15642:15645 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R15633:15637 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R15628:15632 MyLib.Basic_Notations <> alpha:183 var
+R15638:15641 MyLib.Basic_Notations <> beta:184 var
+R15653:15657 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R15651:15652 MyLib.Basic_Notations Relation :::x_'#' not
+R15646:15650 MyLib.Basic_Notations <> alpha:183 var
+R15662:15663 MyLib.Basic_Notations Relation :::x_'#' not
+R15658:15661 MyLib.Basic_Notations <> beta:184 var
+ax 15672:15678 Relation inc_inv
+R15682:15688 MyLib.Basic_Notations Relation axiom13 def
+def 16000:16006 Relation axiom14
+R16028:16033 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 16020:16020 <> A:187
+binder 16022:16022 <> B:188
+binder 16024:16024 <> C:189
+R16044:16046 MyLib.Basic_Notations <> Rel def
+R16048:16048 MyLib.Basic_Notations <> A:187 var
+R16050:16050 MyLib.Basic_Notations <> B:188 var
+binder 16036:16040 <> alpha:190
+R16060:16062 MyLib.Basic_Notations <> Rel def
+R16064:16064 MyLib.Basic_Notations <> B:188 var
+R16066:16066 MyLib.Basic_Notations <> C:189 var
+binder 16053:16056 <> beta:191
+R16077:16079 MyLib.Basic_Notations <> Rel def
+R16081:16081 MyLib.Basic_Notations <> A:187 var
+R16083:16083 MyLib.Basic_Notations <> C:189 var
+binder 16069:16073 <> gamma:192
+R16088:16088 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R16115:16122 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R16188:16188 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R16089:16089 MyLib.Basic_Notations Relation :::x_'∩'_x not
+R16104:16109 MyLib.Basic_Notations Relation :::x_'∩'_x not
+R16095:16099 MyLib.Basic_Notations Relation :::x_'・'_x not
+R16090:16094 MyLib.Basic_Notations <> alpha:190 var
+R16100:16103 MyLib.Basic_Notations <> beta:191 var
+R16110:16114 MyLib.Basic_Notations <> gamma:192 var
+R16123:16123 MyLib.Basic_Notations Relation :::x_'・'_x not
+R16152:16158 MyLib.Basic_Notations Relation :::x_'・'_x not
+R16187:16187 MyLib.Basic_Notations Relation :::x_'・'_x not
+R16129:16134 MyLib.Basic_Notations Relation :::x_'∩'_x not
+R16151:16151 MyLib.Basic_Notations Relation :::x_'∩'_x not
+R16124:16128 MyLib.Basic_Notations <> alpha:190 var
+R16140:16144 MyLib.Basic_Notations Relation :::x_'・'_x not
+R16135:16139 MyLib.Basic_Notations <> gamma:192 var
+R16149:16150 MyLib.Basic_Notations Relation :::x_'#' not
+R16145:16148 MyLib.Basic_Notations <> beta:191 var
+R16163:16168 MyLib.Basic_Notations Relation :::x_'∩'_x not
+R16186:16186 MyLib.Basic_Notations Relation :::x_'∩'_x not
+R16159:16162 MyLib.Basic_Notations <> beta:191 var
+R16176:16180 MyLib.Basic_Notations Relation :::x_'・'_x not
+R16174:16175 MyLib.Basic_Notations Relation :::x_'#' not
+R16169:16173 MyLib.Basic_Notations <> alpha:190 var
+R16181:16185 MyLib.Basic_Notations <> gamma:192 var
+ax 16197:16204 Relation dedekind
+R16208:16214 MyLib.Basic_Notations Relation axiom14 def
+def 16490:16496 Relation axiom15
+R16518:16523 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 16510:16510 <> A:195
+binder 16512:16512 <> B:196
+binder 16514:16514 <> C:197
+R16534:16536 MyLib.Basic_Notations <> Rel def
+R16538:16538 MyLib.Basic_Notations <> A:195 var
+R16540:16540 MyLib.Basic_Notations <> B:196 var
+binder 16526:16530 <> alpha:198
+R16550:16552 MyLib.Basic_Notations <> Rel def
+R16554:16554 MyLib.Basic_Notations <> B:196 var
+R16556:16556 MyLib.Basic_Notations <> C:197 var
+binder 16543:16546 <> beta:199
+R16567:16569 MyLib.Basic_Notations <> Rel def
+R16571:16571 MyLib.Basic_Notations <> A:195 var
+R16573:16573 MyLib.Basic_Notations <> C:197 var
+binder 16559:16563 <> gamma:200
+R16604:16608 Corelib.Init.Logic <> ::type_scope:x_'<->'_x not
+R16583:16588 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R16603:16603 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R16578:16582 MyLib.Basic_Notations <> gamma:200 var
+R16594:16598 MyLib.Basic_Notations Relation :::x_'△'_x not
+R16589:16593 MyLib.Basic_Notations <> alpha:198 var
+R16599:16602 MyLib.Basic_Notations <> beta:199 var
+R16609:16609 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R16627:16632 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R16617:16621 MyLib.Basic_Notations Relation :::x_'・'_x not
+R16615:16616 MyLib.Basic_Notations Relation :::x_'#' not
+R16610:16614 MyLib.Basic_Notations <> alpha:198 var
+R16622:16626 MyLib.Basic_Notations <> gamma:200 var
+R16633:16636 MyLib.Basic_Notations <> beta:199 var
+ax 16645:16656 Relation inc_residual
+R16660:16666 MyLib.Basic_Notations Relation axiom15 def
+def 17200:17206 Relation axiom16
+R17225:17230 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 17219:17219 <> A:203
+binder 17221:17221 <> B:204
+R17241:17243 MyLib.Basic_Notations <> Rel def
+R17245:17245 MyLib.Basic_Notations <> A:203 var
+R17247:17247 MyLib.Basic_Notations <> B:204 var
+binder 17233:17237 <> alpha:205
+R17269:17271 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R17257:17261 MyLib.Basic_Notations Relation :::x_'∪'_x not
+R17252:17256 MyLib.Basic_Notations <> alpha:205 var
+R17267:17268 MyLib.Basic_Notations Relation :::x_'^' not
+R17262:17266 MyLib.Basic_Notations <> alpha:205 var
+R17272:17278 MyLib.Basic_Notations Relation :::'∇' not
+R17276:17276 MyLib.Basic_Notations <> A:203 var
+R17278:17278 MyLib.Basic_Notations <> B:204 var
+ax 17287:17304 Relation complement_classic
+R17308:17314 MyLib.Basic_Notations Relation axiom16 def
+def 17738:17744 Relation axiom17
+R17761:17766 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 17757:17757 <> A:208
+R17789:17791 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R17777:17781 MyLib.Basic_Notations Relation :::x_'・'_x not
+R17770:17776 MyLib.Basic_Notations Relation :::'∇' not
+R17774:17774 MyLib.Basic_Notations <> A:208 var
+R17776:17776 MyLib.Basic_Notations Relation :::'i' not
+R17782:17788 MyLib.Basic_Notations Relation :::'∇' not
+R17786:17786 MyLib.Basic_Notations Relation :::'i' not
+R17788:17788 MyLib.Basic_Notations <> A:208 var
+R17792:17798 MyLib.Basic_Notations Relation :::'∇' not
+R17796:17796 MyLib.Basic_Notations <> A:208 var
+R17798:17798 MyLib.Basic_Notations <> A:208 var
+ax 17807:17820 Relation unit_universal
+R17824:17830 MyLib.Basic_Notations Relation axiom17 def
+def 18206:18212 Relation axiom18
+R18231:18236 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 18225:18225 <> A:211
+binder 18227:18227 <> B:212
+R18247:18249 MyLib.Basic_Notations <> Rel def
+R18251:18251 MyLib.Basic_Notations <> A:211 var
+R18253:18253 MyLib.Basic_Notations <> B:212 var
+binder 18239:18243 <> alpha:213
+R18271:18274 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R18258:18264 MyLib.Basic_Notations Relation total_r def
+R18266:18270 MyLib.Basic_Notations <> alpha:213 var
+R18275:18281 Corelib.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R18296:18297 Corelib.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R18289:18291 MyLib.Basic_Notations <> Rel def
+R18293:18293 MyLib.Basic_Notations <> A:211 var
+R18295:18295 MyLib.Basic_Notations <> B:212 var
+binder 18282:18285 <> beta:214
+R18313:18316 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R18298:18307 MyLib.Basic_Notations Relation function_r def
+R18309:18312 MyLib.Basic_Notations <> beta:214 var
+R18321:18325 MyLib.Basic_Notations Relation :::x_'⊆'_x not
+R18317:18320 MyLib.Basic_Notations <> beta:214 var
+R18326:18330 MyLib.Basic_Notations <> alpha:213 var
+ax 18339:18353 Relation axiom_of_choice
+R18357:18363 MyLib.Basic_Notations Relation axiom18 def
+def 18779:18785 Relation axiom19
+R18804:18809 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 18798:18798 <> A:217
+binder 18800:18800 <> B:218
+R18820:18822 MyLib.Basic_Notations <> Rel def
+R18824:18824 MyLib.Basic_Notations <> A:217 var
+R18826:18826 MyLib.Basic_Notations <> B:218 var
+binder 18812:18816 <> alpha:219
+R18831:18838 Corelib.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R18875:18878 Corelib.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R18843:18848 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 18839:18839 <> R:220
+R18855:18857 MyLib.Basic_Notations <> Rel def
+R18859:18859 MyLib.Basic_Notations <> R:220 var
+R18861:18861 MyLib.Basic_Notations <> A:217 var
+binder 18851:18851 <> f:221
+R18868:18870 MyLib.Basic_Notations <> Rel def
+R18872:18872 MyLib.Basic_Notations <> R:220 var
+R18874:18874 MyLib.Basic_Notations <> B:218 var
+binder 18864:18864 <> g:222
+R18891:18894 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R18879:18888 MyLib.Basic_Notations Relation function_r def
+R18890:18890 MyLib.Basic_Notations <> f:221 var
+R18907:18910 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R18895:18904 MyLib.Basic_Notations Relation function_r def
+R18906:18906 MyLib.Basic_Notations <> g:222 var
+R18928:18931 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R18916:18918 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R18911:18915 MyLib.Basic_Notations <> alpha:219 var
+R18922:18926 MyLib.Basic_Notations Relation :::x_'・'_x not
+R18920:18921 MyLib.Basic_Notations Relation :::x_'#' not
+R18919:18919 MyLib.Basic_Notations <> f:221 var
+R18927:18927 MyLib.Basic_Notations <> g:222 var
+R18932:18932 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R18960:18963 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R18933:18933 MyLib.Basic_Notations Relation :::x_'∩'_x not
+R18943:18949 MyLib.Basic_Notations Relation :::x_'∩'_x not
+R18959:18959 MyLib.Basic_Notations Relation :::x_'∩'_x not
+R18935:18939 MyLib.Basic_Notations Relation :::x_'・'_x not
+R18934:18934 MyLib.Basic_Notations <> f:221 var
+R18941:18942 MyLib.Basic_Notations Relation :::x_'#' not
+R18940:18940 MyLib.Basic_Notations <> f:221 var
+R18951:18955 MyLib.Basic_Notations Relation :::x_'・'_x not
+R18950:18950 MyLib.Basic_Notations <> g:222 var
+R18957:18958 MyLib.Basic_Notations Relation :::x_'#' not
+R18956:18956 MyLib.Basic_Notations <> g:222 var
+R18964:18967 MyLib.Basic_Notations Relation :::'Id' not
+R18967:18967 MyLib.Basic_Notations <> R:220 var
+ax 18976:18986 Relation rationality
+R18990:18996 MyLib.Basic_Notations Relation axiom19 def
+def 19403:19409 Relation axiom20
+R19429:19434 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 19423:19423 <> A:225
+binder 19425:19425 <> B:226
+R19438:19445 Corelib.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R19486:19489 Corelib.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R19450:19452 MyLib.Basic_Notations <> Rel def
+R19454:19454 MyLib.Basic_Notations <> A:225 var
+R19457:19459 Corelib.Init.Datatypes <> sum ind
+R19463:19463 MyLib.Basic_Notations <> B:226 var
+R19461:19461 MyLib.Basic_Notations <> A:225 var
+binder 19446:19446 <> j:227
+R19471:19473 MyLib.Basic_Notations <> Rel def
+R19475:19475 MyLib.Basic_Notations <> B:226 var
+R19478:19480 Corelib.Init.Datatypes <> sum ind
+R19484:19484 MyLib.Basic_Notations <> B:226 var
+R19482:19482 MyLib.Basic_Notations <> A:225 var
+binder 19467:19467 <> k:228
+R19506:19509 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R19499:19501 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R19491:19495 MyLib.Basic_Notations Relation :::x_'・'_x not
+R19490:19490 MyLib.Basic_Notations <> j:227 var
+R19497:19498 MyLib.Basic_Notations Relation :::x_'#' not
+R19496:19496 MyLib.Basic_Notations <> j:227 var
+R19502:19505 MyLib.Basic_Notations Relation :::'Id' not
+R19505:19505 MyLib.Basic_Notations <> A:225 var
+R19526:19529 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R19519:19521 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R19511:19515 MyLib.Basic_Notations Relation :::x_'・'_x not
+R19510:19510 MyLib.Basic_Notations <> k:228 var
+R19517:19518 MyLib.Basic_Notations Relation :::x_'#' not
+R19516:19516 MyLib.Basic_Notations <> k:228 var
+R19522:19525 MyLib.Basic_Notations Relation :::'Id' not
+R19525:19525 MyLib.Basic_Notations <> B:226 var
+R19548:19552 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R19539:19541 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R19531:19535 MyLib.Basic_Notations Relation :::x_'・'_x not
+R19530:19530 MyLib.Basic_Notations <> j:227 var
+R19537:19538 MyLib.Basic_Notations Relation :::x_'#' not
+R19536:19536 MyLib.Basic_Notations <> k:228 var
+R19542:19547 MyLib.Basic_Notations Relation :::'φ' not
+R19545:19545 MyLib.Basic_Notations <> A:225 var
+R19547:19547 MyLib.Basic_Notations <> B:226 var
+R19580:19582 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R19553:19553 MyLib.Basic_Notations Relation :::x_'∪'_x not
+R19563:19569 MyLib.Basic_Notations Relation :::x_'∪'_x not
+R19579:19579 MyLib.Basic_Notations Relation :::x_'∪'_x not
+R19557:19561 MyLib.Basic_Notations Relation :::x_'・'_x not
+R19555:19556 MyLib.Basic_Notations Relation :::x_'#' not
+R19554:19554 MyLib.Basic_Notations <> j:227 var
+R19562:19562 MyLib.Basic_Notations <> j:227 var
+R19573:19577 MyLib.Basic_Notations Relation :::x_'・'_x not
+R19571:19572 MyLib.Basic_Notations Relation :::x_'#' not
+R19570:19570 MyLib.Basic_Notations <> k:228 var
+R19578:19578 MyLib.Basic_Notations <> k:228 var
+R19583:19594 MyLib.Basic_Notations Relation :::'Id' not
+R19587:19589 Corelib.Init.Datatypes <> sum ind
+R19593:19593 MyLib.Basic_Notations <> B:226 var
+R19591:19591 MyLib.Basic_Notations <> A:225 var
+ax 19603:19620 Relation pair_of_inclusions
+R19624:19630 MyLib.Basic_Notations Relation axiom20 def
+def 20280:20286 Relation axiom21
+R20306:20311 mathcomp.ssreflect.eqtype Equality.Exports eqType abbrev
+binder 20300:20300 <> A:231
+binder 20302:20302 <> B:232
+R20315:20322 Corelib.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R20365:20368 Corelib.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R20327:20329 MyLib.Basic_Notations <> Rel def
+R20332:20335 Corelib.Init.Datatypes <> prod ind
+R20339:20339 MyLib.Basic_Notations <> B:232 var
+R20337:20337 MyLib.Basic_Notations <> A:231 var
+R20342:20342 MyLib.Basic_Notations <> A:231 var
+binder 20323:20323 <> p:233
+R20349:20351 MyLib.Basic_Notations <> Rel def
+R20354:20357 Corelib.Init.Datatypes <> prod ind
+R20361:20361 MyLib.Basic_Notations <> B:232 var
+R20359:20359 MyLib.Basic_Notations <> A:231 var
+R20364:20364 MyLib.Basic_Notations <> B:232 var
+binder 20345:20345 <> q:234
+R20388:20391 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R20378:20380 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R20372:20376 MyLib.Basic_Notations Relation :::x_'・'_x not
+R20370:20371 MyLib.Basic_Notations Relation :::x_'#' not
+R20369:20369 MyLib.Basic_Notations <> p:233 var
+R20377:20377 MyLib.Basic_Notations <> q:234 var
+R20381:20387 MyLib.Basic_Notations Relation :::'∇' not
+R20385:20385 MyLib.Basic_Notations <> A:231 var
+R20387:20387 MyLib.Basic_Notations <> B:232 var
+R20435:20438 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R20419:20421 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R20392:20392 MyLib.Basic_Notations Relation :::x_'∩'_x not
+R20402:20408 MyLib.Basic_Notations Relation :::x_'∩'_x not
+R20418:20418 MyLib.Basic_Notations Relation :::x_'∩'_x not
+R20394:20398 MyLib.Basic_Notations Relation :::x_'・'_x not
+R20393:20393 MyLib.Basic_Notations <> p:233 var
+R20400:20401 MyLib.Basic_Notations Relation :::x_'#' not
+R20399:20399 MyLib.Basic_Notations <> p:233 var
+R20410:20414 MyLib.Basic_Notations Relation :::x_'・'_x not
+R20409:20409 MyLib.Basic_Notations <> q:234 var
+R20416:20417 MyLib.Basic_Notations Relation :::x_'#' not
+R20415:20415 MyLib.Basic_Notations <> q:234 var
+R20422:20434 MyLib.Basic_Notations Relation :::'Id' not
+R20426:20429 Corelib.Init.Datatypes <> prod ind
+R20433:20433 MyLib.Basic_Notations <> B:232 var
+R20431:20431 MyLib.Basic_Notations <> A:231 var
+R20452:20455 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R20439:20449 MyLib.Basic_Notations Relation univalent_r def
+R20451:20451 MyLib.Basic_Notations <> p:233 var
+R20456:20466 MyLib.Basic_Notations Relation univalent_r def
+R20468:20468 MyLib.Basic_Notations <> q:234 var
+ax 20477:20495 Relation pair_of_projections
+R20499:20505 MyLib.Basic_Notations Relation axiom21 def
+R20513:20520 MyLib.Basic_Notations Relation <> modtype

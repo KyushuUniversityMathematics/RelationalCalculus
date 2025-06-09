@@ -1,0 +1,5 @@
+DIGEST c3929dfc9f057844d93bd1132f8b4cad
+FAutomaton
+R29:35 mathcomp.ssreflect.fintype <> <> lib
+R37:42 mathcomp.ssreflect.finset <> <> lib
+R44:46 mathcomp.ssreflect.seq <> <> lib

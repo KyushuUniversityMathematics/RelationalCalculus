@@ -1,0 +1,1655 @@
+\documentclass[12pt]{report}
+\usepackage[]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fullpage}
+\usepackage{coqdoc}
+\usepackage{amsmath,amssymb}
+\usepackage{url}
+\begin{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% This file has been automatically generated with the command
+%% coqdoc --latex Language/Automaton.v 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\coqlibrary{Automaton}{Library }{Automaton}
+
+\begin{coqdoccode}
+\coqdocnoindent
+\coqdockw{From} \coqdocvar{mathcomp} \coqdockw{Require} \coqdockw{Import} \coqdocvar{fintype} \coqdocvar{finset} \coqdocvar{seq}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Require} \coqdockw{Import} \coqdocvar{MyLib.RelationalCalculus}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Module} \coqdocvar{main}(\coqdocvar{def}:\coqdocvar{Relation}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Module} \coqdocvar{Basic\_Lemmas} := \coqdocvar{Basic\_Lemmas.main}(\coqdocvar{Rel\_Set}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Module} \coqdocvar{Relation\_Properties} := \coqdocvar{Relation\_Properties.main}(\coqdocvar{Rel\_Set}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Module} \coqdocvar{Sum} := \coqdocvar{Sum\_Product.main} \coqdocvar{Rel\_Set}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Module} \coqdocvar{Tac} := \coqdocvar{Tactics.main} \coqdocvar{Rel\_Set}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Module} \coqdocvar{Pta} := \coqdocvar{Point\_Axiom.main} \coqdocvar{Rel\_Set}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Import} \coqdocvar{Rel\_Set} \coqdocvar{Basic\_Lemmas} \coqdocvar{Relation\_Properties} \coqdocvar{Sum} \coqdocvar{Tac} \coqdocvar{Pta}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Declare Scope} \coqdocvar{automaton\_scope}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Delimit} \coqdockw{Scope} \coqdocvar{automaton\_scope} \coqdockw{with} \coqdocvar{AUTO}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Declare Scope} \coqdocvar{language\_scope}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Delimit} \coqdockw{Scope} \coqdocvar{automaton\_scope} \coqdockw{with} \coqdocvar{LANG}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+
+\section{定義}
+\begin{itemize}
+\item 非決定性有限オートマトンを次の四つ組として定める。
+M = (Q, \tau, \delta_\sigma(\sigma\in\Sigma), \beta)
+ここで、\Sigma Q:有限集合, \tau:\rel
+\end{itemize}
+\begin{screen}
+
+\end{screen}
+ 
+\begin{coqdoccode}
+\coqdocnoindent
+\coqdockw{Structure} \coqdocvar{automaton}\{\coqdocvar{state} \coqdocvar{symbol}:\coqdocvar{finType}\} :=\coqdoceol
+\coqdocindent{2.00em}
+\{\coqdockw{delta}:\coqdocvar{symbol} \ensuremath{\rightarrow} (\coqdocvar{Rel} \coqdocvar{state} \coqdocvar{state}); \coqdocvar{init}:\coqdocvar{Rel} \coqdocvar{i} \coqdocvar{state}; \coqdocvar{final}:\coqdocvar{Rel} \coqdocvar{state} \coqdocvar{i}\}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Fixpoint} \coqdocvar{dstar} \{\coqdocvar{state} \coqdocvar{symbol}:\coqdocvar{finType}\}(\coqdocvar{d}:\coqdocvar{symbol} \ensuremath{\rightarrow} (\coqdocvar{Rel} \coqdocvar{state} \coqdocvar{state}))(\coqdocvar{w}:\coqdocvar{seq} \coqdocvar{symbol}):(\coqdocvar{Rel} \coqdocvar{state} \coqdocvar{state}):=\coqdoceol
+\coqdocnoindent
+\coqdockw{match} \coqdocvar{w} \coqdockw{with}\coqdoceol
+\coqdocnoindent
+\ensuremath{|}\coqdocvar{nil} \ensuremath{\Rightarrow} \coqdocvar{Id} \coqdocvar{state}\coqdoceol
+\coqdocnoindent
+\ensuremath{|}\coqdocvar{s}::\coqdocvar{w'} \ensuremath{\Rightarrow} (\coqdocvar{d} \coqdocvar{s}) ・ (\coqdocvar{dstar} \coqdocvar{d} \coqdocvar{w'})\coqdoceol
+\coqdocnoindent
+\coqdockw{end}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Definition} \coqdocvar{accept}\{\coqdocvar{state} \coqdocvar{symbol}:\coqdocvar{finType}\}(\coqdocvar{M}:@\coqdocvar{automaton} \coqdocvar{state} \coqdocvar{symbol})(\coqdocvar{w}:\coqdocvar{seq} \coqdocvar{symbol}):\coqdockw{Prop} :=\coqdoceol
+\coqdocnoindent
+(\coqdocvar{init} \coqdocvar{M}) ・ (\coqdocvar{dstar}(\coqdockw{delta} \coqdocvar{M})\coqdocvar{w}) ・ (\coqdocvar{final} \coqdocvar{M}) = \coqdocvar{Id} \coqdocvar{i}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Open} \coqdockw{Scope} \coqdocvar{language\_scope}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Definition} \coqdocvar{language} \{\coqdocvar{symbol}:\coqdocvar{finType}\}:=\coqdocvar{seq} \coqdocvar{symbol}\ensuremath{\rightarrow}\coqdockw{Prop}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Definition} \coqdocvar{rev\_l} \{\coqdocvar{symbol}:\coqdocvar{finType}\}(\coqdocvar{l}:\coqdocvar{language}):\coqdocvar{language}:=\coqdoceol
+\coqdocnoindent
+\coqdockw{fun} \coqdocvar{s}:\coqdocvar{seq} \coqdocvar{symbol}\ensuremath{\Rightarrow}\coqdocvar{l} (\coqdocvar{rev} \coqdocvar{s}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Notation} "l '\^{}r'" := (\coqdocvar{rev\_l} \coqdocvar{l}) (\coqdoctac{at} \coqdockw{level} 30):\coqdocvar{language\_scope}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Definition} \coqdocvar{preimage\_lang\_l} \{\coqdocvar{symbol}:\coqdocvar{finType}\}(\coqdocvar{l} \coqdocvar{l'}:\coqdocvar{language}):\coqdocvar{language}:=\coqdoceol
+\coqdocnoindent
+\coqdockw{fun} \coqdocvar{v}:\coqdocvar{seq} \coqdocvar{symbol}\ensuremath{\Rightarrow}\coqdoctac{\ensuremath{\exists}} \coqdocvar{u}, \coqdocvar{l} \coqdocvar{u} \ensuremath{\land} \coqdocvar{l'} (\coqdocvar{u}++\coqdocvar{v}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Definition} \coqdocvar{preimage\_lang\_r} \{\coqdocvar{symbol}:\coqdocvar{finType}\}(\coqdocvar{l} \coqdocvar{l'}:\coqdocvar{language}):\coqdocvar{language}:=\coqdoceol
+\coqdocnoindent
+\coqdockw{fun} \coqdocvar{v}:\coqdocvar{seq} \coqdocvar{symbol}\ensuremath{\Rightarrow}\coqdoctac{\ensuremath{\exists}} \coqdocvar{u}, \coqdocvar{l} \coqdocvar{u} \ensuremath{\land} \coqdocvar{l'} (\coqdocvar{v}++\coqdocvar{u}).\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdocvar{cup\_lang}\{\coqdocvar{symbol}:\coqdocvar{finType}\}(\coqdocvar{x} \coqdocvar{y}:\coqdocvar{language}):\coqdocvar{language}:=\coqdoceol
+\coqdocnoindent
+\coqdockw{fun} \coqdocvar{s}:\coqdocvar{seq} \coqdocvar{symbol}\ensuremath{\Rightarrow}\coqdocvar{x} \coqdocvar{s}\ensuremath{\lor}\coqdocvar{y} \coqdocvar{s}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Notation} "x '∪' y" := (\coqdocvar{cup\_lang} \coqdocvar{x} \coqdocvar{y})(\coqdoctac{at} \coqdockw{level} 50):\coqdocvar{language\_scope}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Definition} \coqdocvar{cap\_lang}\{\coqdocvar{symbol}:\coqdocvar{finType}\}(\coqdocvar{x} \coqdocvar{y}:\coqdocvar{language}):\coqdocvar{language}:=\coqdoceol
+\coqdocnoindent
+\coqdockw{fun} \coqdocvar{s}:\coqdocvar{seq} \coqdocvar{symbol}\ensuremath{\Rightarrow}\coqdocvar{x} \coqdocvar{s}\ensuremath{\land}\coqdocvar{y} \coqdocvar{s}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Notation} "x '∩' y" := (\coqdocvar{cap\_lang} \coqdocvar{x} \coqdocvar{y}) (\coqdoctac{at} \coqdockw{level} 50):\coqdocvar{language\_scope}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Definition} \coqdocvar{prod\_lang}\{\coqdocvar{symbol}:\coqdocvar{finType}\}(\coqdocvar{x} \coqdocvar{y}:\coqdocvar{language}):\coqdocvar{language}:=\coqdoceol
+\coqdocnoindent
+\coqdockw{fun} \coqdocvar{s}:\coqdocvar{seq} \coqdocvar{symbol}\ensuremath{\Rightarrow}\coqdoctac{\ensuremath{\exists}} \coqdocvar{a} \coqdocvar{b},\coqdocvar{s}=\coqdocvar{a}++\coqdocvar{b}\ensuremath{\land}\coqdocvar{x} \coqdocvar{a}\ensuremath{\land}\coqdocvar{y} \coqdocvar{b}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Notation} "x '・' y" := (\coqdocvar{prod\_lang} \coqdocvar{x} \coqdocvar{y}) (\coqdoctac{at} \coqdockw{level} 50):\coqdocvar{language\_scope}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Definition} \coqdocvar{phi}\{\coqdocvar{symbol}:\coqdocvar{finType}\}:@\coqdocvar{language} \coqdocvar{symbol} := \coqdockw{fun} \coqdocvar{x}\ensuremath{\Rightarrow}\coqdocvar{False}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Definition} \coqdocvar{eps}\{\coqdocvar{symbol}:\coqdocvar{finType}\}:\coqdocvar{language} := \coqdockw{fun} \coqdocvar{s}:\coqdocvar{seq} \coqdocvar{symbol}\ensuremath{\Rightarrow}\coqdocvar{s} = \coqdocvar{nil}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Definition} \coqdocvar{singl}\{\coqdocvar{symbol}:\coqdocvar{finType}\}(\coqdocvar{s}:\coqdocvar{symbol}):\coqdocvar{language} := \coqdockw{fun} \coqdocvar{x}\ensuremath{\Rightarrow} \coqdocvar{x} = [::\coqdocvar{s}].\coqdoceol
+\coqdocnoindent
+\coqdockw{Fixpoint} \coqdocvar{power\_l} \{\coqdocvar{symbol} : \coqdocvar{finType}\}(\coqdocvar{n} : \coqdocvar{nat})(\coqdocvar{l} : @\coqdocvar{language} \coqdocvar{symbol}): \coqdocvar{language} :=\coqdoceol
+\coqdocindent{1.00em}
+\coqdockw{match} \coqdocvar{n} \coqdockw{with}\coqdoceol
+\coqdocindent{1.00em}
+\ensuremath{|} 0 \ensuremath{\Rightarrow} \coqdocvar{eps}\coqdoceol
+\coqdocindent{1.00em}
+\ensuremath{|} \coqdocvar{S} \coqdocvar{n'} \ensuremath{\Rightarrow} \coqdocvar{l} ・ \coqdocvar{power\_l} \coqdocvar{n'} \coqdocvar{l} \coqdoceol
+\coqdocindent{1.00em}
+\coqdockw{end}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Notation} "l '\^{}' n" := (\coqdocvar{power\_l} \coqdocvar{n} \coqdocvar{l}) (\coqdoctac{at} \coqdockw{level} 30):\coqdocvar{language\_scope}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Definition} \coqdocvar{star\_l}\{\coqdocvar{symbol}:\coqdocvar{finType}\}(\coqdocvar{l}:\coqdocvar{language}):\coqdocvar{language}:=\coqdoceol
+\coqdocnoindent
+\coqdockw{fun} \coqdocvar{s}:\coqdocvar{seq} \coqdocvar{symbol}\ensuremath{\Rightarrow} \coqdoctac{\ensuremath{\exists}} \coqdocvar{n},\coqdocvar{power\_l} \coqdocvar{n} \coqdocvar{l} \coqdocvar{s}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Notation} "l '\^{}*'" := (\coqdocvar{star\_l} \coqdocvar{l}) (\coqdoctac{at} \coqdockw{level} 30):\coqdocvar{language\_scope}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Definition} \coqdocvar{plus\_l}\{\coqdocvar{symbol}:\coqdocvar{finType}\}(\coqdocvar{l}:\coqdocvar{language}):\coqdocvar{language}:=\coqdoceol
+\coqdocnoindent
+\coqdockw{fun} \coqdocvar{s}:\coqdocvar{seq} \coqdocvar{symbol}\ensuremath{\Rightarrow} \coqdoctac{\ensuremath{\exists}} \coqdocvar{n},\coqdocvar{power\_l}(\coqdocvar{S} \coqdocvar{n})\coqdocvar{l} \coqdocvar{s}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Notation} "l '\^{}+'" := (\coqdocvar{plus\_l} \coqdocvar{l}) (\coqdoctac{at} \coqdockw{level} 30):\coqdocvar{language\_scope}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Definition} \coqdocvar{comp\_lang}\{\coqdocvar{symbol}:\coqdocvar{finType}\}(\coqdocvar{l}:\coqdocvar{language}):\coqdocvar{language}:=\coqdoceol
+\coqdocnoindent
+\coqdockw{fun} \coqdocvar{s}:\coqdocvar{seq} \coqdocvar{symbol}=>\~{} \coqdocvar{l} \coqdocvar{s}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Notation} "l '\^{}c'" := (\coqdocvar{comp\_lang} \coqdocvar{l}) (\coqdoctac{at} \coqdockw{level} 30):\coqdocvar{language\_scope}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Fixpoint} \coqdocvar{is\_shuffle} \{\coqdocvar{A}:\coqdockw{Type}\} (\coqdocvar{u} \coqdocvar{v} \coqdocvar{w} : \coqdocvar{seq} \coqdocvar{A}) : \coqdockw{Prop} :=\coqdoceol
+\coqdocindent{1.00em}
+\coqdockw{match} \coqdocvar{u}, \coqdocvar{v}, \coqdocvar{w} \coqdockw{with}\coqdoceol
+\coqdocindent{1.00em}
+\ensuremath{|} \coqdocvar{nil}, \coqdocvar{\_}, \coqdocvar{\_} \ensuremath{\Rightarrow} \coqdocvar{v} = \coqdocvar{w}\coqdoceol
+\coqdocindent{1.00em}
+\ensuremath{|} \coqdocvar{\_}, \coqdocvar{nil}, \coqdocvar{\_} \ensuremath{\Rightarrow} \coqdocvar{u} = \coqdocvar{w}\coqdoceol
+\coqdocindent{1.00em}
+\ensuremath{|} \coqdocvar{a}::\coqdocvar{u'}, \coqdocvar{b}::\coqdocvar{v'}, \coqdocvar{c}::\coqdocvar{w'} \ensuremath{\Rightarrow} (\coqdocvar{a} = \coqdocvar{c} \ensuremath{\land} \coqdocvar{is\_shuffle} \coqdocvar{u'} \coqdocvar{v} \coqdocvar{w'})\symbol{92}/(\coqdocvar{b} = \coqdocvar{c} \ensuremath{\land} \coqdocvar{is\_shuffle} \coqdocvar{u} \coqdocvar{v'} \coqdocvar{w'})\coqdoceol
+\coqdocindent{1.00em}
+\ensuremath{|} \coqdocvar{\_}, \coqdocvar{\_}, \coqdocvar{\_} \ensuremath{\Rightarrow} \coqdocvar{False}\coqdoceol
+\coqdocindent{1.00em}
+\coqdockw{end}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Compute} \coqdocvar{is\_shuffle}[::1;2;3][::4;5;5][::1;2;4;3;5;5].\coqdoceol
+\coqdocnoindent
+\coqdockw{Definition} \coqdocvar{shuffle\_lang} \{\coqdocvar{symbol}:\coqdocvar{finType}\}(\coqdocvar{l} \coqdocvar{l'}:@\coqdocvar{language} \coqdocvar{symbol}):\coqdocvar{language} :=\coqdoceol
+\coqdocnoindent
+\coqdockw{fun} \coqdocvar{x}\ensuremath{\Rightarrow} \coqdoctac{\ensuremath{\exists}} \coqdocvar{u} \coqdocvar{v}, \coqdocvar{l} \coqdocvar{u} \ensuremath{\land} \coqdocvar{l'} \coqdocvar{v} \ensuremath{\land} \coqdocvar{is\_shuffle} \coqdocvar{u} \coqdocvar{v} \coqdocvar{x}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdocvar{deterministic} \{\coqdocvar{state} \coqdocvar{symbol}:\coqdocvar{finType}\}(\coqdocvar{M}:@\coqdocvar{automaton} \coqdocvar{state} \coqdocvar{symbol}):\coqdockw{Prop}:=\coqdoceol
+\coqdocnoindent
+(\coqdockw{\ensuremath{\forall}} \coqdocvar{s}:\coqdocvar{symbol},\coqdocvar{function\_r}(\coqdockw{delta} \coqdocvar{M} \coqdocvar{s}))/\symbol{92}\coqdocvar{function\_r}(\coqdocvar{init} \coqdocvar{M}).\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdocvar{is\_regular} \{\coqdocvar{symbol}:\coqdocvar{finType}\}(\coqdocvar{l}:\coqdocvar{language}):\coqdockw{Prop}:=\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}} (\coqdocvar{state}:\coqdocvar{finType})(\coqdocvar{M}:@\coqdocvar{automaton} \coqdocvar{state} \coqdocvar{symbol}),\coqdockw{\ensuremath{\forall}} \coqdocvar{w},\coqdocvar{l} \coqdocvar{w} \ensuremath{\leftrightarrow} \coqdocvar{accept} \coqdocvar{M} \coqdocvar{w}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Close} \coqdockw{Scope} \coqdocvar{language\_scope}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdocvar{plusM} \{\coqdocvar{state} \coqdocvar{state'} \coqdocvar{symbol}:\coqdocvar{finType}\}(\coqdocvar{M}:@\coqdocvar{automaton} \coqdocvar{state} \coqdocvar{symbol})(\coqdocvar{M'}:@\coqdocvar{automaton} \coqdocvar{state'} \coqdocvar{symbol}):\coqdocvar{automaton} :=\coqdoceol
+\coqdocindent{2.00em}
+\{|\coqdockw{delta} := \coqdockw{fun} \coqdocvar{x}\ensuremath{\Rightarrow}\coqdocvar{Rel\_sum}(\coqdockw{delta} \coqdocvar{M} \coqdocvar{x}・\coqdocvar{inl\_r} \coqdocvar{\_} \coqdocvar{state'})(\coqdockw{delta} \coqdocvar{M'} \coqdocvar{x}・\coqdocvar{inr\_r} \coqdocvar{state} \coqdocvar{\_});\coqdoceol
+\coqdocindent{3.00em}
+\coqdocvar{init}  := \coqdocvar{Rel\_sum}(\coqdocvar{init} \coqdocvar{M} \#)(\coqdocvar{init} \coqdocvar{M'} \#)\#;\coqdoceol
+\coqdocindent{3.00em}
+\coqdocvar{final} := \coqdocvar{Rel\_sum}(\coqdocvar{final} \coqdocvar{M})(\coqdocvar{final} \coqdocvar{M'})|\}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Notation} "M '+' M'" := (\coqdocvar{plusM} \coqdocvar{M} \coqdocvar{M'}) (\coqdoctac{at} \coqdockw{level} 50, \coqdoctac{left} \coqdockw{associativity}):\coqdocvar{automaton\_scope}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Definition} \coqdocvar{timesM} \{\coqdocvar{state} \coqdocvar{state'} \coqdocvar{symbol}:\coqdocvar{finType}\}(\coqdocvar{M}:@\coqdocvar{automaton} \coqdocvar{state} \coqdocvar{symbol})(\coqdocvar{M'}:@\coqdocvar{automaton} \coqdocvar{state'} \coqdocvar{symbol}):\coqdocvar{automaton} :=\coqdoceol
+\coqdocindent{2.00em}
+\{|\coqdockw{delta} := \coqdockw{fun} \coqdocvar{s}\ensuremath{\Rightarrow}\coqdocvar{Rel\_prod}(\coqdocvar{fst\_r} \coqdocvar{state} \coqdocvar{state'}・\coqdockw{delta} \coqdocvar{M} \coqdocvar{s})(\coqdocvar{snd\_r} \coqdocvar{state} \coqdocvar{state'}・\coqdockw{delta} \coqdocvar{M'} \coqdocvar{s});\coqdoceol
+\coqdocindent{3.00em}
+\coqdocvar{init} := \coqdocvar{Rel\_prod}(\coqdocvar{init} \coqdocvar{M})(\coqdocvar{init} \coqdocvar{M'});\coqdoceol
+\coqdocindent{3.00em}
+\coqdocvar{final} := \coqdocvar{Rel\_prod}(\coqdocvar{final} \coqdocvar{M} \#)(\coqdocvar{final} \coqdocvar{M'} \#)\# |\}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Notation} "M '×' M'" := (\coqdocvar{timesM} \coqdocvar{M} \coqdocvar{M'}) (\coqdoctac{at} \coqdockw{level} 50, \coqdoctac{left} \coqdockw{associativity}):\coqdocvar{automaton\_scope}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Definition} \coqdocvar{revM} \{\coqdocvar{state} \coqdocvar{symbol}:\coqdocvar{finType}\}(\coqdocvar{M}:@\coqdocvar{automaton} \coqdocvar{state} \coqdocvar{symbol}):=\coqdoceol
+\coqdocindent{2.00em}
+\{|\coqdockw{delta} := \coqdockw{fun} \coqdocvar{x}\ensuremath{\Rightarrow}\coqdockw{delta} \coqdocvar{M} \coqdocvar{x} \#; \coqdocvar{init}  := \coqdocvar{final} \coqdocvar{M} \#; \coqdocvar{final} := \coqdocvar{init} \coqdocvar{M} \# |\}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Definition} \coqdocvar{concatM} \{\coqdocvar{state} \coqdocvar{state'} \coqdocvar{symbol}:\coqdocvar{finType}\}(\coqdocvar{M}:@\coqdocvar{automaton} \coqdocvar{state} \coqdocvar{symbol})(\coqdocvar{M'}:@\coqdocvar{automaton} \coqdocvar{state'} \coqdocvar{symbol}):\coqdocvar{automaton}:=\coqdoceol
+\coqdocindent{2.00em}
+\{|\coqdockw{delta} := \coqdockw{fun} \coqdocvar{x} =>( @\coqdocvar{inl\_r} \coqdocvar{\_} \coqdocvar{state'} \#・\coqdockw{delta} \coqdocvar{M} \coqdocvar{x}・@\coqdocvar{inl\_r} \coqdocvar{\_} \coqdocvar{state'})∪(\coqdocvar{Rel\_sum}(\coqdocvar{final} \coqdocvar{M}・\coqdocvar{init} \coqdocvar{M'})(\coqdocvar{Id} \coqdocvar{\_})・\coqdockw{delta} \coqdocvar{M'} \coqdocvar{x}・@\coqdocvar{inr\_r} \coqdocvar{state} \coqdocvar{\_});\coqdoceol
+\coqdocindent{3.00em}
+\coqdocvar{init}  := \coqdocvar{init} \coqdocvar{M}・(\coqdocvar{Rel\_sum}(\coqdocvar{Id} \coqdocvar{\_})(\coqdocvar{init} \coqdocvar{M'} \#・\coqdocvar{final} \coqdocvar{M} \#)\#);\coqdoceol
+\coqdocindent{3.00em}
+\coqdocvar{final} := (\coqdocvar{Rel\_sum}(\coqdocvar{final} \coqdocvar{M}・\coqdocvar{init} \coqdocvar{M'})(\coqdocvar{Id} \coqdocvar{\_}))・\coqdocvar{final} \coqdocvar{M'}|\}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Definition} \coqdocvar{phiM}\{\coqdocvar{symbol}:\coqdocvar{finType}\}:@\coqdocvar{automaton} \coqdocvar{\_} \coqdocvar{symbol}:= \{|\coqdockw{delta} := \coqdockw{fun} \coqdocvar{x}=>φ \coqdocvar{i} \coqdocvar{i}; \coqdocvar{init}  := φ \coqdocvar{i} \coqdocvar{i};\coqdocvar{final} := φ \coqdocvar{i} \coqdocvar{i}|\}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Definition} \coqdocvar{epsM}\{\coqdocvar{symbol}:\coqdocvar{finType}\}:@\coqdocvar{automaton} \coqdocvar{\_} \coqdocvar{symbol}:=\{|\coqdockw{delta} := \coqdockw{fun} \coqdocvar{x}=>φ \coqdocvar{i} \coqdocvar{i};\coqdocvar{init}:=\coqdocvar{Id} \coqdocvar{i};\coqdocvar{final}:=\coqdocvar{Id} \coqdocvar{i}|\}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Definition} \coqdocvar{singlM}\{\coqdocvar{symbol}:\coqdocvar{finType}\}(\coqdocvar{s}:\coqdocvar{symbol}):\coqdocvar{automaton} :=\coqdoceol
+\coqdocindent{2.00em}
+\{|\coqdockw{delta} := \coqdockw{fun} (\coqdocvar{x}:\coqdocvar{symbol})(\coqdocvar{a} \coqdocvar{b}:\coqdocvar{bool})=>\coqdocvar{a}\ensuremath{\land}\coqdocvar{x}=\coqdocvar{s}\ensuremath{\land}\coqdocvar{not} \coqdocvar{b};\coqdoceol
+\coqdocindent{3.00em}
+\coqdocvar{init}  := \coqdockw{fun} (\coqdocvar{x}:\coqdocvar{i})(\coqdocvar{a}:\coqdocvar{bool})=>\coqdocvar{is\_true} \coqdocvar{a};\coqdoceol
+\coqdocindent{3.00em}
+\coqdocvar{final} := \coqdockw{fun} (\coqdocvar{a}:\coqdocvar{bool})(\coqdocvar{x}:\coqdocvar{i})=>\coqdocvar{not} (\coqdocvar{is\_true} \coqdocvar{a})|\}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Definition} \coqdocvar{compM}\{\coqdocvar{state} \coqdocvar{symbol}:\coqdocvar{finType}\}(\coqdocvar{M}:@\coqdocvar{automaton} \coqdocvar{state} \coqdocvar{symbol}):\coqdocvar{automaton}:=\coqdoceol
+\coqdocindent{2.00em}
+\{|\coqdockw{delta} := \coqdockw{delta} \coqdocvar{M}; \coqdocvar{init} := \coqdocvar{init} \coqdocvar{M}; \coqdocvar{final} := \coqdocvar{final} \coqdocvar{M} \^{}|\}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Definition} \coqdocvar{plus\_nfa} \{\coqdocvar{state} \coqdocvar{symbol}:\coqdocvar{finType}\}(\coqdocvar{M}:@\coqdocvar{automaton} \coqdocvar{state} \coqdocvar{symbol}):\coqdocvar{automaton} :=\coqdoceol
+\coqdocindent{2.00em}
+\{|\coqdockw{delta} := \coqdockw{fun} \coqdocvar{x}=>(\coqdockw{delta} \coqdocvar{M} \coqdocvar{x}∪(\coqdockw{delta} \coqdocvar{M} \coqdocvar{x}・(\coqdocvar{final} \coqdocvar{M}・\coqdocvar{init} \coqdocvar{M})));\coqdoceol
+\coqdocindent{3.00em}
+\coqdocvar{init}  := \coqdocvar{init} \coqdocvar{M};\coqdoceol
+\coqdocindent{3.00em}
+\coqdocvar{final} := \coqdocvar{final} \coqdocvar{M}|\}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Definition} \coqdocvar{shuffle\_nfa} \{\coqdocvar{state} \coqdocvar{state'} \coqdocvar{symbol}:\coqdocvar{finType}\}\coqdoceol
+\coqdocindent{1.00em}
+(\coqdocvar{M}:@\coqdocvar{automaton} \coqdocvar{state} \coqdocvar{symbol})(\coqdocvar{M'}:@\coqdocvar{automaton} \coqdocvar{state'} \coqdocvar{symbol}):\coqdocvar{automaton} :=\coqdoceol
+\coqdocindent{1.00em}
+\{|\coqdockw{delta} := \coqdockw{fun} \coqdocvar{x}\ensuremath{\Rightarrow}\coqdocvar{Rel\_prod}(\coqdocvar{fst\_r} \coqdocvar{state} \coqdocvar{state'}・\coqdockw{delta} \coqdocvar{M} \coqdocvar{x})(\coqdocvar{snd\_r} \coqdocvar{state} \coqdocvar{state'})∪\coqdocvar{Rel\_prod}(\coqdocvar{fst\_r} \coqdocvar{state} \coqdocvar{state'})(\coqdocvar{snd\_r} \coqdocvar{state} \coqdocvar{state'}・\coqdockw{delta} \coqdocvar{M'} \coqdocvar{x});\coqdoceol
+\coqdocindent{2.00em}
+\coqdocvar{init}  := \coqdocvar{Rel\_prod}(\coqdocvar{init} \coqdocvar{M})(\coqdocvar{init} \coqdocvar{M'});\coqdoceol
+\coqdocindent{2.00em}
+\coqdocvar{final} := \coqdocvar{Rel\_prod}(\coqdocvar{final} \coqdocvar{M} \#)(\coqdocvar{final} \coqdocvar{M'} \#)\# |\}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Definition} \coqdocvar{preimage\_nfa} \{\coqdocvar{state} \coqdocvar{state'} \coqdocvar{symbol}:\coqdocvar{finType}\}\coqdoceol
+\coqdocindent{1.00em}
+(\coqdocvar{M}:@\coqdocvar{automaton} \coqdocvar{state} \coqdocvar{symbol})(\coqdocvar{M'}:@\coqdocvar{automaton} \coqdocvar{state'} \coqdocvar{symbol}):=\coqdoceol
+\coqdocindent{1.00em}
+\{|\coqdockw{delta} := \coqdockw{delta} \coqdocvar{M'};\coqdoceol
+\coqdocindent{2.00em}
+\coqdocvar{init}  := \coqdocvar{init} \coqdocvar{M'}・\coqdockw{fun} \coqdocvar{x} \coqdocvar{y}\ensuremath{\Rightarrow}\coqdoctac{\ensuremath{\exists}} \coqdocvar{w},\coqdocvar{accept} \coqdocvar{M} \coqdocvar{w}/\symbol{92}(\coqdocvar{dstar}(\coqdockw{delta} \coqdocvar{M'})\coqdocvar{w})\coqdocvar{x} \coqdocvar{y};\coqdoceol
+\coqdocindent{2.00em}
+\coqdocvar{final} := \coqdocvar{final} \coqdocvar{M'}|\}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Ltac} \coqdocvar{destruct\_Id\_i} :=\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{repeat} \coqdockw{match} \coqdockw{goal} \coqdockw{with}\coqdoceol
+\coqdocindent{1.00em}
+\ensuremath{|} [\coqdocvar{H} : \coqdocvar{\_} = \coqdocvar{Id} \coqdocvar{\_} \ensuremath{\vdash} \coqdocvar{\_} ] \ensuremath{\Rightarrow}\coqdoceol
+\coqdocindent{2.00em}
+\coqdocvar{have}:\coqdocvar{Id} \coqdocvar{i} \coqdocvar{tt} \coqdocvar{tt} \coqdoctac{by} [];\coqdoctac{rewrite}-\{1\}\coqdocvar{H}=>\{\}\coqdocvar{H}\coqdoceol
+\coqdocindent{1.00em}
+\ensuremath{|} [\coqdocvar{\_} : \coqdocvar{\_} \ensuremath{\vdash} \coqdocvar{\_} = \coqdocvar{Id} \coqdocvar{\_}] \ensuremath{\Rightarrow}\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{apply}/\coqdocvar{inc\_antisym\_eq};\coqdoctac{split};\coqdoceol
+\coqdocindent{2.00em}
+[\coqdoctac{by} \coqdoctac{rewrite} \coqdocvar{unit\_identity\_is\_universal}\ensuremath{|}\coqdoctac{move}=>[][] \coqdocvar{\_}]\coqdoceol
+\coqdocindent{1.00em}
+\coqdockw{end}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Lemma} \coqdocvar{cup\_idi}:\coqdockw{\ensuremath{\forall}} \coqdocvar{alpha} \coqdockw{beta},\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{alpha} ∪ \coqdockw{beta} = \coqdocvar{Id} \coqdocvar{i}\ensuremath{\leftrightarrow}\coqdocvar{alpha} = \coqdocvar{Id} \coqdocvar{i}\ensuremath{\lor}\coqdockw{beta} = \coqdocvar{Id} \coqdocvar{i}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}\ensuremath{\Rightarrow}\coqdocvar{alpha} \coqdockw{beta}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{case}:( @\coqdocvar{unit\_empty\_or\_universal} \coqdockw{beta})=>\coqdocvar{H};\coqdoctac{rewrite} \coqdocvar{H};\coqdoceol
+\coqdocnoindent
+[\coqdoctac{rewrite} \coqdocvar{cup\_empty}\ensuremath{|}\coqdoctac{rewrite} \coqdocvar{cup\_universal}].\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}:\coqdocvar{unit\_identity\_not\_empty}=>\{\}\coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{split}=>[|[|\coqdocvar{H0}]];[\coqdoctac{left}\ensuremath{|} \ensuremath{|}\coqdoctac{rewrite} \coqdocvar{H0} \coqdoctac{in} \coqdocvar{H}].\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite} \coqdocvar{unit\_identity\_is\_universal}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{split}=>[|[]];[\coqdoctac{right}\ensuremath{|} |].\coqdoceol
+\coqdocnoindent
+\coqdockw{Qed}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Lemma} \coqdocvar{cap\_idi}:\coqdockw{\ensuremath{\forall}} \coqdocvar{alpha} \coqdockw{beta},\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{alpha} ∩ \coqdockw{beta} = \coqdocvar{Id} \coqdocvar{i}\ensuremath{\leftrightarrow}\coqdocvar{alpha} = \coqdocvar{Id} \coqdocvar{i}\ensuremath{\land}\coqdockw{beta} = \coqdocvar{Id} \coqdocvar{i}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}\ensuremath{\Rightarrow}\coqdocvar{alpha} \coqdockw{beta}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{case}:( @\coqdocvar{unit\_empty\_or\_universal} \coqdockw{beta})=>\coqdocvar{H};\coqdoctac{rewrite} \coqdocvar{H};\coqdoceol
+\coqdocnoindent
+[\coqdoctac{rewrite} \coqdocvar{cap\_empty}\ensuremath{|}\coqdoctac{rewrite} \coqdocvar{cap\_universal}].\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}:\coqdocvar{unit\_identity\_not\_empty}=>\{\}\coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{split}=>[\coqdocvar{H0}|[] \coqdocvar{\_} \coqdocvar{H0}];\coqdoctac{by} \coqdoctac{rewrite} \coqdocvar{H0} \coqdoctac{in} \coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite} \coqdocvar{unit\_identity\_is\_universal}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{split}=>[|[]].\coqdoceol
+\coqdocnoindent
+\coqdockw{Qed}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Lemma} \coqdocvar{dstar\_cat} \{\coqdocvar{state} \coqdocvar{symbol}:\coqdocvar{finType}\}:\coqdoceol
+\coqdocnoindent
+\coqdockw{\ensuremath{\forall}}(\coqdocvar{d}:\coqdocvar{symbol}\ensuremath{\rightarrow}\coqdocvar{Rel} \coqdocvar{state} \coqdocvar{state})(\coqdocvar{a} \coqdocvar{b}:\coqdocvar{seq} \coqdocvar{symbol}),\coqdoceol
+\coqdocnoindent
+\coqdocvar{dstar} \coqdocvar{d}(\coqdocvar{a}++\coqdocvar{b}) = \coqdocvar{dstar} \coqdocvar{d} \coqdocvar{a}・\coqdocvar{dstar} \coqdocvar{d} \coqdocvar{b}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}\ensuremath{\Rightarrow}\coqdocvar{d} \coqdocvar{a} \coqdocvar{b}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{elim}:\coqdocvar{a}=>[|\coqdocvar{h} \coqdocvar{a} \coqdocvar{H}].\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite}/=\coqdocvar{comp\_id\_l}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite}/=\coqdocvar{H} \coqdocvar{comp\_assoc}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Qed}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdocvar{NFA\_DFA\_equiv} \{\coqdocvar{state} \coqdocvar{symbol}:\coqdocvar{finType}\}(\coqdocvar{M}:@\coqdocvar{automaton} \coqdocvar{state} \coqdocvar{symbol}):\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}}(\coqdocvar{state'}:\coqdocvar{finType})(\coqdocvar{M'}:@\coqdocvar{automaton} \coqdocvar{state'} \coqdocvar{\_}),\coqdocvar{deterministic} \coqdocvar{M'}\ensuremath{\land}\coqdoceol
+\coqdocnoindent
+(\coqdockw{\ensuremath{\forall}} \coqdocvar{w},\coqdocvar{accept} \coqdocvar{M} \coqdocvar{w} \ensuremath{\leftrightarrow} \coqdocvar{accept} \coqdocvar{M'} \coqdocvar{w}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdoctac{destruct} \coqdocvar{M}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}} \coqdocvar{\_},\{|\coqdockw{delta}:= \coqdockw{fun} (\coqdocvar{s}:\coqdocvar{symbol})(\coqdocvar{x} \coqdocvar{y}:\{\coqdoctac{set} \coqdocvar{state}\})=>[\coqdoctac{set} \coqdocvar{z} \ensuremath{|} \coqdocvar{is\_true\_inv}(\coqdocvar{exists2} \coqdocvar{w}, \coqdocvar{w} \symbol{92}\coqdoctac{in} \coqdocvar{x} \& \coqdocvar{delta0} \coqdocvar{s} \coqdocvar{w} \coqdocvar{z})] = \coqdocvar{y};\coqdoceol
+\coqdocindent{4.50em}
+\coqdocvar{init}:= \coqdockw{fun} (\coqdocvar{x}:\coqdocvar{i})(\coqdocvar{y}:\{\coqdoctac{set} \coqdocvar{state}\})=>[\coqdoctac{set} \coqdocvar{x}\ensuremath{|}\coqdocvar{is\_true\_inv}(\coqdocvar{init0} \coqdocvar{tt} \coqdocvar{x})]=\coqdocvar{y};\coqdoceol
+\coqdocindent{4.50em}
+\coqdocvar{final}:= \coqdockw{fun}(\coqdocvar{y}:\{\coqdoctac{set} \coqdocvar{state}\})(\coqdocvar{x}:\coqdocvar{i})=>\coqdocvar{y}:\&:[\coqdoctac{set} \coqdocvar{x}\ensuremath{|}\coqdocvar{is\_true\_inv}(\coqdocvar{final0} \coqdocvar{x} \coqdocvar{tt})]<>\coqdocvar{set0}|\}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdoctac{rewrite}/\coqdocvar{deterministic}/\coqdocvar{accept}/=.\coqdoceol
+\coqdocnoindent
+\coqdoctac{split}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdoctac{split}=>[\coqdocvar{s}|];\coqdoctac{rewrite}/=/\coqdocvar{function\_r}/\coqdocvar{total\_r}/\coqdocvar{univalent\_r};\coqdoctac{split}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}\ensuremath{\Rightarrow}\coqdocvar{x} \coqdocvar{y} \coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{have}\{\}\coqdocvar{H}:\coqdocvar{y}=\coqdocvar{x};[\coqdocvar{done}\ensuremath{|}\coqdoctac{subst}].\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{\ensuremath{\exists}} [\coqdoctac{set} \coqdocvar{z} \ensuremath{|} \coqdocvar{is\_true\_inv} (\coqdocvar{exists2} \coqdocvar{w0} : \coqdocvar{state}, \coqdocvar{w0}  \symbol{92}\coqdoctac{in} \coqdocvar{x} \& \coqdocvar{delta0} \coqdocvar{s} \coqdocvar{w0} \coqdocvar{z})].\coqdoceol
+\coqdocnoindent
+\coqdoctac{case}\ensuremath{\Rightarrow}\coqdocvar{alpha} \coqdocvar{x}[]\coqdocvar{y}[]\{\}\coqdocvar{H} \coqdocvar{H1}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/\coqdocvar{inverse} \coqdoctac{in} \coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{subst}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}=>[][] \coqdocvar{\_}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{\ensuremath{\exists}} [\coqdoctac{set} \coqdocvar{x} \ensuremath{|} \coqdocvar{is\_true\_inv} (\coqdocvar{init0} \coqdocvar{tt} \coqdocvar{x})].\coqdoceol
+\coqdocnoindent
+\coqdoctac{case}\ensuremath{\Rightarrow}\coqdocvar{alpha} \coqdocvar{x}[]\coqdocvar{y}[]\{\}\coqdocvar{H} \coqdocvar{H1}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/\coqdocvar{inverse} \coqdoctac{in} \coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{subst}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdoctac{move}\ensuremath{\Rightarrow}\coqdocvar{w}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}:\coqdocvar{init0}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{elim}:\coqdocvar{w}=>[|\coqdocvar{h} \coqdocvar{w} \coqdocvar{H}]\coqdocvar{init0}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/=!\coqdocvar{comp\_id\_r}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{split}\ensuremath{\Rightarrow}\coqdocvar{H};\coqdocvar{destruct\_Id\_i}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{case}:\coqdocvar{H}\ensuremath{\Rightarrow}\coqdocvar{a}[]\coqdocvar{H} \coqdocvar{H0}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}} [\coqdoctac{set} \coqdocvar{x} \ensuremath{|} \coqdocvar{is\_true\_inv} (\coqdocvar{init0} \coqdocvar{tt} \coqdocvar{x})].\coqdoceol
+\coqdocnoindent
+\coqdoctac{split};[\coqdocvar{done}|]=>\coqdocvar{H1}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}:(\coqdocvar{in\_set0} \coqdocvar{a}).\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}-\{\}\coqdocvar{H1} \coqdocvar{in\_setI}!\coqdocvar{in\_set}=>/\coqdocvar{andP}[].\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{split};\coqdoctac{apply}/\coqdocvar{is\_true\_id}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{case}:\coqdocvar{H}\ensuremath{\Rightarrow}\coqdocvar{a'}[]\coqdocvar{H}/\coqdocvar{eqP}/\coqdocvar{set0Pn} \coqdocvar{H0}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{subst}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{case}:\coqdocvar{H0}\ensuremath{\Rightarrow}\coqdocvar{a}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite} \coqdocvar{in\_setI}!\coqdocvar{in\_set}=>/\coqdocvar{andP}[]/\coqdocvar{is\_true\_id} \coqdocvar{H}/\coqdocvar{is\_true\_id} \coqdocvar{H'}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{\ensuremath{\exists}} \coqdocvar{a}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdoctac{rewrite}/=-!\coqdocvar{comp\_assoc}\{\}\coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{have} \coqdocvar{H}:\coqdockw{\ensuremath{\forall}} \coqdocvar{x},(\coqdocvar{exists2} \coqdocvar{w0} : \coqdocvar{state},\coqdoceol
+\coqdocnoindent
+\coqdocvar{w0}  \symbol{92}\coqdoctac{in} [\coqdoctac{set} \coqdocvar{x0} \ensuremath{|} \coqdocvar{is\_true\_inv} (\coqdocvar{init0} \coqdocvar{tt} \coqdocvar{x0})] \& \coqdocvar{delta0} \coqdocvar{h} \coqdocvar{w0} \coqdocvar{x})<->\coqdoceol
+\coqdocnoindent
+(\coqdocvar{init0} ・ \coqdocvar{delta0} \coqdocvar{h}) \coqdocvar{tt} \coqdocvar{x}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}\ensuremath{\Rightarrow}\coqdocvar{x}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{split}=>[][]\coqdocvar{y}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite} \coqdocvar{in\_set}=>/\coqdocvar{is\_true\_id} \coqdocvar{H} \coqdocvar{H0}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{\ensuremath{\exists}} \coqdocvar{y}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{case}=>/\coqdocvar{is\_true\_id} \coqdocvar{H} \coqdocvar{H0}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{\ensuremath{\exists}} \coqdocvar{y};[\coqdoctac{rewrite} \coqdocvar{in\_set}|].\coqdoceol
+\coqdocnoindent
+\coqdocvar{have}\{\}\coqdocvar{H}:\coqdockw{\ensuremath{\forall}} \coqdocvar{x} : \coqdocvar{state},\coqdoceol
+\coqdocnoindent
+(\coqdocvar{exists2} \coqdocvar{w0} : \coqdocvar{state},\coqdoceol
+\coqdocnoindent
+\coqdocvar{w0}  \symbol{92}\coqdoctac{in} [\coqdoctac{set} \coqdocvar{x0} \ensuremath{|} \coqdocvar{is\_true\_inv} (\coqdocvar{init0} \coqdocvar{tt} \coqdocvar{x0})] \&\coqdoceol
+\coqdocnoindent
+\coqdocvar{delta0} \coqdocvar{h} \coqdocvar{w0} \coqdocvar{x}) = (\coqdocvar{init0} ・ \coqdocvar{delta0} \coqdocvar{h}) \coqdocvar{tt} \coqdocvar{x}\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{move}\ensuremath{\Rightarrow}\coqdocvar{x};\coqdoctac{apply}/\coqdocvar{prop\_extensionality\_ok}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdoctac{split}\ensuremath{\Rightarrow}\coqdocvar{H0};\coqdocvar{destruct\_Id\_i}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{case}:\coqdocvar{H0}\ensuremath{\Rightarrow}\coqdocvar{a}[][]\coqdocvar{b}[]\coqdocvar{H0} \coqdocvar{H1} \coqdocvar{H2}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}} \coqdocvar{a}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{split};[\coqdoctac{move}\{\coqdocvar{H2}\};\coqdoctac{\ensuremath{\exists}} \coqdocvar{b}\ensuremath{|}\coqdocvar{done}].\coqdoceol
+\coqdocnoindent
+\coqdoctac{split};[|\coqdocvar{done}].\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}} [\coqdoctac{set} \coqdocvar{x} \ensuremath{|} \coqdocvar{is\_true\_inv} (\coqdocvar{init0} \coqdocvar{tt} \coqdocvar{x})].\coqdoceol
+\coqdocnoindent
+\coqdoctac{split};[\coqdocvar{done}|].\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}-\{\coqdocvar{H1}\}\coqdocvar{H0}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{apply}/\coqdocvar{setP}\ensuremath{\Rightarrow}\coqdocvar{x}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite}!\coqdocvar{in\_set} \coqdocvar{H}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdoctac{rewrite}!\coqdocvar{comp\_assoc}-\coqdocvar{comp\_assoc} \coqdoctac{in} \coqdocvar{H0} \ensuremath{\times}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{case}:\coqdocvar{H0}\ensuremath{\Rightarrow}\coqdocvar{a}[]\coqdocvar{H0} \coqdocvar{H1}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}} \coqdocvar{a}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{split};[\coqdoctac{move}\{\coqdocvar{H1}\}|\coqdocvar{done}].\coqdoceol
+\coqdocnoindent
+\coqdoctac{case}:\coqdocvar{H0}\ensuremath{\Rightarrow}\coqdocvar{b}[]\coqdocvar{H0} \coqdocvar{H1}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}-\{\}\coqdocvar{H1}-\{\}\coqdocvar{H0}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{apply}/\coqdocvar{setP}\ensuremath{\Rightarrow}\coqdocvar{x}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite}!\coqdocvar{in\_set} \coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Qed}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Open} \coqdockw{Scope} \coqdocvar{language\_scope}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Open} \coqdockw{Scope} \coqdocvar{automaton\_scope}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Theorem} \coqdocvar{regular\_cup} \{\coqdocvar{symbol}:\coqdocvar{finType}\}(\coqdocvar{l} \coqdocvar{l'}:@\coqdocvar{language} \coqdocvar{symbol}):\coqdoceol
+\coqdocnoindent
+\coqdocvar{is\_regular} \coqdocvar{l}\ensuremath{\land}\coqdocvar{is\_regular} \coqdocvar{l'}\ensuremath{\rightarrow}\coqdocvar{is\_regular} (\coqdocvar{l}∪\coqdocvar{l'}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Close} \coqdockw{Scope} \coqdocvar{language\_scope}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/\coqdocvar{is\_regular}=>[][][]\coqdocvar{state}[]\coqdocvar{M} \coqdocvar{H}[]\coqdocvar{state'}[]\coqdocvar{M'} \coqdocvar{H'}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}} (\coqdocvar{sum} \coqdocvar{state} \coqdocvar{state'}),(\coqdocvar{M} + \coqdocvar{M'}) \ensuremath{\Rightarrow} \coqdocvar{w}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/\coqdocvar{cup\_lang}\{\}\coqdocvar{H}\{\}\coqdocvar{H'}/\coqdocvar{accept}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdoctac{destruct} \coqdocvar{M},\coqdocvar{M'};\coqdoctac{simpl}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{remember}(\coqdockw{fun} \coqdocvar{x} : \coqdocvar{symbol} \ensuremath{\Rightarrow}\coqdocvar{Rel\_sum} (\coqdocvar{delta0} \coqdocvar{x} ・ \coqdocvar{inl\_r} \coqdocvar{state} \coqdocvar{state'})\coqdoceol
+\coqdocnoindent
+(\coqdocvar{delta1} \coqdocvar{x} ・ \coqdocvar{inr\_r} \coqdocvar{state} \coqdocvar{state'})) \coqdockw{as} \coqdocvar{d}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}-\coqdocvar{Heqd}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}:\coqdocvar{init0} \coqdocvar{init1}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{elim}:\coqdocvar{w}=>[|\coqdocvar{h} \coqdocvar{w} \coqdocvar{H}]\coqdocvar{init0} \coqdocvar{init1}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite}/=!\coqdocvar{comp\_id\_r} \coqdocvar{sum\_comp} 2!\coqdocvar{inv\_invol} \coqdocvar{cup\_idi}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdocvar{have} \coqdocvar{H0}:\coqdocvar{Rel\_sum} (\coqdocvar{init0} \#) (\coqdocvar{init1} \#) \# ・ \coqdocvar{d} \coqdocvar{h} =\coqdoceol
+\coqdocnoindent
+\coqdocvar{Rel\_sum} ((\coqdocvar{init0} ・ \coqdocvar{delta0} \coqdocvar{h}) \#) ((\coqdocvar{init1} ・ \coqdocvar{delta1} \coqdocvar{h}) \#) \#.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite} \coqdocvar{Heqd} \coqdocvar{sum\_comp}/\coqdocvar{Rel\_sum} \coqdocvar{inv\_cup\_distr}!\coqdocvar{comp\_inv} 6!\coqdocvar{inv\_invol}!\coqdocvar{comp\_assoc}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/=-!\coqdocvar{comp\_assoc}\{\}\coqdocvar{H}!\coqdocvar{comp\_assoc}-(\coqdocvar{comp\_assoc} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}(\coqdocvar{d} \coqdocvar{h})).\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{split}\ensuremath{\Rightarrow}\coqdocvar{H};\coqdoctac{rewrite}-\coqdocvar{H};\coqdoctac{f\_equal}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Qed}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Open} \coqdockw{Scope} \coqdocvar{language\_scope}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Theorem} \coqdocvar{regular\_cap} \{\coqdocvar{symbol}:\coqdocvar{finType}\}(\coqdocvar{l} \coqdocvar{l'}:@\coqdocvar{language} \coqdocvar{symbol}):\coqdoceol
+\coqdocnoindent
+\coqdocvar{is\_regular} \coqdocvar{l}\ensuremath{\land}\coqdocvar{is\_regular} \coqdocvar{l'}\ensuremath{\rightarrow}\coqdocvar{is\_regular} (\coqdocvar{l} ∩ \coqdocvar{l'}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Close} \coqdockw{Scope} \coqdocvar{language\_scope}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/\coqdocvar{is\_regular}=>[][][]\coqdocvar{state}[]\coqdocvar{M} \coqdocvar{H}[]\coqdocvar{state'}[]\coqdocvar{M'} \coqdocvar{H'}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}} (\coqdocvar{prod} \coqdocvar{state} \coqdocvar{state'}),(\coqdocvar{M} × \coqdocvar{M'})=>\coqdocvar{w}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/\coqdocvar{cap\_lang}\{\}\coqdocvar{H}\{\}\coqdocvar{H'}/\coqdocvar{accept}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{remember}(\coqdockw{delta} (\coqdocvar{M} × \coqdocvar{M'}))\coqdockw{as} \coqdocvar{d}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{destruct} \coqdocvar{M},\coqdocvar{M'}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/= \coqdoctac{in} \coqdocvar{Heqd} \ensuremath{\times}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}-\coqdocvar{Heqd}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdoctac{move}:\coqdocvar{init0} \coqdocvar{init1}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{elim}:\coqdocvar{w}=>[|\coqdocvar{h} \coqdocvar{w} \coqdocvar{H}]\coqdocvar{init0} \coqdocvar{init1}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite}/=!\coqdocvar{comp\_id\_r}/\coqdocvar{Rel\_prod} \coqdocvar{inv\_cap\_distr}!\coqdocvar{comp\_inv}-\coqdocvar{sharpness}\coqdoceol
+\coqdocnoindent
+2!\coqdocvar{inv\_invol} \coqdocvar{cap\_idi}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/=-!\coqdocvar{comp\_assoc}\{\}\coqdocvar{H}!\coqdocvar{comp\_assoc}-(\coqdocvar{comp\_assoc} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}(\coqdocvar{d} \coqdocvar{h})).\coqdoceol
+\coqdocnoindent
+\coqdocvar{have} \coqdocvar{H}:\coqdocvar{Rel\_prod} \coqdocvar{init0} \coqdocvar{init1} ・ \coqdocvar{d} \coqdocvar{h} =\coqdoceol
+\coqdocnoindent
+\coqdocvar{Rel\_prod} (\coqdocvar{init0} ・ \coqdocvar{delta0} \coqdocvar{h}) (\coqdocvar{init1} ・ \coqdocvar{delta1} \coqdocvar{h}).\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite} \coqdocvar{Heqd}/\coqdocvar{Rel\_prod}!\coqdocvar{comp\_assoc}\coqdoceol
+\coqdocnoindent
+-(\coqdocvar{inv\_invol} \coqdocvar{\_} \coqdocvar{\_}(\coqdocvar{delta0} \coqdocvar{h} ・ \coqdocvar{fst\_r} \coqdocvar{state} \coqdocvar{state'} \#))\coqdoceol
+\coqdocnoindent
+-(\coqdocvar{inv\_invol} \coqdocvar{\_} \coqdocvar{\_}(\coqdocvar{delta1} \coqdocvar{h} ・ \coqdocvar{snd\_r} \coqdocvar{state} \coqdocvar{state'} \#))-\coqdocvar{sharpness}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{split}\ensuremath{\Rightarrow}\coqdocvar{H0};\coqdoctac{rewrite}-\coqdocvar{H0};\coqdoctac{f\_equal}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Qed}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Open} \coqdockw{Scope} \coqdocvar{language\_scope}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Theorem} \coqdocvar{regular\_rev}\{\coqdocvar{symbol}:\coqdocvar{finType}\}(\coqdocvar{l}:@\coqdocvar{language} \coqdocvar{symbol}):\coqdoceol
+\coqdocnoindent
+\coqdocvar{is\_regular} \coqdocvar{l} \ensuremath{\rightarrow} \coqdocvar{is\_regular} (\coqdocvar{l}\^{}\coqdocvar{r}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Close} \coqdockw{Scope} \coqdocvar{language\_scope}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/\coqdocvar{is\_regular}=>[][]\coqdocvar{state}[]\coqdocvar{M} \coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}} \coqdocvar{state},(\coqdocvar{revM} \coqdocvar{M})=>\coqdocvar{w}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/\coqdocvar{rev\_l}\{\coqdocvar{l}\}\coqdocvar{H}/\coqdocvar{accept}/\coqdocvar{revM}/=.\coqdoceol
+\coqdocnoindent
+\coqdocvar{have} \coqdocvar{H}:\coqdockw{\ensuremath{\forall}} (\coqdocvar{d}:\coqdocvar{symbol}\ensuremath{\rightarrow}\coqdocvar{Rel} \coqdocvar{state} \coqdocvar{state})(\coqdocvar{w}:\coqdocvar{seq} \coqdocvar{symbol})(\coqdocvar{h}:\coqdocvar{symbol}),\coqdocvar{dstar} \coqdocvar{d} (\coqdocvar{rcons} \coqdocvar{w} \coqdocvar{h})=\coqdocvar{dstar} \coqdocvar{d} \coqdocvar{w}・\coqdocvar{d} \coqdocvar{h}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}\ensuremath{\Rightarrow}\coqdocvar{d}\{\}\coqdocvar{w} \coqdocvar{h}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{elim}:\coqdocvar{w};[\coqdoctac{by} \coqdoctac{rewrite}/=\coqdocvar{comp\_id\_l} \coqdocvar{comp\_id\_r}|]=>\coqdocvar{a} \coqdocvar{w} \coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite}/=\coqdocvar{comp\_assoc} \coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{have}\{\}\coqdocvar{H}:\coqdocvar{dstar} (\coqdockw{fun} \coqdocvar{x} : \coqdocvar{symbol} \ensuremath{\Rightarrow} \coqdockw{delta} \coqdocvar{M} \coqdocvar{x} \#) \coqdocvar{w} = \coqdocvar{dstar} (\coqdockw{delta} \coqdocvar{M}) (\coqdocvar{rev} \coqdocvar{w}) \#.\coqdoceol
+\coqdocnoindent
+\coqdoctac{elim}:\coqdocvar{w};[\coqdoctac{by} \coqdoctac{rewrite} \coqdocvar{inv\_id}|]=>\coqdocvar{h} \coqdocvar{w} \coqdocvar{H0}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite}/=\{\}\coqdocvar{H0} \coqdocvar{rev\_cons} \coqdocvar{H} \coqdocvar{comp\_inv}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{split}\ensuremath{\Rightarrow}\coqdocvar{H0};\coqdoctac{rewrite}-\coqdocvar{inv\_id}-\{\}\coqdocvar{H0}!\coqdocvar{comp\_inv} \coqdocvar{inv\_invol} \coqdocvar{comp\_assoc} \coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Qed}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Open} \coqdockw{Scope} \coqdocvar{language\_scope}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Theorem} \coqdocvar{regular\_prod}\{\coqdocvar{symbol}:\coqdocvar{finType}\}(\coqdocvar{l} \coqdocvar{l'}:@\coqdocvar{language} \coqdocvar{symbol}):\coqdoceol
+\coqdocnoindent
+\coqdocvar{is\_regular} \coqdocvar{l} \ensuremath{\land} \coqdocvar{is\_regular} \coqdocvar{l'} \ensuremath{\rightarrow} \coqdocvar{is\_regular}(\coqdocvar{l}・\coqdocvar{l'}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Close} \coqdockw{Scope} \coqdocvar{language\_scope}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/\coqdocvar{is\_regular}/\coqdocvar{accept}/\coqdocvar{prod\_lang}=>[][][]\coqdocvar{state}[]\coqdocvar{M} \coqdocvar{H}[]\coqdocvar{state'}[]\coqdocvar{M'} \coqdocvar{H'}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}} (\coqdocvar{sum} \coqdocvar{state} \coqdocvar{state'}),(\coqdocvar{concatM} \coqdocvar{M} \coqdocvar{M'})=>\coqdocvar{w}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{remember} (\coqdockw{delta} (\coqdocvar{concatM} \coqdocvar{M} \coqdocvar{M'})) \coqdockw{as} \coqdocvar{d}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{remember} (\coqdocvar{final} (\coqdocvar{concatM} \coqdocvar{M} \coqdocvar{M'})) \coqdockw{as} \coqdocvar{f}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{destruct} \coqdocvar{M},\coqdocvar{M'}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/= \coqdoctac{in} \coqdocvar{H} \coqdocvar{H'} \coqdocvar{Heqd} \coqdocvar{Heqf}\ensuremath{\times}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdocvar{have}\{\coqdocvar{H'}\}\coqdocvar{H}:(\coqdoctac{\ensuremath{\exists}} \coqdocvar{u} \coqdocvar{v} : \coqdocvar{seq} \coqdocvar{symbol}, \coqdocvar{w} = \coqdocvar{u} ++ \coqdocvar{v} \ensuremath{\land} \coqdocvar{l} \coqdocvar{u} \ensuremath{\land} \coqdocvar{l'} \coqdocvar{v})<->\coqdoceol
+\coqdocnoindent
+(\coqdoctac{\ensuremath{\exists}} \coqdocvar{u} \coqdocvar{v} : \coqdocvar{seq} \coqdocvar{symbol}, \coqdocvar{w} = \coqdocvar{u} ++ \coqdocvar{v} \ensuremath{\land}\coqdoceol
+\coqdocnoindent
+(\coqdocvar{init0} ・ \coqdocvar{dstar} \coqdocvar{delta0} \coqdocvar{u}) ・ \coqdocvar{final0} ・(\coqdocvar{init1} ・ \coqdocvar{dstar} \coqdocvar{delta1} \coqdocvar{v}) ・ \coqdocvar{final1} = \coqdocvar{Id} \coqdocvar{i}).\coqdoceol
+\coqdocnoindent
+\coqdoctac{split}=>[[]\coqdocvar{u}[]\coqdocvar{v}[]\coqdocvar{H0}[]/\coqdocvar{H}\{\}\coqdocvar{H}/\coqdocvar{H'}\{\}\coqdocvar{H'}|[]\coqdocvar{u}[]\coqdocvar{v}[]\coqdocvar{H0} \coqdocvar{H1}];\coqdoctac{\ensuremath{\exists}} \coqdocvar{u},\coqdocvar{v}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite} \coqdocvar{H} \coqdocvar{comp\_id\_l}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{case}:( @\coqdocvar{unit\_empty\_or\_universal}((\coqdocvar{init0} ・ \coqdocvar{dstar} \coqdocvar{delta0} \coqdocvar{u}) ・ \coqdocvar{final0}))=>\coqdocvar{H2};\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite} \coqdocvar{H2} \coqdoctac{in} \coqdocvar{H1} \ensuremath{\times}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}:\coqdocvar{unit\_identity\_not\_empty}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite}-\coqdocvar{H1}!\coqdocvar{comp\_empty\_l}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite} \coqdocvar{H} \coqdocvar{H'} \coqdocvar{H2}-\{2\}\coqdocvar{H1}-\coqdocvar{unit\_identity\_is\_universal} \coqdocvar{comp\_id\_l}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}\{\}\coqdocvar{H}-\coqdocvar{Heqd}-\coqdocvar{Heqf}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdocvar{have} \coqdocvar{inil}:\coqdockw{\ensuremath{\forall}} \coqdocvar{init}:\coqdocvar{Rel} \coqdocvar{i} \coqdocvar{state},\coqdocvar{init} ・ \coqdocvar{Rel\_sum} (\coqdocvar{Id} \coqdocvar{state}) (\coqdocvar{init1} \# ・ \coqdocvar{final0} \#) \#・\coqdocvar{inl\_r} \coqdocvar{state} \coqdocvar{state'}\# = \coqdocvar{init}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}\ensuremath{\Rightarrow}\coqdocvar{init}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite} \coqdocvar{comp\_assoc}/\coqdocvar{Rel\_sum} \coqdocvar{comp\_id\_r} \coqdocvar{inv\_cup\_distr}!\coqdocvar{comp\_inv}\coqdoceol
+\coqdocnoindent
+2!\coqdocvar{inv\_invol}(\coqdocvar{inv\_invol} \coqdocvar{\_} \coqdocvar{\_}(\coqdocvar{inr\_r} \coqdocvar{\_} \coqdocvar{\_}))\coqdocvar{comp\_cup\_distr\_r}!\coqdocvar{comp\_assoc}\coqdoceol
+\coqdocnoindent
+\coqdocvar{inl\_id} \coqdocvar{inr\_inl\_empty}!\coqdocvar{comp\_empty\_r} \coqdocvar{cup\_empty} \coqdocvar{comp\_id\_r}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdocvar{have} \coqdocvar{rf}:\coqdocvar{inr\_r} \coqdocvar{state} \coqdocvar{state'}・\coqdocvar{f} = \coqdocvar{final1}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite} \coqdocvar{Heqf}-\coqdocvar{comp\_assoc}-\{2\}( @\coqdocvar{comp\_id\_l} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{final1}).\coqdoceol
+\coqdocnoindent
+\coqdoctac{f\_equal}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite}/\coqdocvar{Rel\_sum} \coqdocvar{comp\_cup\_distr\_l}-!\coqdocvar{comp\_assoc} \coqdocvar{inr\_inl\_empty} \coqdocvar{inr\_id}\coqdoceol
+\coqdocnoindent
+!\coqdocvar{comp\_empty\_l} \coqdocvar{cup\_comm} \coqdocvar{comp\_id\_l} \coqdocvar{cup\_empty}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdocvar{have} \coqdocvar{lf}:\coqdocvar{inl\_r} \coqdocvar{state} \coqdocvar{state'}・\coqdocvar{f} = \coqdocvar{final0}・(\coqdocvar{init1}・\coqdocvar{final1}).\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite} \coqdocvar{Heqf}-!\coqdocvar{comp\_assoc}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{f\_equal}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite}/\coqdocvar{Rel\_sum} \coqdocvar{comp\_cup\_distr\_l}-!\coqdocvar{comp\_assoc} \coqdocvar{inl\_inr\_empty} \coqdocvar{inl\_id}\coqdoceol
+\coqdocnoindent
+\coqdocvar{comp\_empty\_l} \coqdocvar{comp\_id\_l} \coqdocvar{cup\_empty}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdocvar{have} \{\coqdocvar{Heqf}\}\coqdocvar{inif}:\coqdockw{\ensuremath{\forall}} \coqdocvar{init}:\coqdocvar{Rel} \coqdocvar{i} \coqdocvar{state},\coqdoceol
+\coqdocnoindent
+\coqdocvar{init} ・ \coqdocvar{Rel\_sum} (\coqdocvar{Id} \coqdocvar{state}) (\coqdocvar{init1} \# ・ \coqdocvar{final0} \#) \#・\coqdocvar{f} = \coqdocvar{init}・\coqdocvar{final0}・\coqdocvar{init1}・\coqdocvar{final1}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}\ensuremath{\Rightarrow}\coqdocvar{init}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite} \coqdocvar{Heqf}!\coqdocvar{comp\_assoc}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{f\_equal}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}-!\coqdocvar{comp\_assoc}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{f\_equal}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite} \coqdocvar{sum\_comp} \coqdocvar{comp\_inv} 2!\coqdocvar{inv\_invol} \coqdocvar{inv\_id} \coqdocvar{comp\_id\_l} \coqdocvar{comp\_id\_r} \coqdocvar{cup\_idem}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdocvar{have} \coqdocvar{rdstar}:\coqdockw{\ensuremath{\forall}} \coqdocvar{w},\coqdocvar{inr\_r} \coqdocvar{state} \coqdocvar{state'}・\coqdocvar{dstar} \coqdocvar{d} \coqdocvar{w} = \coqdocvar{dstar} \coqdocvar{delta1} \coqdocvar{w}・\coqdocvar{inr\_r} \coqdocvar{state} \coqdocvar{state'}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{elim}=>[|\coqdocvar{h}\{\}\coqdocvar{w} \coqdocvar{H}].\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite}/=\coqdocvar{comp\_id\_l} \coqdocvar{comp\_id\_r}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite}/=-\coqdocvar{comp\_assoc}\{1\}\coqdocvar{Heqd}/\coqdocvar{Rel\_sum}!\coqdocvar{comp\_cup\_distr\_r}!\coqdocvar{comp\_cup\_distr\_l}\coqdoceol
+\coqdocnoindent
+-!\coqdocvar{comp\_assoc} \coqdocvar{inr\_id} \coqdocvar{inr\_inl\_empty}!\coqdocvar{comp\_empty\_l}!\coqdocvar{comp\_id\_l} \coqdocvar{cup\_comm}\coqdoceol
+\coqdocnoindent
+\coqdocvar{cup\_empty} \coqdocvar{cup\_comm} \coqdocvar{cup\_empty}!\coqdocvar{comp\_assoc} \coqdocvar{H}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdocvar{have}\{\coqdocvar{rf} \coqdocvar{rdstar}\}\coqdocvar{rdstarf}:\coqdockw{\ensuremath{\forall}} \coqdocvar{w},\coqdocvar{inr\_r} \coqdocvar{state} \coqdocvar{state'}・(\coqdocvar{dstar} \coqdocvar{d} \coqdocvar{w}・\coqdocvar{f}) = \coqdocvar{dstar} \coqdocvar{delta1} \coqdocvar{w}・\coqdocvar{final1}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}=>\{\}\coqdocvar{w}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite}-\coqdocvar{comp\_assoc} \coqdocvar{rdstar} \coqdocvar{comp\_assoc} \coqdocvar{rf}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdocvar{have} \coqdocvar{dstarl}:\coqdockw{\ensuremath{\forall}} \coqdocvar{w},\coqdocvar{dstar} \coqdocvar{d} \coqdocvar{w}・\coqdocvar{inl\_r} \coqdocvar{state} \coqdocvar{state'}\# =\coqdoceol
+\coqdocnoindent
+\coqdocvar{inl\_r} \coqdocvar{state} \coqdocvar{state'}\#・\coqdocvar{dstar} \coqdocvar{delta0} \coqdocvar{w}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{elim}=>[|\coqdocvar{h}\{\}\coqdocvar{w} \coqdocvar{H}].\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite}/=\coqdocvar{comp\_id\_l} \coqdocvar{comp\_id\_r}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/=\coqdocvar{comp\_assoc}\{\}\coqdocvar{H}-!\coqdocvar{comp\_assoc}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{f\_equal}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite} \coqdocvar{Heqd}/\coqdocvar{Rel\_sum}!\coqdocvar{comp\_cup\_distr\_r}!\coqdocvar{comp\_assoc} \coqdocvar{inr\_inl\_empty} \coqdocvar{inl\_id}\coqdoceol
+\coqdocnoindent
+\coqdocvar{comp\_id\_r} \coqdocvar{comp\_id\_l}!\coqdocvar{comp\_empty\_r}!\coqdocvar{cup\_empty}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdocvar{have} \{\coqdocvar{inil}\}\coqdocvar{inidstarl}:\coqdockw{\ensuremath{\forall}} (\coqdocvar{init}:\coqdocvar{Rel} \coqdocvar{i} \coqdocvar{state})(\coqdocvar{w}:\coqdocvar{seq} \coqdocvar{symbol}),\coqdocvar{init} ・ \coqdocvar{Rel\_sum} (\coqdocvar{Id} \coqdocvar{state}) (\coqdocvar{init1} \# ・ \coqdocvar{final0} \#) \#・\coqdocvar{dstar} \coqdocvar{d} \coqdocvar{w}・\coqdocvar{inl\_r} \coqdocvar{state} \coqdocvar{state'}\# =\coqdocvar{init}・\coqdocvar{dstar} \coqdocvar{delta0} \coqdocvar{w}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}\ensuremath{\Rightarrow}\coqdocvar{init}\{\}\coqdocvar{w}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite} \coqdocvar{comp\_assoc} \coqdocvar{dstarl}-\coqdocvar{comp\_assoc} \coqdocvar{inil}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdocvar{have}\{\}\coqdocvar{Heqd}:\coqdockw{\ensuremath{\forall}} \coqdocvar{h},\coqdocvar{d} \coqdocvar{h} = \coqdocvar{inl\_r} \coqdocvar{state} \coqdocvar{state'}\#・\coqdocvar{delta0} \coqdocvar{h}・\coqdocvar{inl\_r} \coqdocvar{state} \coqdocvar{state'}∪\coqdoceol
+\coqdocnoindent
+(\coqdocvar{inl\_r} \coqdocvar{state} \coqdocvar{state'}\#・\coqdocvar{final0}・\coqdocvar{init1}・\coqdocvar{delta1} \coqdocvar{h}・\coqdocvar{inr\_r} \coqdocvar{state} \coqdocvar{state'})∪\coqdoceol
+\coqdocnoindent
+(\coqdocvar{inr\_r} \coqdocvar{state} \coqdocvar{state'}\#・\coqdocvar{delta1} \coqdocvar{h}・\coqdocvar{inr\_r} \coqdocvar{state} \coqdocvar{state'}).\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}\ensuremath{\Rightarrow}\coqdocvar{h}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite} \coqdocvar{Heqd}/\coqdocvar{Rel\_sum} \coqdocvar{comp\_id\_r} \coqdocvar{cup\_assoc}!\coqdocvar{comp\_cup\_distr\_r}!\coqdocvar{comp\_assoc}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdoctac{split}=>[[]\coqdocvar{u}[]\coqdocvar{v}[]\coqdocvar{H} \coqdocvar{H0}\ensuremath{|}\coqdocvar{H}].\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}\{\coqdocvar{w}\}\coqdocvar{H} \coqdocvar{dstar\_cat}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdoctac{rewrite}-(\coqdocvar{comp\_id\_r} \coqdocvar{\_} \coqdocvar{\_}(\coqdocvar{dstar} \coqdocvar{d} \coqdocvar{u}))-\coqdocvar{inl\_inr\_cup\_id} \coqdocvar{comp\_cup\_distr\_l}\coqdoceol
+\coqdocnoindent
+!\coqdocvar{comp\_cup\_distr\_r} \coqdocvar{comp\_cup\_distr\_l} \coqdocvar{comp\_cup\_distr\_r}-!\coqdocvar{comp\_assoc} \coqdocvar{inidstarl}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{suff} \coqdocvar{H2}:((((\coqdocvar{init0} ・ \coqdocvar{dstar} \coqdocvar{delta0} \coqdocvar{u}) ・ \coqdocvar{inl\_r} \coqdocvar{state} \coqdocvar{state'}) ・ \coqdocvar{dstar} \coqdocvar{d} \coqdocvar{v}) ・ \coqdocvar{f})=\coqdocvar{Id} \coqdocvar{i}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite} \coqdocvar{H2} \coqdocvar{unit\_identity\_is\_universal} \coqdocvar{cup\_comm} \coqdocvar{cup\_universal}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdoctac{move}:\coqdocvar{H0}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{case}:\coqdocvar{v}=>[|\coqdocvar{h} \coqdocvar{v}].\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/=!\coqdocvar{comp\_id\_r}\ensuremath{\Rightarrow}\coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite}!\coqdocvar{comp\_assoc} \coqdocvar{lf}-!\coqdocvar{comp\_assoc} \coqdocvar{H}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdoctac{rewrite}/=-!\coqdocvar{comp\_assoc}\ensuremath{\Rightarrow}\coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite} \coqdocvar{Heqd}!\coqdocvar{comp\_cup\_distr\_l}!\coqdocvar{comp\_cup\_distr\_r}-!\coqdocvar{comp\_assoc}\coqdoceol
+\coqdocnoindent
+!(\coqdocvar{comp\_assoc} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}(\coqdocvar{inl\_r} \coqdocvar{\_} \coqdocvar{\_})) \coqdocvar{inl\_id} \coqdocvar{inl\_inr\_empty} \coqdocvar{comp\_empty\_r}\coqdoceol
+\coqdocnoindent
+!\coqdocvar{comp\_empty\_l} \coqdocvar{cup\_empty} \coqdocvar{comp\_id\_r}!\coqdocvar{comp\_assoc} \coqdocvar{rdstarf}-!\coqdocvar{comp\_assoc} \coqdocvar{H}\coqdoceol
+\coqdocnoindent
+\coqdocvar{unit\_identity\_is\_universal} \coqdocvar{cup\_universal}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdoctac{rewrite}/\coqdocvar{Rel\_sum} \coqdocvar{comp\_id\_r} \coqdocvar{inv\_cup\_distr}!\coqdocvar{comp\_inv}!\coqdocvar{inv\_invol}\coqdoceol
+\coqdocnoindent
+\coqdocvar{comp\_cup\_distr\_l}!\coqdocvar{comp\_cup\_distr\_r} \coqdocvar{cup\_idi} \coqdoctac{in} \coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{case}:\coqdocvar{H}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdoctac{move}:\coqdocvar{init0}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{elim}:\coqdocvar{w}=>[|\coqdocvar{h} \coqdocvar{w} \coqdocvar{H}]\coqdocvar{init0}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/=\coqdocvar{comp\_id\_r} \coqdocvar{comp\_assoc} \coqdocvar{lf}\ensuremath{\Rightarrow}\coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}} \coqdocvar{nil},\coqdocvar{nil}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite}/=!\coqdocvar{comp\_id\_r}!\coqdocvar{comp\_assoc} \coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/=-\coqdocvar{comp\_assoc}\{1\}\coqdocvar{Heqd}!\coqdocvar{comp\_cup\_distr\_l}!\coqdocvar{comp\_cup\_distr\_r}\coqdoceol
+\coqdocnoindent
+-!\coqdocvar{comp\_assoc}!(\coqdocvar{comp\_assoc} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}(\coqdocvar{inl\_r} \coqdocvar{\_} \coqdocvar{\_}))\coqdocvar{inl\_id} \coqdocvar{comp\_id\_r}\coqdoceol
+\coqdocnoindent
+\coqdocvar{inl\_inr\_empty} \coqdocvar{comp\_empty\_r}!\coqdocvar{comp\_empty\_l} \coqdocvar{cup\_empty} \coqdocvar{cup\_idi}-!\coqdocvar{comp\_assoc}\coqdoceol
+\coqdocnoindent
+=>[][/\coqdocvar{H}[]\coqdocvar{u}[]\coqdocvar{v}[]\{\}\coqdocvar{H} \coqdocvar{H0}|\{\}\coqdocvar{H}].\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}}(\coqdocvar{h}::\coqdocvar{u}),\coqdocvar{v}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/=-!\coqdocvar{comp\_assoc} \coqdoctac{in} \coqdocvar{H0} \ensuremath{\times}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{split};[\coqdoctac{f\_equal}|].\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}} \coqdocvar{nil},(\coqdocvar{h}::\coqdocvar{w}).\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite}/=\coqdocvar{comp\_id\_r}!\coqdocvar{comp\_assoc} \coqdocvar{rdstarf} \coqdoctac{in} \coqdocvar{H} \ensuremath{\times}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}\ensuremath{\Rightarrow}\coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}} \coqdocvar{nil},\coqdocvar{w}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite}/=\coqdocvar{comp\_id\_r}!\coqdocvar{comp\_assoc} \coqdocvar{rdstarf} \coqdoctac{in} \coqdocvar{H} \ensuremath{\times}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Qed}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdocvar{regular\_phi}\{\coqdocvar{symbol}:\coqdocvar{finType}\}:@\coqdocvar{is\_regular} \coqdocvar{symbol} \coqdocvar{phi}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/\coqdocvar{is\_regular}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}} \coqdocvar{i},\coqdocvar{phiM}\ensuremath{\Rightarrow}\coqdocvar{w}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{split};[|\coqdoctac{rewrite}/\coqdocvar{accept}/=!\coqdocvar{comp\_empty\_l}\ensuremath{\Rightarrow}\coqdocvar{H};\coqdoctac{move}:\coqdocvar{unit\_identity\_not\_empty};\coqdoctac{rewrite} \coqdocvar{H}].\coqdoceol
+\coqdocnoindent
+\coqdockw{Qed}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Theorem} \coqdocvar{regular\_eps}\{\coqdocvar{symbol}:\coqdocvar{finType}\}:@\coqdocvar{is\_regular} \coqdocvar{symbol} \coqdocvar{eps}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/\coqdocvar{is\_regular}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}} \coqdocvar{i},\coqdocvar{epsM}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/\coqdocvar{accept}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{case}=>[|\coqdocvar{a} \coqdocvar{l}].\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{split}=>[\coqdocvar{\_}|];[\coqdoctac{rewrite}/=!\coqdocvar{comp\_id\_l}|].\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/=\coqdocvar{comp\_empty\_l}!\coqdocvar{comp\_empty\_r} \coqdocvar{comp\_empty\_l}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{split}=>[|\coqdocvar{H}];[|\coqdoctac{move}:\coqdocvar{unit\_identity\_not\_empty};\coqdoctac{rewrite} \coqdocvar{H}].\coqdoceol
+\coqdocnoindent
+\coqdockw{Qed}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdocvar{regular\_singl}\{\coqdocvar{symbol}:\coqdocvar{finType}\}(\coqdocvar{s}:\coqdocvar{symbol}):\coqdocvar{is\_regular}(\coqdocvar{singl} \coqdocvar{s}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/\coqdocvar{is\_regular}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}} \coqdocvar{bool},(\coqdocvar{singlM} \coqdocvar{s}).\coqdoceol
+\coqdocnoindent
+\coqdocvar{have} \coqdocvar{H}:\coqdockw{\ensuremath{\forall}} \coqdocvar{w},\coqdoceol
+\coqdocindent{1.00em}
+(\coqdocvar{dstar}(\coqdockw{delta}(\coqdocvar{singlM} \coqdocvar{s}))\coqdocvar{w})\coqdocvar{true} \coqdocvar{false}\ensuremath{\leftrightarrow}\coqdocvar{accept}(\coqdocvar{singlM} \coqdocvar{s}) \coqdocvar{w}\ensuremath{\Rightarrow}\coqdocvar{w}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/\coqdocvar{accept}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{split}\ensuremath{\Rightarrow}\coqdocvar{H};\coqdocvar{destruct\_Id\_i}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}} \coqdocvar{false}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{split};[\coqdoctac{\ensuremath{\exists}} \coqdocvar{true}|].\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{case}:\coqdocvar{H}=>[][][];[\coqdoctac{by} \coqdoctac{simpl}|]=>[][][][].\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}-\{\}\coqdocvar{H}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdoctac{case}:\coqdocvar{w}=>[|\coqdocvar{a}[|\coqdocvar{b} \coqdocvar{w}]];[\coqdocvar{done}\ensuremath{|}\coqdoctac{rewrite}/=\coqdocvar{comp\_id\_r}\ensuremath{|}\coqdoctac{simpl}].\coqdoceol
+\coqdocnoindent
+\coqdoctac{split}=>[[]|[] \coqdocvar{\_}[]\coqdocvar{H} \coqdocvar{\_}];\coqdoctac{by} \coqdoctac{subst}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{split}=>[[]|[]\coqdocvar{x}[][] \coqdocvar{\_}[] \coqdocvar{\_} \coqdocvar{H}[]\coqdocvar{y}[][]].\coqdoceol
+\coqdocnoindent
+\coqdockw{Qed}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Open} \coqdockw{Scope} \coqdocvar{language\_scope}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Theorem} \coqdocvar{regular\_comp}\{\coqdocvar{symbol}:\coqdocvar{finType}\}(\coqdocvar{l}:@\coqdocvar{language} \coqdocvar{symbol}):\coqdoceol
+\coqdocnoindent
+\coqdocvar{is\_regular} \coqdocvar{l} \ensuremath{\rightarrow} \coqdocvar{is\_regular} (\coqdocvar{l}\^{}\coqdocvar{c}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Close} \coqdockw{Scope} \coqdocvar{language\_scope}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/\coqdocvar{is\_regular}/\coqdocvar{comp\_lang}=>[][]\coqdocvar{state}[]\coqdocvar{M} \coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}:(\coqdocvar{NFA\_DFA\_equiv} \coqdocvar{M})=>[]\coqdocvar{state'}[]\coqdocvar{M'}[]\coqdocvar{H0} \coqdocvar{H1}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}} \coqdocvar{\_},(\coqdocvar{compM} \coqdocvar{M'})=>\coqdocvar{w}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}\{\coqdocvar{l}\}\coqdocvar{H}\{\coqdocvar{state} \coqdocvar{M}\}\coqdocvar{H1}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdoctac{rewrite}/\coqdocvar{accept}/=.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}:\coqdocvar{H0}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/\coqdocvar{deterministic}=>[][]\coqdocvar{H} \coqdocvar{H0}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{have}\{\coqdocvar{H0}\}\coqdocvar{H}:\coqdocvar{function\_r}(\coqdocvar{init} \coqdocvar{M'}・\coqdocvar{dstar}(\coqdockw{delta} \coqdocvar{M'})\coqdocvar{w}).\coqdoceol
+\coqdocnoindent
+\coqdoctac{destruct} \coqdocvar{M'};\coqdoctac{rewrite}/= \coqdoctac{in} \coqdocvar{H} \coqdocvar{H0} \ensuremath{\times}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}:\coqdocvar{init0} \coqdocvar{H0}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{elim}:\coqdocvar{w}=>[|\coqdocvar{h} \coqdocvar{w} \coqdocvar{H1}]\coqdocvar{init0} \coqdocvar{H0}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite}/=\coqdocvar{comp\_id\_r}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/=-\coqdocvar{comp\_assoc}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{apply}/\coqdocvar{H1}/\coqdocvar{function\_comp}/\coqdocvar{H}/\coqdocvar{H0}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdocvar{have} \coqdocvar{H0}:\coqdoctac{\ensuremath{\exists}} \coqdocvar{x}, (\coqdocvar{init} \coqdocvar{M'}・\coqdocvar{dstar}(\coqdockw{delta} \coqdocvar{M'})\coqdocvar{w})\coqdocvar{tt} \coqdocvar{x}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/\coqdocvar{function\_r}/\coqdocvar{total\_r} \coqdoctac{in} \coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}:\coqdocvar{H}=>[]\{\}\coqdocvar{H} \coqdocvar{\_}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{have} \coqdocvar{H0}:\coqdocvar{Id} \coqdocvar{i} \coqdocvar{tt} \coqdocvar{tt};[\coqdocvar{done}|].\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}:(\coqdocvar{H} \coqdocvar{tt} \coqdocvar{tt} \coqdocvar{H0})=>[]\coqdocvar{x}[]\{\coqdocvar{H0}\}\coqdocvar{H} \coqdocvar{\_}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{\ensuremath{\exists}} \coqdocvar{x}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{case}:\coqdocvar{H0}\ensuremath{\Rightarrow}\coqdocvar{x} \coqdocvar{H0}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{have}\{\}\coqdocvar{H}:\coqdockw{\ensuremath{\forall}} \coqdocvar{y},(\coqdocvar{init} \coqdocvar{M'} ・ \coqdocvar{dstar} (\coqdockw{delta} \coqdocvar{M'}) \coqdocvar{w}) \coqdocvar{tt} \coqdocvar{y} \ensuremath{\rightarrow} \coqdocvar{y}=\coqdocvar{x}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}\ensuremath{\Rightarrow}\coqdocvar{y} \coqdocvar{H1}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/\coqdocvar{function\_r}/\coqdocvar{univalent\_r} \coqdoctac{in} \coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}:\coqdocvar{H}=>[] \coqdocvar{\_} \coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{have}\{\coqdocvar{H1}\}\coqdocvar{H0}:((\coqdocvar{init} \coqdocvar{M'} ・ \coqdocvar{dstar} (\coqdockw{delta} \coqdocvar{M'}) \coqdocvar{w}) \# ・ (\coqdocvar{init} \coqdocvar{M'} ・ \coqdocvar{dstar} (\coqdockw{delta} \coqdocvar{M'}) \coqdocvar{w}))\coqdocvar{x} \coqdocvar{y}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{\ensuremath{\exists}} \coqdocvar{tt}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{move}:(\coqdocvar{H} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{H0}).\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdocvar{have}\{\coqdocvar{H0}\}\coqdocvar{H}:\coqdockw{\ensuremath{\forall}} \coqdocvar{R}:\coqdocvar{Rel} \coqdocvar{state'} \coqdocvar{i},\coqdoceol
+\coqdocnoindent
+(\coqdocvar{init} \coqdocvar{M'} ・ \coqdocvar{dstar} (\coqdockw{delta} \coqdocvar{M'}) \coqdocvar{w}) ・ \coqdocvar{R} = \coqdocvar{Id} \coqdocvar{i} \ensuremath{\leftrightarrow} \coqdocvar{R} \coqdocvar{x} \coqdocvar{tt}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}\ensuremath{\Rightarrow}\coqdocvar{R}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{split}\ensuremath{\Rightarrow}\coqdocvar{H1};\coqdocvar{destruct\_Id\_i}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{case}:\coqdocvar{H1}\ensuremath{\Rightarrow}\coqdocvar{y}[]/\coqdocvar{H}\{\}\coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{subst}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{\ensuremath{\exists}} \coqdocvar{x}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite}/\coqdocvar{not}!\coqdocvar{H}/\coqdocvar{complement}/\coqdocvar{rpc}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Qed}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Lemma} \coqdocvar{nil\_rcons} \{\coqdocvar{symbol}:\coqdockw{Type}\}(\coqdocvar{s}:\coqdocvar{seq} \coqdocvar{symbol}):\coqdocvar{s} = \coqdocvar{nil} \ensuremath{\lor}\coqdoctac{\ensuremath{\exists}} \coqdocvar{t} \coqdocvar{s'},\coqdocvar{s}=\coqdocvar{rcons} \coqdocvar{s'} \coqdocvar{t}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{elim}:\coqdocvar{s}=>[|\coqdocvar{h} \coqdocvar{s}[\coqdocvar{H}|[]\coqdocvar{h'}[]\coqdocvar{s'}]];[\coqdoctac{by} \coqdoctac{left}\ensuremath{|} |];\coqdoctac{right};\coqdoceol
+\coqdocnoindent
+[\coqdoctac{\ensuremath{\exists}} \coqdocvar{h},\coqdocvar{nil}\ensuremath{|}\coqdoctac{\ensuremath{\exists}} \coqdocvar{h'},(\coqdocvar{h}::\coqdocvar{s'})];\coqdoctac{by} \coqdoctac{subst}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Qed}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Lemma} \coqdocvar{dstar\_rcons} \{\coqdocvar{state} \coqdocvar{symbol}:\coqdocvar{finType}\}:\coqdoceol
+\coqdocnoindent
+\coqdockw{\ensuremath{\forall}}(\coqdocvar{d}:\coqdocvar{symbol}\ensuremath{\rightarrow}\coqdocvar{Rel} \coqdocvar{state} \coqdocvar{state}) \coqdocvar{w} \coqdocvar{t},\coqdoceol
+\coqdocnoindent
+\coqdocvar{dstar} \coqdocvar{d}(\coqdocvar{rcons} \coqdocvar{w} \coqdocvar{t}) = \coqdocvar{dstar} \coqdocvar{d} \coqdocvar{w}・\coqdocvar{d} \coqdocvar{t}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}\ensuremath{\Rightarrow}\coqdocvar{d} \coqdocvar{w} \coqdocvar{t}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{elim}:\coqdocvar{w}=>[|\coqdocvar{h} \coqdocvar{w} \coqdocvar{H}].\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite}/=\coqdocvar{comp\_id\_l} \coqdocvar{comp\_id\_r}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite}/=\coqdocvar{H} \coqdocvar{comp\_assoc}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Qed}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdocvar{plus\_regular} \{\coqdocvar{symbol}:\coqdocvar{finType}\}(\coqdocvar{l}:@\coqdocvar{language} \coqdocvar{symbol}):\coqdoceol
+\coqdocnoindent
+\coqdocvar{is\_regular} \coqdocvar{l} \ensuremath{\rightarrow} \coqdocvar{is\_regular}(\coqdocvar{plus\_l} \coqdocvar{l}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/\coqdocvar{is\_regular}=>[][]\coqdocvar{state}[]\coqdocvar{M} \coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}} \coqdocvar{\_}, (\coqdocvar{plus\_nfa} \coqdocvar{M})=>\coqdocvar{w}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{remember}(\coqdockw{delta}(\coqdocvar{plus\_nfa} \coqdocvar{M}))\coqdockw{as} \coqdocvar{d}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{destruct} \coqdocvar{M}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/\coqdocvar{accept}/\coqdocvar{plus\_l}/= \coqdoctac{in} \coqdocvar{H} \coqdocvar{Heqd} \ensuremath{\times}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}-\coqdocvar{Heqd}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdoctac{split}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{case}\ensuremath{\Rightarrow}\coqdocvar{n}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdocvar{have} \coqdocvar{H0}:\coqdockw{\ensuremath{\forall}} \coqdocvar{w}, ((\coqdocvar{init0} ・ \coqdocvar{dstar} \coqdocvar{delta0} \coqdocvar{w}) ・ \coqdocvar{final0})\coqdoceol
+\coqdocnoindent
+⊆ ((\coqdocvar{init0} ・ \coqdocvar{dstar} \coqdocvar{d} \coqdocvar{w}) ・ \coqdocvar{final0}).\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}=>\{\}\coqdocvar{w}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{apply}/\coqdocvar{comp\_inc\_compat\_ab\_a'b}/\coqdocvar{comp\_inc\_compat\_ab\_ab'}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{elim}:\coqdocvar{w}=>[|\coqdocvar{h}\{\}\coqdocvar{w}\{\}\coqdocvar{H}];[\coqdocvar{done}\ensuremath{|}\coqdoctac{simpl}\ensuremath{\Rightarrow}\coqdocvar{x} \coqdocvar{z}[]\coqdocvar{y}[]\coqdocvar{H0} \coqdocvar{H1}].\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}} \coqdocvar{y}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}\{1\}\coqdocvar{Heqd}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{split};[\coqdoctac{apply}/\coqdocvar{cup\_l}\ensuremath{|}\coqdoctac{apply}/\coqdocvar{H}].\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdoctac{move}:\coqdocvar{w}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{elim}:\coqdocvar{n}=>[|\coqdocvar{n} \coqdocvar{H1}]\coqdocvar{w}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/=/\coqdocvar{prod\_lang}=>[][]\coqdocvar{a}[][|\coqdocvar{b'} \coqdocvar{b}[] \coqdocvar{\_}[] \coqdocvar{\_}];[|\coqdocvar{done}].\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite} \coqdocvar{cats0}=>[][]\coqdocvar{H1}[]/\coqdocvar{H}\{\}\coqdocvar{H} \coqdocvar{\_}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{destruct\_Id\_i}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}:\coqdocvar{H}=>/\coqdocvar{H0}\{\coqdocvar{H0}\}\coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{subst}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdoctac{rewrite}/=\{1\}/\coqdocvar{prod\_lang}=>[][]\coqdocvar{a}[]\coqdocvar{b}[]\coqdocvar{H2}[]/\coqdocvar{H}\{\}\coqdocvar{H}/\coqdocvar{H1}\{\}\coqdocvar{H1}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}\{\coqdocvar{w}\}\coqdocvar{H2} \coqdocvar{dstar\_cat}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}:\coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{have} \coqdocvar{H}:(\coqdockw{\ensuremath{\forall}} \coqdocvar{x}:\coqdocvar{seq} \coqdocvar{symbol},\coqdocvar{x} = \coqdocvar{nil} \ensuremath{\lor}\coqdoctac{\ensuremath{\exists}} \coqdocvar{h} \coqdocvar{x'}, \coqdocvar{x} = \coqdocvar{rcons} \coqdocvar{x'} \coqdocvar{h}).\coqdoceol
+\coqdocnoindent
+\coqdoctac{elim}=>[|\coqdocvar{h} \coqdocvar{x} \coqdocvar{H}];[\coqdoctac{by} \coqdoctac{left}\ensuremath{|}\coqdoctac{right}].\coqdoceol
+\coqdocnoindent
+\coqdoctac{case}:\coqdocvar{H}\ensuremath{\Rightarrow}\coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}} \coqdocvar{h},\coqdocvar{nil}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{subst}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{case}:\coqdocvar{H}\ensuremath{\Rightarrow}\coqdocvar{x0}[]\coqdocvar{x1} \coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{subst}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{\ensuremath{\exists}} \coqdocvar{x0},(\coqdocvar{h}::\coqdocvar{x1}).\coqdoceol
+\coqdocnoindent
+\coqdoctac{case}:(\coqdocvar{H} \coqdocvar{a})=>[|[]\coqdocvar{t}[]\coqdocvar{a'}]\{\}\coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite}\{\coqdocvar{a}\}\coqdocvar{H}/=\coqdocvar{comp\_id\_l}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}\{\coqdocvar{a}\}\coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{have} \coqdocvar{dstar\_rcons}:\coqdockw{\ensuremath{\forall}} \coqdocvar{d},\coqdocvar{dstar} \coqdocvar{d}(\coqdocvar{rcons} \coqdocvar{a'} \coqdocvar{t}) = \coqdocvar{dstar} \coqdocvar{d} \coqdocvar{a'}・\coqdocvar{d} \coqdocvar{t}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}\ensuremath{\Rightarrow}\coqdocvar{t0}\{\coqdocvar{Heqd} \coqdocvar{H0} \coqdocvar{H1}\}\coqdocvar{d}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{elim}:\coqdocvar{a'}=>[|\coqdocvar{h} \coqdocvar{a} \coqdocvar{H}].\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite}/=\coqdocvar{comp\_id\_r} \coqdocvar{comp\_id\_l}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite}/=\coqdocvar{H} \coqdocvar{comp\_assoc}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}!\coqdocvar{dstar\_rcons}\ensuremath{\Rightarrow}\coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}\{2\}\coqdocvar{Heqd}-!\coqdocvar{comp\_assoc}!\coqdocvar{comp\_cup\_distr\_l}!\coqdocvar{comp\_cup\_distr\_r}-!\coqdocvar{comp\_assoc}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{have}\{\}\coqdocvar{H}:\coqdocvar{init0}・\coqdocvar{dstar} \coqdocvar{d} \coqdocvar{a'}・\coqdocvar{delta0} \coqdocvar{t}・\coqdocvar{final0} = \coqdocvar{Id} \coqdocvar{i}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{apply}/\coqdocvar{inc\_antisym\_eq}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{split};[\coqdoctac{by} \coqdoctac{rewrite} \coqdocvar{unit\_identity\_is\_universal}\ensuremath{|}\coqdoctac{rewrite}-\{\}\coqdocvar{H}!\coqdocvar{comp\_assoc}].\coqdoceol
+\coqdocnoindent
+\coqdoctac{apply}/\coqdocvar{comp\_inc\_compat\_ab\_ab'}/\coqdocvar{comp\_inc\_compat\_ab\_a'b}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{elim}:\{\coqdocvar{dstar\_rcons}\}\coqdocvar{a'}=>[|\coqdocvar{h} \coqdocvar{a} \coqdocvar{H}].\coqdoceol
+\coqdocnoindent
+\coqdocvar{done}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/=\{1\}\coqdocvar{Heqd} \coqdocvar{comp\_cup\_distr\_r} \coqdocvar{comp\_assoc}-\coqdocvar{comp\_cup\_distr\_l}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{apply}/\coqdocvar{comp\_inc\_compat\_ab\_ab'}\ensuremath{\Rightarrow}\coqdocvar{x} \coqdocvar{y}/\coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{apply}/\coqdocvar{cup\_l}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite} \coqdocvar{H} \coqdocvar{comp\_id\_l} \coqdocvar{H1} \coqdocvar{unit\_identity\_is\_universal} \coqdocvar{cup\_universal}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdocvar{have}\{\}\coqdocvar{H}:\coqdockw{\ensuremath{\forall}} \coqdocvar{w},(\coqdocvar{init0} ・ \coqdocvar{dstar} \coqdocvar{d} \coqdocvar{w}) ・ \coqdocvar{final0} = \coqdocvar{Id} \coqdocvar{i} \ensuremath{\rightarrow}\coqdoceol
+\coqdocnoindent
+\coqdocvar{l} \coqdocvar{w}\ensuremath{\lor}\coqdoctac{\ensuremath{\exists}} \coqdocvar{u} \coqdocvar{v}, \coqdocvar{w} = \coqdocvar{u} ++ \coqdocvar{v} \ensuremath{\land} \coqdocvar{size} \coqdocvar{v} < \coqdocvar{size} \coqdocvar{w} \ensuremath{\land}\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{l} \coqdocvar{u} \ensuremath{\land} \coqdocvar{init0}・\coqdocvar{dstar} \coqdocvar{d} \coqdocvar{v}・\coqdocvar{final0} = \coqdocvar{Id} \coqdocvar{i}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}=>\{\}\coqdocvar{w} \coqdocvar{H0}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{destruct\_Id\_i}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{case}:\coqdocvar{H0}=>[]\coqdocvar{b}[][]\coqdocvar{a}[]\{\}\coqdocvar{H0} \coqdocvar{H1} \coqdocvar{H2}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{have}:(\coqdocvar{dstar} \coqdocvar{delta0} \coqdocvar{w}・\coqdocvar{final0}) \coqdocvar{a} \coqdocvar{tt} \ensuremath{\lor} \coqdoctac{\ensuremath{\exists}} \coqdocvar{n},\coqdoceol
+\coqdocnoindent
+(\coqdocvar{dstar} \coqdocvar{delta0}(\coqdocvar{take}(\coqdocvar{S} \coqdocvar{n})\coqdocvar{w})・\coqdocvar{final0}) \coqdocvar{a} \coqdocvar{tt} /\symbol{92}(\coqdocvar{init0}・\coqdocvar{dstar} \coqdocvar{d}(\coqdocvar{drop}(\coqdocvar{S} \coqdocvar{n})\coqdocvar{w})・\coqdocvar{final0})\coqdocvar{tt} \coqdocvar{tt}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}:\coqdocvar{a}\{\coqdocvar{H0}\}\coqdocvar{H1}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{elim}:\coqdocvar{w}=>[|\coqdocvar{h} \coqdocvar{w} \coqdocvar{H0}]\coqdocvar{a}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/=\coqdocvar{comp\_id\_l} \coqdocvar{comp\_id\_r}\ensuremath{\Rightarrow}\coqdocvar{H1}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{have}\{\}\coqdocvar{H1}:\coqdocvar{a} = \coqdocvar{b};[\coqdocvar{done}\ensuremath{|}\coqdoctac{subst}].\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{left}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/=\{1\}\coqdocvar{Heqd}/\coqdocvar{cup}/\coqdocvar{cupP}=>[][]\coqdocvar{c}[][]\coqdocvar{alpha}[][]\coqdocvar{H'} \coqdocvar{H1};\coqdoctac{rewrite}\{\coqdocvar{alpha}\}\coqdocvar{H'} \coqdoctac{in} \coqdocvar{H1}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}/\coqdocvar{H0}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{case}\ensuremath{\Rightarrow}\coqdocvar{H3}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{left}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite} \coqdocvar{comp\_assoc}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{\ensuremath{\exists}} \coqdocvar{c}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{case}:\coqdocvar{H3}\ensuremath{\Rightarrow}\coqdocvar{n}[]\coqdocvar{H3} \coqdocvar{H4}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{right}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}}(\coqdocvar{S} \coqdocvar{n}).\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite} \coqdocvar{comp\_assoc}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{split};[\coqdoctac{\ensuremath{\exists}} \coqdocvar{c}|].\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdoctac{move}=>\{\}\coqdocvar{H0}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{right}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}} 0.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite} \coqdocvar{take0} \coqdocvar{drop0}/=\coqdocvar{comp\_id\_r}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}-\coqdocvar{comp\_assoc} \coqdoctac{in} \coqdocvar{H1}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{case}:\coqdocvar{H1}=>[][][]\coqdocvar{H1} \coqdocvar{H3}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{split};[\coqdocvar{done}\ensuremath{|}\coqdoctac{\ensuremath{\exists}} \coqdocvar{b}].\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{split};[\coqdoctac{\ensuremath{\exists}} \coqdocvar{c}\ensuremath{|}\coqdocvar{done}].\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdoctac{case}\ensuremath{\Rightarrow}\coqdocvar{H3};[\coqdoctac{left}|].\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite} \coqdocvar{H} \coqdocvar{comp\_assoc}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{destruct\_Id\_i}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{\ensuremath{\exists}} \coqdocvar{a}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{case}:\coqdocvar{H3}\ensuremath{\Rightarrow}\coqdocvar{n}[]\coqdocvar{H3} \coqdocvar{H4}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{case\_eq}(\coqdocvar{w}==\coqdocvar{nil})=>/\coqdocvar{eqP} \coqdocvar{H5};[\coqdoctac{left}\ensuremath{|}\coqdoctac{right}].\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite} \coqdocvar{H} \coqdocvar{H5}/=\coqdocvar{comp\_id\_r} \coqdoctac{in} \coqdocvar{H1} \ensuremath{\times}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{Rel\_simpl};[\coqdoctac{by} \coqdoctac{rewrite} \coqdocvar{unit\_identity\_is\_universal}\ensuremath{|}\coqdoctac{move}=>[][] \coqdocvar{\_}].\coqdoceol
+\coqdocnoindent
+\coqdocvar{have}\{\}\coqdocvar{H1}:\coqdocvar{a}=\coqdocvar{b};[\coqdocvar{done}\ensuremath{|}\coqdoctac{subst}].\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{\ensuremath{\exists}} \coqdocvar{b}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}}(\coqdocvar{take} (\coqdocvar{S} \coqdocvar{n}) \coqdocvar{w}),(\coqdocvar{drop} (\coqdocvar{S} \coqdocvar{n}) \coqdocvar{w}).\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite} \coqdocvar{cat\_take\_drop} \coqdocvar{size\_drop}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{split};[\coqdocvar{done}\ensuremath{|}\coqdoctac{split}].\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}:\{\coqdocvar{H1} \coqdocvar{H3} \coqdocvar{H4}\}\coqdocvar{H5}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{case}:\coqdocvar{w}=>[|\coqdocvar{h} \coqdocvar{w}];[\coqdocvar{done}\ensuremath{|}\coqdoctac{simpl}=>\{\coqdocvar{h}\}\coqdocvar{\_}].\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite} \coqdocvar{ssrnat.subnE} \coqdocvar{PeanoNat.Nat.sub\_succ}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{apply}/\coqdocvar{PeanoNat.le\_lt\_n\_Sm}/\coqdocvar{PeanoNat.Nat.le\_sub\_l}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{split}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite} \coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{destruct\_Id\_i}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite} \coqdocvar{comp\_assoc}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{\ensuremath{\exists}} \coqdocvar{a}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdocvar{destruct\_Id\_i}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdocvar{have}:\coqdocvar{size} \coqdocvar{w} < \coqdocvar{S}(\coqdocvar{size} \coqdocvar{w})\coqdoctac{by} [].\coqdoceol
+\coqdocnoindent
+\coqdocvar{remember}(\coqdocvar{S}(\coqdocvar{size} \coqdocvar{w})) \coqdockw{as} \coqdocvar{n}=>\{\coqdocvar{Heqn}\}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}:\coqdocvar{w}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{elim}:\coqdocvar{n}=>[|\coqdocvar{n} \coqdocvar{H0}]\coqdocvar{w}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{move}/\coqdocvar{PeanoNat.Nat.nlt\_0\_r}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}\ensuremath{\Rightarrow}\coqdocvar{H1}/\coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{case}\ensuremath{\Rightarrow}\coqdocvar{H2}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}} 0,\coqdocvar{w},\coqdocvar{nil}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite} \coqdocvar{cats0}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdoctac{case}:\coqdocvar{H2}\ensuremath{\Rightarrow}\coqdocvar{u}[]\coqdocvar{v}[]\coqdocvar{H2}[]\coqdocvar{H3}[]\coqdocvar{H4}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{have}\{\coqdocvar{H3} \coqdocvar{H1}\}:\coqdocvar{size} \coqdocvar{v} < \coqdocvar{n}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{apply}/\coqdocvar{PeanoNat.Nat.lt\_le\_trans}/\coqdocvar{PeanoNat.lt\_n\_Sm\_le}/\coqdocvar{H1}/\coqdocvar{H3}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}/\coqdocvar{H0}=>\{\}\coqdocvar{H0}/\coqdocvar{H0}[]\coqdocvar{n'}\{\}\coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{\ensuremath{\exists}} (\coqdocvar{S} \coqdocvar{n'}),\coqdocvar{u},\coqdocvar{v}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Qed}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Open} \coqdockw{Scope} \coqdocvar{language\_scope}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Theorem} \coqdocvar{star\_regular} \{\coqdocvar{symbol}:\coqdocvar{finType}\}(\coqdocvar{l}:@\coqdocvar{language} \coqdocvar{symbol}):\coqdoceol
+\coqdocnoindent
+\coqdocvar{is\_regular} \coqdocvar{l} \ensuremath{\rightarrow} \coqdocvar{is\_regular} (\coqdocvar{l}\^{}*).\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}/\coqdocvar{plus\_regular}\ensuremath{\Rightarrow}\coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}:( @\coqdocvar{regular\_eps} \coqdocvar{symbol})=>\coqdocvar{H0}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{have}\{\coqdocvar{H0}\}\coqdocvar{H}:\coqdocvar{is\_regular} (\coqdocvar{plus\_l} \coqdocvar{l} ∪ \coqdocvar{eps})\coqdoctac{by} \coqdoctac{apply}/\coqdocvar{regular\_cup}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/\coqdocvar{star\_l}/\coqdocvar{is\_regular}/\coqdocvar{plus\_l} \coqdoctac{in} \coqdocvar{H} \ensuremath{\times}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{case}:\coqdocvar{H}\ensuremath{\Rightarrow}\coqdocvar{state}[]\coqdocvar{M} \coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}} \coqdocvar{\_},\coqdocvar{M}\ensuremath{\Rightarrow}\coqdocvar{w}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}-\{\coqdocvar{state} \coqdocvar{M}\}\coqdocvar{H}/\coqdocvar{cup\_lang}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{split}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{case}=>[][|\coqdocvar{n}]\coqdocvar{H};[\coqdoctac{right}\ensuremath{|}\coqdoctac{left};\coqdoctac{\ensuremath{\exists}} \coqdocvar{n}].\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{case}=>[[]\coqdocvar{n} \coqdocvar{H}|];[\coqdoctac{\ensuremath{\exists}} (\coqdocvar{S} \coqdocvar{n})|\coqdoctac{\ensuremath{\exists}} 0].\coqdoceol
+\coqdocnoindent
+\coqdockw{Qed}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Close} \coqdockw{Scope} \coqdocvar{language\_scope}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdocvar{shuffle\_regular} \{\coqdocvar{symbol}:\coqdocvar{finType}\}(\coqdocvar{l} \coqdocvar{l'}:@\coqdocvar{language} \coqdocvar{symbol}):\coqdoceol
+\coqdocnoindent
+\coqdocvar{is\_regular} \coqdocvar{l} \ensuremath{\land} \coqdocvar{is\_regular} \coqdocvar{l'} \ensuremath{\rightarrow} \coqdocvar{is\_regular}(\coqdocvar{shuffle\_lang} \coqdocvar{l} \coqdocvar{l'}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/\coqdocvar{is\_regular}=>[][][]\coqdocvar{state}[]\coqdocvar{M} \coqdocvar{H}[]\coqdocvar{state'}[]\coqdocvar{M'} \coqdocvar{H'}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}} \coqdocvar{\_},(\coqdocvar{shuffle\_nfa} \coqdocvar{M} \coqdocvar{M'})=>\coqdocvar{w}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{remember} (\coqdockw{delta}(\coqdocvar{shuffle\_nfa} \coqdocvar{M} \coqdocvar{M'}))\coqdockw{as} \coqdocvar{d}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{remember} (\coqdocvar{final}(\coqdocvar{shuffle\_nfa} \coqdocvar{M} \coqdocvar{M'}))\coqdockw{as} \coqdocvar{f}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{destruct} \coqdocvar{M},\coqdocvar{M'}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/\coqdocvar{accept}/= \coqdoctac{in} \coqdocvar{H} \coqdocvar{H'} \coqdocvar{Heqd} \coqdocvar{Heqf} \ensuremath{\times}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}-\coqdocvar{Heqd}-\coqdocvar{Heqf}/\coqdocvar{shuffle\_lang}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdocvar{have} \coqdocvar{d\_inv}:\coqdockw{\ensuremath{\forall}} \coqdocvar{x},\coqdocvar{d} \coqdocvar{x} =\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{Rel\_prod}(\coqdocvar{fst\_r} \coqdocvar{state} \coqdocvar{state'}・\coqdocvar{delta0} \coqdocvar{x} \#)(\coqdocvar{snd\_r} \coqdocvar{state} \coqdocvar{state'})\#∪\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{Rel\_prod}(\coqdocvar{fst\_r} \coqdocvar{state} \coqdocvar{state'})(\coqdocvar{snd\_r} \coqdocvar{state} \coqdocvar{state'}・\coqdocvar{delta1} \coqdocvar{x} \#)\#.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}\ensuremath{\Rightarrow}\coqdocvar{x}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite} \coqdocvar{Heqd}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{f\_equal};\coqdoctac{rewrite}/\coqdocvar{Rel\_prod} \coqdocvar{inv\_cap\_distr}!\coqdocvar{comp\_inv} 3!\coqdocvar{inv\_invol}!\coqdocvar{comp\_assoc}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdocvar{have} \coqdocvar{sharpness'}:\coqdockw{\ensuremath{\forall}} \coqdocvar{alpha} \coqdockw{beta} \coqdocvar{gamma} \coqdockw{delta},\coqdoceol
+\coqdocnoindent
+\coqdocvar{Rel\_prod} \coqdocvar{alpha} \coqdockw{beta}・\coqdoceol
+\coqdocnoindent
+\coqdocvar{Rel\_prod}(\coqdocvar{fst\_r} \coqdocvar{state} \coqdocvar{state'}・\coqdocvar{gamma} \#)(\coqdocvar{snd\_r} \coqdocvar{state} \coqdocvar{state'}・\coqdockw{delta} \#)\# =\coqdoceol
+\coqdocnoindent
+\coqdocvar{Rel\_prod}(\coqdocvar{alpha}・\coqdocvar{gamma})(\coqdockw{beta}・\coqdockw{delta}).\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}\ensuremath{\Rightarrow}\coqdocvar{t} \coqdocvar{t0} \coqdocvar{t1} \coqdocvar{alpha} \coqdockw{beta} \coqdocvar{gamma} \coqdockw{delta}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/\coqdocvar{Rel\_prod} \coqdocvar{inv\_cap\_distr}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{remember}(\coqdocvar{fst\_r} \coqdocvar{state} \coqdocvar{state'} ・ \coqdocvar{gamma} \#)\coqdockw{as} \coqdocvar{fg}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{remember}(\coqdocvar{snd\_r} \coqdocvar{state} \coqdocvar{state'} ・ \coqdockw{delta} \#)\coqdockw{as} \coqdocvar{sd}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite}!\coqdocvar{comp\_inv} 2!\coqdocvar{inv\_invol}-\coqdocvar{sharpness} \coqdocvar{Heqfg} \coqdocvar{Heqsd}!\coqdocvar{comp\_inv}\coqdoceol
+\coqdocnoindent
+2!\coqdocvar{inv\_invol}!\coqdocvar{comp\_assoc}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdocvar{have} \coqdocvar{inid}:\coqdockw{\ensuremath{\forall}} \coqdocvar{x}(\coqdocvar{alpha}:\coqdocvar{Rel} \coqdocvar{i} \coqdocvar{\_})\coqdockw{beta},\coqdocvar{Rel\_prod} \coqdocvar{alpha} \coqdockw{beta}・\coqdocvar{d} \coqdocvar{x} =\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{Rel\_prod}(\coqdocvar{alpha}・\coqdocvar{delta0} \coqdocvar{x})\coqdockw{beta}∪\coqdocvar{Rel\_prod} \coqdocvar{alpha}(\coqdockw{beta}・\coqdocvar{delta1} \coqdocvar{x}).\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}\ensuremath{\Rightarrow}\coqdocvar{x} \coqdocvar{alpha} \coqdockw{beta}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite} \coqdocvar{d\_inv} \coqdocvar{comp\_cup\_distr\_l}-\{1\}(\coqdocvar{comp\_id\_r} \coqdocvar{\_} \coqdocvar{\_}(\coqdocvar{snd\_r} \coqdocvar{\_} \coqdocvar{\_}))\coqdoceol
+\coqdocnoindent
+-\{2\}(\coqdocvar{comp\_id\_r} \coqdocvar{\_} \coqdocvar{\_}(\coqdocvar{fst\_r} \coqdocvar{\_} \coqdocvar{\_}))-\coqdocvar{inv\_id}-(@\coqdocvar{inv\_id} \coqdocvar{state})!\coqdocvar{sharpness'}\coqdoceol
+\coqdocnoindent
+!\coqdocvar{comp\_id\_r}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdocvar{have} \coqdocvar{inif}:\coqdockw{\ensuremath{\forall}}(\coqdocvar{alpha}:\coqdocvar{Rel} \coqdocvar{i} \coqdocvar{\_})\coqdockw{beta},\coqdocvar{Rel\_prod} \coqdocvar{alpha} \coqdockw{beta}・\coqdocvar{f}=\coqdocvar{alpha}・\coqdocvar{final0}∩(\coqdockw{beta}・\coqdocvar{final1}).\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}\ensuremath{\Rightarrow}\coqdocvar{alpha} \coqdockw{beta}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite} \coqdocvar{Heqf}/\coqdocvar{Rel\_prod} \coqdocvar{inv\_cap\_distr}!\coqdocvar{comp\_inv}\coqdoceol
+\coqdocnoindent
+!(\coqdocvar{inv\_invol} (\coqdocvar{prod} \coqdocvar{state} \coqdocvar{state'}))-\coqdocvar{sharpness} 2!\coqdocvar{inv\_invol}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdocvar{have} \coqdocvar{nilw}:\coqdockw{\ensuremath{\forall}}(\coqdocvar{init0}:\coqdocvar{Rel} \coqdocvar{i} \coqdocvar{state})(\coqdocvar{init1}:\coqdocvar{Rel} \coqdocvar{i} \coqdocvar{state'})\coqdocvar{w},\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{init0}・\coqdocvar{final0} = \coqdocvar{Id} \coqdocvar{i}\ensuremath{\land}\coqdocvar{init1}・\coqdocvar{dstar} \coqdocvar{delta1} \coqdocvar{w}・\coqdocvar{final1} = \coqdocvar{Id} \coqdocvar{i}\coqdoceol
+\coqdocindent{1.00em}
+\ensuremath{\rightarrow} \coqdocvar{Rel\_prod} \coqdocvar{init0} \coqdocvar{init1}・\coqdocvar{dstar} \coqdocvar{d} \coqdocvar{w}・\coqdocvar{f} = \coqdocvar{Id} \coqdocvar{i}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}=>\{\coqdocvar{H}\}\coqdocvar{init0}\{\coqdocvar{H'}\}\coqdocvar{init1}\{\}\coqdocvar{w}[]\{\}\coqdocvar{H}\{\}\coqdocvar{H'}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}:\coqdocvar{init1} \coqdocvar{H'}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{elim}:\coqdocvar{w}=>[|\coqdocvar{h} \coqdocvar{w} \coqdocvar{H0}]\coqdocvar{init1}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/=!\coqdocvar{comp\_id\_r}\ensuremath{\Rightarrow}\coqdocvar{H'}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite} \coqdocvar{inif} \coqdocvar{H} \coqdocvar{H'} \coqdocvar{cap\_idem}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/=-!\coqdocvar{comp\_assoc} \coqdocvar{inid} !\coqdocvar{comp\_cup\_distr\_r}=>/\coqdocvar{H0}\{\}\coqdocvar{H0}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite} \coqdocvar{H0} \coqdocvar{unit\_identity\_is\_universal} \coqdocvar{cup\_universal}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdocvar{have} \coqdocvar{wnil}:\coqdockw{\ensuremath{\forall}}(\coqdocvar{init0}:\coqdocvar{Rel} \coqdocvar{i} \coqdocvar{state})(\coqdocvar{init1}:\coqdocvar{Rel} \coqdocvar{i} \coqdocvar{state'})\coqdocvar{w},\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{init0}・\coqdocvar{dstar} \coqdocvar{delta0} \coqdocvar{w}・\coqdocvar{final0} = \coqdocvar{Id} \coqdocvar{i}\ensuremath{\land}\coqdocvar{init1}・\coqdocvar{final1} = \coqdocvar{Id} \coqdocvar{i}\coqdoceol
+\coqdocindent{1.00em}
+\ensuremath{\rightarrow} \coqdocvar{Rel\_prod} \coqdocvar{init0} \coqdocvar{init1}・\coqdocvar{dstar} \coqdocvar{d} \coqdocvar{w}・\coqdocvar{f} = \coqdocvar{Id} \coqdocvar{i}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}=>\{\coqdocvar{H}\}\coqdocvar{init0}\{\coqdocvar{H'}\}\coqdocvar{init1}\{\}\coqdocvar{w}[]\{\}\coqdocvar{H}\{\}\coqdocvar{H'}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}:\coqdocvar{init0} \coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{elim}:\coqdocvar{w}=>[|\coqdocvar{h} \coqdocvar{w} \coqdocvar{H0}]\coqdocvar{init0}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/=!\coqdocvar{comp\_id\_r}\ensuremath{\Rightarrow}\coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite} \coqdocvar{inif} \coqdocvar{H} \coqdocvar{H'} \coqdocvar{cap\_idem}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/=-!\coqdocvar{comp\_assoc} \coqdocvar{inid} !\coqdocvar{comp\_cup\_distr\_r}=>/\coqdocvar{H0}\{\}\coqdocvar{H0}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite} \coqdocvar{H0} \coqdocvar{unit\_identity\_is\_universal} \coqdocvar{cup\_comm} \coqdocvar{cup\_universal}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdoctac{split}=>[[]\coqdocvar{u}[]\coqdocvar{v}[]/\coqdocvar{H}\{\}\coqdocvar{H}[]/\coqdocvar{H'}\{\}\coqdocvar{H'}|].\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}:\coqdocvar{init0} \coqdocvar{init1} \coqdocvar{u} \coqdocvar{v} \coqdocvar{H} \coqdocvar{H'}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{elim}:\coqdocvar{w}=>[|\coqdocvar{h} \coqdocvar{w} \coqdocvar{H0}]\coqdocvar{init0} \coqdocvar{init1} \coqdocvar{u} \coqdocvar{v} \coqdocvar{H} \coqdocvar{H'}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{destruct} \coqdocvar{u},\coqdocvar{v};[|\coqdocvar{done}\ensuremath{|}\coqdocvar{done}\ensuremath{|}\coqdocvar{done}].\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/=!\coqdocvar{comp\_id\_r} \coqdoctac{in} \coqdocvar{H} \coqdocvar{H'} \ensuremath{\times}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite} \coqdocvar{inif} \coqdocvar{H} \coqdocvar{H'} \coqdocvar{cap\_idem}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{destruct} \coqdocvar{u}\ensuremath{\Rightarrow}\coqdocvar{H1}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{have}\{\}\coqdocvar{H1}:\coqdocvar{v} = \coqdocvar{h}::\coqdocvar{w} \coqdoctac{by} \coqdoctac{destruct} \coqdocvar{v},\coqdocvar{w}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}-\{\coqdocvar{w} \coqdocvar{h} \coqdocvar{H0}\}\coqdocvar{H1}/=\coqdocvar{comp\_id\_r} \coqdoctac{in} \coqdocvar{H} \ensuremath{\times}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{apply}/\coqdocvar{nilw}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{destruct} \coqdocvar{v}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{remember}(\coqdocvar{h}::\coqdocvar{w})\coqdockw{as} \coqdocvar{w'}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{have}\{\}\coqdocvar{H0}:\coqdocvar{s}::\coqdocvar{u} = \coqdocvar{w'} \coqdoctac{by} \coqdoctac{destruct}(\coqdocvar{s}::\coqdocvar{u}),\coqdocvar{w'}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}\{\coqdocvar{s} \coqdocvar{u} \coqdocvar{H1}\}\coqdocvar{H0}/=\coqdocvar{comp\_id\_r} \coqdoctac{in} \coqdocvar{H} \coqdocvar{H'}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{apply}/\coqdocvar{wnil}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/= \coqdoctac{in} \coqdocvar{H1}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{case}:\coqdocvar{H1}=>[][]\coqdocvar{H1} \coqdocvar{H2};[\coqdoctac{rewrite}\{\coqdocvar{s}\}\coqdocvar{H1} \coqdoctac{in} \coqdocvar{H} \coqdocvar{H0}\ensuremath{|}\coqdoctac{rewrite}\{\coqdocvar{s0}\}\coqdocvar{H1} \coqdoctac{in} \coqdocvar{H'} \coqdocvar{H0}];\coqdoceol
+\coqdocnoindent
+[\coqdocvar{remember}(\coqdocvar{s0}::\coqdocvar{v})\coqdockw{as} \coqdocvar{v'}\ensuremath{|}\coqdocvar{remember}(\coqdocvar{s}::\coqdocvar{u})\coqdockw{as} \coqdocvar{u'}];\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/=-!\coqdocvar{comp\_assoc} \coqdocvar{inid} \coqdoctac{in} \coqdocvar{H} \coqdocvar{H'} *;\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}:(\coqdocvar{H0} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{H} \coqdocvar{H'} \coqdocvar{H2})=>\{\}\coqdocvar{H0};\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}!\coqdocvar{comp\_cup\_distr\_r} \coqdocvar{H0} \coqdocvar{unit\_identity\_is\_universal};\coqdoceol
+\coqdocnoindent
+[\coqdoctac{by} \coqdoctac{rewrite} \coqdocvar{cup\_comm} \coqdocvar{cup\_universal}\ensuremath{|}\coqdoctac{by} \coqdoctac{rewrite} \coqdocvar{cup\_universal}].\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdoctac{move}\ensuremath{\Rightarrow}\coqdocvar{H0}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{suff}:\coqdoctac{\ensuremath{\exists}} \coqdocvar{u} \coqdocvar{v} : \coqdocvar{seq} \coqdocvar{symbol},\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{init0}・\coqdocvar{dstar} \coqdocvar{delta0} \coqdocvar{u}・\coqdocvar{final0} = \coqdocvar{Id} \coqdocvar{i} \ensuremath{\land}\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{init1}・\coqdocvar{dstar} \coqdocvar{delta1} \coqdocvar{v}・\coqdocvar{final1} = \coqdocvar{Id} \coqdocvar{i} \ensuremath{\land} \coqdocvar{is\_shuffle} \coqdocvar{u} \coqdocvar{v} \coqdocvar{w}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}=>[]\coqdocvar{u}[]\coqdocvar{v}[]/\coqdocvar{H}\{\}\coqdocvar{H}[]/\coqdocvar{H'}\{\}\coqdocvar{H'} \coqdocvar{H1}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{\ensuremath{\exists}} \coqdocvar{u},\coqdocvar{v}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}:\coqdocvar{init0} \coqdocvar{init1}\{\coqdocvar{H} \coqdocvar{H'}\}\coqdocvar{H0}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{elim}:\coqdocvar{w}=>[|\coqdocvar{h} \coqdocvar{w} \coqdocvar{H0}]\coqdocvar{init0} \coqdocvar{init1}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/=\coqdocvar{comp\_id\_r} \coqdocvar{inif}=>/\coqdocvar{cap\_idi}[]\coqdocvar{H0} \coqdocvar{H1}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}} \coqdocvar{nil},\coqdocvar{nil}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite}/=!\coqdocvar{comp\_id\_r}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdoctac{rewrite}/=-\coqdocvar{comp\_assoc} \coqdocvar{inid}!\coqdocvar{comp\_cup\_distr\_r}=>/\coqdocvar{cup\_idi}[]/\coqdocvar{H0}[]\coqdocvar{u}[]\coqdocvar{v}[]\coqdocvar{H}[]\{\}\coqdocvar{H0} \coqdocvar{H1}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}}(\coqdocvar{h}::\coqdocvar{u}),\coqdocvar{v}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/=-\coqdocvar{comp\_assoc}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{split};[\coqdocvar{done}\ensuremath{|}\coqdoctac{split};[\coqdocvar{done}|]].\coqdoceol
+\coqdocnoindent
+\coqdoctac{destruct} \coqdocvar{v}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{f\_equal}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{destruct} \coqdocvar{u},\coqdocvar{w}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{left}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}} \coqdocvar{u},(\coqdocvar{h}::\coqdocvar{v}).\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/=-\coqdocvar{comp\_assoc}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{split};[\coqdocvar{done}\ensuremath{|}\coqdoctac{split};[\coqdocvar{done}|]].\coqdoceol
+\coqdocnoindent
+\coqdoctac{destruct} \coqdocvar{u}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{f\_equal}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{destruct} \coqdocvar{v},\coqdocvar{w}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{right}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Qed}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdocvar{preimage\_regular\_l} \{\coqdocvar{symbol}:\coqdocvar{finType}\}(\coqdocvar{l} \coqdocvar{l'}:@\coqdocvar{language} \coqdocvar{symbol}):\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{is\_regular} \coqdocvar{l} \ensuremath{\rightarrow} \coqdocvar{is\_regular} \coqdocvar{l'} \ensuremath{\rightarrow} \coqdocvar{is\_regular}(\coqdocvar{preimage\_lang\_l} \coqdocvar{l} \coqdocvar{l'}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/\coqdocvar{is\_regular}=>[][]\coqdocvar{state}[]\coqdocvar{M} \coqdocvar{H}[]\coqdocvar{state'}[]\coqdocvar{M'} \coqdocvar{H'}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}} \coqdocvar{\_}, (\coqdocvar{preimage\_nfa} \coqdocvar{M} \coqdocvar{M'})=>\coqdocvar{w}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{destruct} \coqdocvar{M},\coqdocvar{M'}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/\coqdocvar{accept}/=/\coqdocvar{accept}/\coqdocvar{preimage\_lang\_l}/= \coqdoctac{in} \coqdocvar{H} \coqdocvar{H'} \ensuremath{\times}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{split}=>[[]\coqdocvar{u}[]/\coqdocvar{H}\{\}\coqdocvar{H}/\coqdocvar{H'}\{\}\coqdocvar{H'}\ensuremath{|}\coqdocvar{H0}].\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite} \coqdocvar{dstar\_cat}!\coqdocvar{comp\_assoc} \coqdoctac{in} \coqdocvar{H'} \ensuremath{\times}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{destruct\_Id\_i}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{case}:\coqdocvar{H'}\ensuremath{\Rightarrow}\coqdocvar{x}[]\coqdocvar{H0}[]\coqdocvar{y}[]\coqdocvar{H1} \coqdocvar{H2}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}} \coqdocvar{x}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{split};[\coqdocvar{done}\ensuremath{|}\coqdoctac{\ensuremath{\exists}} \coqdocvar{y}].\coqdoceol
+\coqdocnoindent
+\coqdoctac{split};[\coqdoctac{\ensuremath{\exists}} \coqdocvar{u}\ensuremath{|}\coqdocvar{done}].\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{split};[\coqdocvar{destruct\_Id\_i}|].\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdocvar{destruct\_Id\_i}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite} \coqdocvar{comp\_assoc} \coqdoctac{in} \coqdocvar{H0}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{case}:\coqdocvar{H0}\ensuremath{\Rightarrow}\coqdocvar{x}[][]\coqdocvar{y}[]\coqdocvar{H0}[]\coqdocvar{u}[]\coqdocvar{H1} \coqdocvar{H2} \coqdocvar{H3}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}} \coqdocvar{u}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}\{\}\coqdocvar{H}\{\}\coqdocvar{H'}\{\}\coqdocvar{H1} \coqdocvar{dstar\_cat}-\coqdocvar{comp\_assoc} \coqdocvar{comp\_assoc}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{split};[\coqdocvar{done}\ensuremath{|}\coqdocvar{destruct\_Id\_i}].\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}} \coqdocvar{x}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{split};[\coqdoctac{\ensuremath{\exists}} \coqdocvar{y}|].\coqdoceol
+\coqdocnoindent
+\coqdockw{Qed}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Lemma} \coqdocvar{rev\_invol} \{\coqdocvar{symbol}:\coqdockw{Type}\}:\coqdockw{\ensuremath{\forall}} \coqdocvar{l}:\coqdocvar{seq} \coqdocvar{symbol},\coqdocvar{rev}(\coqdocvar{rev} \coqdocvar{l}) = \coqdocvar{l}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{elim}=>[|\coqdocvar{h} \coqdocvar{w} \coqdocvar{H}];[|\coqdoctac{rewrite} \coqdocvar{rev\_cons} \coqdocvar{rev\_rcons} \coqdocvar{H}].\coqdoceol
+\coqdocnoindent
+\coqdockw{Qed}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Open} \coqdockw{Scope} \coqdocvar{language\_scope}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Theorem} \coqdocvar{preimage\_regular\_r} \{\coqdocvar{symbol}:\coqdocvar{finType}\}(\coqdocvar{l} \coqdocvar{l'}:@\coqdocvar{language} \coqdocvar{symbol}):\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{is\_regular} \coqdocvar{l}\ensuremath{\land}\coqdocvar{is\_regular} \coqdocvar{l'} \ensuremath{\rightarrow} \coqdocvar{is\_regular}(\coqdocvar{preimage\_lang\_r} \coqdocvar{l} \coqdocvar{l'}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}=>[]/\coqdocvar{regular\_rev} \coqdocvar{H}/\coqdocvar{regular\_rev} \coqdocvar{H'}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{move}:(\coqdocvar{preimage\_regular\_l} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{H} \coqdocvar{H'})=>/\coqdocvar{regular\_rev}\{\coqdocvar{H'} \coqdocvar{H}\}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdoctac{rewrite}/\coqdocvar{is\_regular}=>[][]\coqdocvar{state}[]\coqdocvar{M} \coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}} \coqdocvar{\_}, \coqdocvar{M}\ensuremath{\Rightarrow}\coqdocvar{w}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}-\{\coqdocvar{state} \coqdocvar{M}\}\coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{rewrite}/\coqdocvar{preimage\_lang\_l}/\coqdocvar{preimage\_lang\_r}/\coqdocvar{rev\_l}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{split}=>[][]\coqdocvar{u}[]\coqdocvar{H0} \coqdocvar{H0'}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}} (\coqdocvar{rev} \coqdocvar{u}).\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite} \coqdocvar{rev\_cat}!\coqdocvar{rev\_invol}.\coqdoceol
+\coqdocnoindent
+\coqdoctac{\ensuremath{\exists}} (\coqdocvar{rev} \coqdocvar{u}).\coqdoceol
+\coqdocnoindent
+\coqdoctac{by} \coqdoctac{rewrite} \coqdocvar{rev\_cat} \coqdocvar{rev\_invol} \coqdoctac{in} \coqdocvar{H0'}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Qed}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{End} \coqdocvar{main}.\coqdoceol
+\end{coqdoccode}
+\end{document}
