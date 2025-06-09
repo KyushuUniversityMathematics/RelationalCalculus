@@ -1,8 +1,7 @@
 From mathcomp Require Import fintype finset seq.
 Require Import MyLib.RelationalCalculus.
 
-Module main (def : Relation).
-
+Module main(def:Relation).
 Module Basic_Lemmas := Basic_Lemmas.main(Rel_Set).
 Module Relation_Properties := Relation_Properties.main(Rel_Set).
 Module Sum := Sum_Product.main Rel_Set.
@@ -15,18 +14,27 @@ Delimit Scope automaton_scope with AUTO.
 Declare Scope language_scope.
 Delimit Scope automaton_scope with LANG.
 
+(** %
+\section{定義}
+\begin{itemize}
+\item 非決定性有限オートマトンを次の四つ組として定める。
+M = (Q, \tau, \delta_\sigma(\sigma\in\Sigma), \beta)
+ここで、\Sigma Q:有限集合, \tau:\rel
+\end{itemize}
+\begin{screen}
+
+\end{screen}
+% **)
 Structure automaton{state symbol:finType} :=
     {delta:symbol -> (Rel state state); init:Rel i state; final:Rel state i}.
 
-Fixpoint dstar{state symbol:finType}(d:symbol -> (Rel state state))(w:seq symbol):(Rel state state):=
+Fixpoint dstar {state symbol:finType}(d:symbol -> (Rel state state))(w:seq symbol):(Rel state state):=
 match w with
 |nil => Id state
 |s::w' => (d s) ・ (dstar d w')
 end.
 Definition accept{state symbol:finType}(M:@automaton state symbol)(w:seq symbol):Prop :=
 (init M) ・ (dstar(delta M)w) ・ (final M) = Id i.
-Notation " 'L' M " := (accept M) (at level 50, left associativity, 
-                                      only parsing):automaton_scope.
 
 Open Scope language_scope.
 Definition language {symbol:finType}:=seq symbol->Prop.
@@ -131,19 +139,6 @@ Definition preimage_nfa {state state' symbol:finType}
   {|delta := delta M';
     init  := init M'・fun x y=>exists w,accept M w/\(dstar(delta M')w)x y;
     final := final M'|}.
-  
-
-
-Lemma is_true_false:forall P, ~P <-> is_true_inv P = false.
-Proof.
-split=>H.
-rewrite/is_true_inv.
-move : (IndefiniteDescription.constructive_indefinite_description (fun b : bool => P <-> is_true b) (is_true_inv0 P)) =>[][]H0.
-by rewrite H0 in H.
-done.
-case:(Classical_Prop.classic P);[move=>/is_true_id H0|done].
-by rewrite H0 in H.
-Qed.
 
 Ltac destruct_Id_i :=
   repeat match goal with
@@ -191,6 +186,7 @@ Qed.
 Theorem NFA_DFA_equiv {state symbol:finType}(M:@automaton state symbol):
 exists(state':finType)(M':@automaton state' _),deterministic M'/\
 (forall w,accept M w <-> accept M' w).
+Proof.
 
 destruct M.
 exists _,{|delta:= fun (s:symbol)(x y:{set state})=>[set z | is_true_inv(exists2 w, w \in x & delta0 s w z)] = y;
@@ -240,13 +236,11 @@ rewrite in_set=>/is_true_id H H0.
 by exists y.
 case=>/is_true_id H H0.
 by exists y;[rewrite in_set|].
-have{}H:forall x,is_true_inv(exists2 w0 : state,
-w0  \in [set x0 | is_true_inv (init0 tt x0)] & delta0 h w0 x) =
-is_true_inv((init0 ・ delta0 h) tt x).
-move=>x.
-by case_eq(is_true_inv(exists2 w0 : state,
-w0  \in [set x0 | is_true_inv (init0 tt x0)] & delta0 h w0 x))
-=>[/is_true_id/H/is_true_id|/is_true_false/H/is_true_false].
+have{}H:forall x : state,
+(exists2 w0 : state,
+w0  \in [set x0 | is_true_inv (init0 tt x0)] &
+delta0 h w0 x) = (init0 ・ delta0 h) tt x
+by move=>x;apply/prop_extensionality_ok.
 
 split=>H0;destruct_Id_i.
 case:H0=>a[][]b[]H0 H1 H2.
@@ -257,7 +251,7 @@ exists [set x | is_true_inv (init0 tt x)].
 split;[done|].
 rewrite-{H1}H0.
 apply/setP=>x.
-by rewrite!in_set.
+by rewrite!in_set H.
 
 rewrite!comp_assoc-comp_assoc in H0 *.
 case:H0=>a[]H0 H1.
@@ -266,7 +260,7 @@ split;[move{H1}|done].
 case:H0=>b[]H0 H1.
 rewrite-{}H1-{}H0.
 apply/setP=>x.
-by rewrite!in_set.
+by rewrite!in_set H.
 Qed.
 
 Open Scope language_scope.
@@ -885,3 +879,5 @@ by rewrite rev_cat!rev_invol.
 exists (rev u).
 by rewrite rev_cat rev_invol in H0'.
 Qed.
+
+End main.
