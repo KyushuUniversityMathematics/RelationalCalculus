@@ -1,9 +1,9 @@
-Require Import Basic_Notations_Set.
-Require Import Basic_Lemmas.
-Require Import Relation_Properties.
-Require Import Functions_Mappings.
-Require Import Dedekind.
-Require Import Tactics.
+Require Import MyLib.Basic_Notations_Set.
+Require Import MyLib.Basic_Lemmas.
+Require Import MyLib.Relation_Properties.
+Require Import MyLib.Functions_Mappings.
+Require Import MyLib.Dedekind.
+Require Import MyLib.Tactics.
 
 Module main (def : Relation).
 Import def.

@@ -1,0 +1,15 @@
+-Q Module MyLib
+Module/Basic_Notations.v
+Module/Basic_Notations_Set.v
+Module/Basic_Lemmas.v
+Module/Relation_Properties.v
+Module/Functions_Mappings.v
+Module/Tactics.v
+Module/Dedekind.v
+Module/Conjugate.v
+Module/Domain.v
+Module/Residual.v
+Module/Schroder.v
+Module/Sum_Product.v
+Module/Point_Axiom.v
+Module/RelationalCalculus.v

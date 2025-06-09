@@ -6,20 +6,20 @@
     "customizations": {
       "vscode": {
         "extensions": [
-          "maximedenes.vscoq" // VSCodeのCoq拡張をインストール
+          "maximedenes.vscoq" // VSCodeのCoq拡張をインストール(正常に動作)
         ],
         "settings": {
-          "vscoq.path": "/home/vscode/.opam/default/bin/vscoqtop"  // VSCoqのパスを設定
+          "vscoq.path": "/home/vscode/.opam/default/bin/vscoqtop"  // VSCoqのパスを設定(機能してない)
         }
       }
     },
-    "image":"mathcomp/mathcomp:1.19.0-coq-8.20",
+    "image":"mathcomp/mathcomp:2.3.0-coq-8.20", //opam coq mathcompをインストール
     // "build": {
     //   "dockerfile": "Dockerfile"
     // },
 
-    "postCreateCommand": "opam init -y && eval $(opam env) && opam repo add coq-released https://coq.inria.fr/opam/released && opam install coq-mathcomp-ssreflect.1.19.0 -y && opam install vscoq-language-server -y && coq_makefile -f _CoqProject -o Makefile && make",
+    // "postCreateCommand": "opam init -y && eval $(opam env) && opam repo add coq-released https://coq.inria.fr/opam/released && opam install coq-mathcomp-ssreflect.2.3.0 -y && opam install vscoq-language-server -y && coq_makefile -f _CoqProject -o Makefile && make",
     "remoteUser": "vscode", // ユーザー名を指定
-    "workspaceFolder": "/workspaces/CoqSticker", // コードが格納されるディレクトリ
+    "workspaceFolder": "/workspaces/RelationalCalculus", // コードが格納されるディレクトリ
     "shutdownAction": "none" // コンテナ終了時のアクション設定
   }
