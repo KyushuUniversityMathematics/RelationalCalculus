@@ -1,0 +1,11 @@
+coqdoc:
+	coqdoc -latex *.v --body-only
+	find . -name "*.tex" -and -not -name "Module.tex" -exec sed -i -e "s/％/\%/g" {} \;
+	# verbatim,screen内で%が必要なときは全角入力でOK
+	platex Module.tex		     
+	platex Module.tex
+	platex Module.tex
+	dvipdfmx Module.dvi
+	-rm *.dvi *.log *.aux *.toc *.out *.tex-e
+	find . -name "*.tex" -and -not -name "Module.tex" -exec rm {} \;
+	# "Module.tex"以外のtexファイルを削除
