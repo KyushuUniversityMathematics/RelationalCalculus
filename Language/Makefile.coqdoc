@@ -1,0 +1,11 @@
+coqdoc:
+	coqdoc -latex *.v --body-only
+	find . -name "*.tex" -and -not -name "TeXMain.tex" -exec sed -i -e "s/％/\%/g" {} \;
+	# verbatim,screen内で%が必要なときは全角入力でOK
+	platex TeXMain.tex		     
+	platex TeXMain.tex
+	platex TeXMain.tex
+	dvipdfmx TeXMain.dvi
+	-rm *.dvi *.log *.aux *.toc *.out *.tex-e
+	find . -name "*.tex" -and -not -name "TeXMain.tex" -exec rm {} \;
+	# "TeXMain.tex"以外のtexファイルを削除
