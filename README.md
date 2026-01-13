@@ -1,10 +1,9 @@
 # RelationalCalculus
-This is for Coq 9.0.0 + mathcomp 2.3.0  
-If you want to use this library, please input below commands:  
-make   
-If you want to create Module.pdf, please input below commands:   
-cd Module && make -f Makefile.coqdoc && cd ../   
-If you want to create TeXMain.pdf, please input below commands:   
-(Work in Progress / 作成途中)    
-cd Language && make -f Makefile.coqdoc && cd ../
+This is for lean4
 
+test.lean 圏の定義
+          関係代数の記号および公理
+          関係代数の基本性質
+          *一点集合の公理と基本性質
+          *オブジェクトの直和、直積、冪
+          *オートマトン
